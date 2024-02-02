@@ -12,27 +12,24 @@ class OmsApp extends StatelessWidget {
       onTap: (){
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: MultiProvider(
-        providers: [],
-        child: Sizer(
-          builder: (context, orientation, deviceType) {
-            return  MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'OSM',
-              routes: Routes().routes,
-              // initialRoute: LendingRoute.route,
-              // theme: appTheme(context),
+      child: Sizer(
+        builder: (context, orientation, deviceType) {
+          return  MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'OSM',
+            routes: Routes().routes,
+            // initialRoute: LendingRoute.route,
+            // theme: appTheme(context),
 
-              builder: (context, child) {
-                final data  = MediaQuery.of(context);
-                return MediaQuery(
-                    data: data.copyWith(textScaler: const TextScaler.linear(1.0),),
-                    child: child ?? const SizedBox.shrink()
-                ) ;
-              },
-            );
-          },
-        ),
+            builder: (context, child) {
+              final data  = MediaQuery.of(context);
+              return MediaQuery(
+                  data: data.copyWith(textScaler: const TextScaler.linear(1.0),),
+                  child: child ?? const SizedBox.shrink()
+              ) ;
+            },
+          );
+        },
       ),
     );
   }
