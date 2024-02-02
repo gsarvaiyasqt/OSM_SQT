@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:osm_flutter/app/auth/view/splash_screen.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -18,10 +17,9 @@ class OmsApp extends StatelessWidget {
           return  MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'OSM',
-            // routes: Routes().routes,
+            routes: Routes().routes,
             // initialRoute: LendingRoute.route,
             // theme: appTheme(context),
-            home: SplashScreen(),
 
             builder: (context, child) {
               final data  = MediaQuery.of(context);
