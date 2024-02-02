@@ -56,7 +56,7 @@ class ImagePlaceHolder extends StatelessWidget {
             width: 40.sp,
             decoration: BoxDecoration(
               border: Border.all(color: kWhiteColor,width: 2),
-              color: kTextSecondaryColor.withOpacity(0.2),
+              color: kSecondaryColor.withOpacity(0.2),
               shape: BoxShape.circle
             ),
               padding: EdgeInsets.all(3.sp),

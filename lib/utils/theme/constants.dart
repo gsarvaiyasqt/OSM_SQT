@@ -2,23 +2,17 @@
 part of utils;
 
 const int primaryColorValue = 0xffEC2A24;
+const Color kBackgroundColor = Color(0xffFFFFFF);
 const Color kWhiteColor = Color(0xffFFFFFF);
-const Color kPrimaryColor = Color(0xffEC2A24);
-const Color kTextPrimaryColor = Color(0xff686263);
-const Color kSecondaryColor = Color(0xffF2F2F2);
-const Color kTextSecondaryColor = Color(0xff2C2627);
+const Color kPrimaryColor = Color(0xff1C212D);
+const Color kSecondaryColor = Color(0xff00BC8B);
 const Color kBlackColor = Color(0xff000000);
-const Color kLightGrayColor = Color(0xff666666);
-const Color transparentColor = Color(0x00000000);
-const Color kTextFiledFillColor = Color(0xFFD9D9D9);
-const Color kTextFiledBorderColor = Color(0xFFD9D9D9);
-const Color kTextFiledTextColor = Color(0xff444444);
-const Color kMainTextColor = Color(0xff4A4A4A);
-const Color kGreenColors = Color(0xff4BAD52);
-const Color kRedColor = Color(0xffFE4545);
-const Color kAppContainerBg = Color(0xffF5F5F5);
-const Color kYellowColor = Color(0xffFFD600);
-const Color kOrangeColor = Color(0xffFFA800);
+const Color kBlueColor = Color(0xff345BF8);
+const Color kYellowColor = Color(0xffFF9E01);
+const Color kRedColor = Color(0xffF04141);
+const Color KLightGrayColor = Color(0xffF3F6F9);
+const Color kSkyBlueColor = Color(0xFF45C5FC);
+const Color kGreenColor = Color(0xFF00815F);
 
 
 

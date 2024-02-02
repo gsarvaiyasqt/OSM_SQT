@@ -53,7 +53,7 @@ class _CustomButtonState extends State<CustomButton> {
         Center(
             child: widget.btnText == null
             ? widget.child
-            : Text(widget.btnText ?? "text",style: widget.textStyle ?? CustomTextStyle.whiteBoldFont18Style,)
+            : Text(widget.btnText ?? "text",style: widget.textStyle ?? CustomTextStyle.whiteSemiBoldFont18Style,)
         ),
       ),
     );
