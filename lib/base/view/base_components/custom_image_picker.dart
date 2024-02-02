@@ -170,7 +170,7 @@ class PickImageSheet extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 30.sp,vertical: 20.sp),
           decoration: BoxDecoration(
-                 color: kWhiteColor,
+                 color: kBackgroundColor,
               borderRadius: BorderRadius.only(topRight: Radius.circular(50.sp),topLeft: Radius.circular(50.sp)),
           ),
           child: SafeArea(
@@ -186,7 +186,7 @@ class PickImageSheet extends StatelessWidget {
 
                     Row(
                       children: [
-                        Expanded(child: Text("Upload Photo",style: CustomTextStyle.blackBoldFont18Style)),
+                        Expanded(child: Text("Upload Photo",style: CustomTextStyle.semiBoldFont18Style)),
 
                         SizedBox(
                             width: 44.sp,
@@ -245,7 +245,7 @@ class PickImageSheet extends StatelessWidget {
                                           height: 40.sp,
                                           width: 40.sp,
                                           child: ImageUtil.iconImageClass.galleryIcon),
-                                      Text("Gallery",style: CustomTextStyle.blackBoldFont18Style)
+                                      Text("Gallery",style: CustomTextStyle.semiBoldFont18Style)
                                     ],
                                   ),
                                 ),
@@ -272,7 +272,7 @@ class PickImageSheet extends StatelessWidget {
                                           height: 40.sp,
                                           width: 40.sp,
                                           child: ImageUtil.iconImageClass.cameraIcon),
-                                      Text("Camera",style: CustomTextStyle.blackBoldFont18Style)
+                                      Text("Camera",style: CustomTextStyle.semiBoldFont18Style)
                                     ],
                                   ),
                                 ),

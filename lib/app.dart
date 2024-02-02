@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osm_flutter/app/auth/view/splash_screen.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -12,27 +13,25 @@ class OmsApp extends StatelessWidget {
       onTap: (){
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: MultiProvider(
-        providers: [],
-        child: Sizer(
-          builder: (context, orientation, deviceType) {
-            return  MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'OSM',
-              routes: Routes().routes,
-              // initialRoute: LendingRoute.route,
-              // theme: appTheme(context),
+      child: Sizer(
+        builder: (context, orientation, deviceType) {
+          return  MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'OSM',
+            // routes: Routes().routes,
+            // initialRoute: LendingRoute.route,
+            // theme: appTheme(context),
+            home: SplashScreen(),
 
-              builder: (context, child) {
-                final data  = MediaQuery.of(context);
-                return MediaQuery(
-                    data: data.copyWith(textScaler: const TextScaler.linear(1.0),),
-                    child: child ?? const SizedBox.shrink()
-                ) ;
-              },
-            );
-          },
-        ),
+            builder: (context, child) {
+              final data  = MediaQuery.of(context);
+              return MediaQuery(
+                  data: data.copyWith(textScaler: const TextScaler.linear(1.0),),
+                  child: child ?? const SizedBox.shrink()
+              ) ;
+            },
+          );
+        },
       ),
     );
   }

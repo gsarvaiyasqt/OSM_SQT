@@ -38,7 +38,7 @@ class _UploadProfilePicState extends State<UploadProfilePic> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Upload Photo",style: CustomTextStyle.blackBoldFont20Style,),
+                Text("Upload Photo",style: CustomTextStyle.semiBoldFont18Style,),
                 InkWell(
                   onTap: () {
                     Navigator.pop(context);
@@ -61,7 +61,7 @@ class _UploadProfilePicState extends State<UploadProfilePic> {
                     padding: EdgeInsets.all(18.sp),
                      decoration: BoxDecoration(
                          color: kWhiteColor,
-                         border: Border.all(color: kTextSecondaryColor.withOpacity(0.5)),
+                         border: Border.all(color: kBlackColor.withOpacity(0.5)),
                          borderRadius: BorderRadius.circular(8)),
                     child: SizedBox(
                         width: 24.sp,height: 24.sp,
@@ -78,7 +78,7 @@ class _UploadProfilePicState extends State<UploadProfilePic> {
                     padding: EdgeInsets.all(18.sp),
                      decoration: BoxDecoration(
                          color: kWhiteColor,
-                         border: Border.all(color:kTextSecondaryColor.withOpacity(0.5)),
+                         border: Border.all(color:KLightGrayColor.withOpacity(0.5)),
                          borderRadius: BorderRadius.circular(8)),
                     child: SizedBox(
                         width: 24.sp,height: 24.sp,
