@@ -80,6 +80,13 @@ extension CustomTextStyle on TextStyle{
       fontWeight: FontWeight.w400
   );
 
+
+  static TextStyle get hintTextStyle => TextStyle(
+      color: const Color(0xff1C212D).withOpacity(0.40),
+      fontSize: 16.sp,
+      fontWeight: FontWeight.w400
+  );
+
   static TextStyle get semiBoldFont12Style=> TextStyle(
       color: kBlackColor,
       fontSize: 12.sp,

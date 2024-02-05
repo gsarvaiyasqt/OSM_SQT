@@ -89,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   CustomButton(
                     onTap: () {
-                      print("formKey.currentState?.validate() ${formKey.currentState?.validate()}");
                       TabRoute.goToTabBarScreen(context);
                     },
                     btnText: "Login",
