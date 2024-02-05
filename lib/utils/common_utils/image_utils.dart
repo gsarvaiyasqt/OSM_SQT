@@ -36,6 +36,8 @@ class BackgroundImage {
 }
 
 class IconImageClass{
+  Widget get settingsIcon => const CustomSvgPictures.asset("$iconPath/setting.svg",fit: BoxFit.cover,);
+  Widget get logoutIcon => const CustomSvgPictures.asset("$iconPath/logout.svg",fit: BoxFit.cover,);
   Widget get eyeCloseIcon => const CustomSvgPictures.asset("$iconPath/eye_close.svg", fit: BoxFit.cover);
   Widget get eyeOpenIcon => const CustomSvgPictures.asset("$iconPath/eye_open.svg");
   Widget get mailIcon => const CustomSvgPictures.asset("$iconPath/mail.svg", fit: BoxFit.contain);
@@ -43,7 +45,6 @@ class IconImageClass{
   Widget get addIcon => const CustomSvgPictures.asset("$iconPath/add.svg", fit: BoxFit.cover);
   Widget get filterIcon => const CustomSvgPictures.asset("$iconPath/filter.svg", fit: BoxFit.cover);
   Widget get editIcon => const CustomSvgPictures.asset("$iconPath/edit.svg", fit: BoxFit.cover);
-  Widget get logoutIcon => const CustomSvgPictures.asset("$iconPath/logout.svg", fit: BoxFit.cover);
   Widget get exploreIcon => const CustomSvgPictures.asset("$iconPath/explore.svg", fit: BoxFit.fill);
   Widget get callIcon => const CustomSvgPictures.asset("$iconPath/call_icon.svg", fit: BoxFit.cover);
   Widget get locationIcon => const CustomSvgPictures.asset("$iconPath/location.svg", fit: BoxFit.cover);

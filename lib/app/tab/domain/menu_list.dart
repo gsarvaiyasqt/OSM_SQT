@@ -17,5 +17,10 @@ class MenuItem{
 
   ];
 
+  static List<MenuItem> settingsList = [
+    MenuItem(icon: "$iconPath/setting.svg",name: "Setting"),
+    MenuItem(icon: "$iconPath/logout.svg",name: "Logout"),
+  ];
+
 
 }

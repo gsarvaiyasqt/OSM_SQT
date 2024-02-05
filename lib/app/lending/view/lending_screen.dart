@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:osm_flutter/app/auth/view/login_screen.dart';
+import 'package:osm_flutter/app/tab/view/tab_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../base/base.dart';
 import '../../../base/view/base_components/custom_option_bottom_sheet.dart';
@@ -24,8 +26,6 @@ class _LendingPageState extends State<LendingPage> {
   UserPrefs userPrefs = UserPrefs();
 
 
-
-
   DateTime? currentBackPressTime;
   Future<bool> onWillPop() {
     DateTime now = DateTime.now();
@@ -38,27 +38,23 @@ class _LendingPageState extends State<LendingPage> {
     return Future.value(true);
   }
 
-
   @override
   Widget build(BuildContext context) {
     final lendingProvider = context.watch<LendingProvider>();
+    print("LOGINN ==== ${lendingProvider.isLogin}");
 
 
+    if(lendingProvider.isLogin == false) {
 
+      return const LoginScreen();
 
-    // if(lendingProvider.isLogin == false) {
-    //
-    //   return const LoginScreen();
-    //
-    // }else if(lendingProvider.isLogin == true) {
-    //
-    //   return FirebaseMessagingHandler(onNotificationClick: (data) {
-    //     print("data ${data}");
-    //   },
-    //   child: WillPopScope(
-    //     onWillPop: onWillPop,
-    //       child: const DashboardScreen()));
-    // }
+    }
+
+    if(lendingProvider.isLogin == true) {
+
+      return const TabScreen();
+
+    }
 
     return const SplashScreen();
 

@@ -12,12 +12,12 @@ class ServerConfig{
 
   static String qa = "https://ishatiqa.softcube.co.in/api/v1";
   static String prod = "https://ishatiprod.softcube.co.in/api/v1";
-  static String mainUrl = "https://1appnam.com/api/v1";
+  static String mainUrl = "http://146.0.249.62:8282/api/v1";
 
   static String baseUrl = mainUrl;
 
   /// API_URL
-  static String get loginUrl => "$baseUrl/restaurant_user/sign_in";
+  static String get loginUrl => "$baseUrl/user/login";
   static String get registerUrl => "$baseUrl/restaurant_user/sign_up";
   static String get forgotUrl => "$baseUrl/restaurant_user/send_otp";
   static String get sendOtpUrl => "$baseUrl/restaurant_user/send_otp_without_auth";
