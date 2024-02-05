@@ -3,18 +3,18 @@ library utils;
 import 'dart:io';
 import 'dart:async';
 import 'dart:ui' as ui;
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:osm_flutter/app/auth/setting_tab/route/home_route.dart';
 import 'package:osm_flutter/app/project_tab/route/project_route.dart';
 import 'package:osm_flutter/app/setting_tab/route/setting_route.dart';
 import 'package:osm_flutter/app/tab/route/tab_route.dart';
 import 'package:osm_flutter/app/task_tab/route/task_route.dart';
 import 'package:osm_flutter/app/auth/route/auth_route.dart';
 import 'package:osm_flutter/app/lending/route/lending_route.dart';
+
+import '../app/home_tab/route/home_route.dart';
 
 
 part 'common_utils/enums.dart';

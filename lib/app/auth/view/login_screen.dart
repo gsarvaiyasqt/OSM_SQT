@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/auth/route/auth_route.dart';
 import 'package:osm_flutter/app/auth/view/forgot_password_screen.dart';
+import 'package:osm_flutter/app/tab/route/tab_route.dart';
 import 'package:osm_flutter/base/view/base_components/custom_button.dart';
 import 'package:osm_flutter/base/view/base_components/custom_text_form_filed.dart';
 import 'package:osm_flutter/utils/utils.dart';
+
+import '../../tab/view/tab_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -87,9 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   CustomButton(
                     onTap: () {
                       print("formKey.currentState?.validate() ${formKey.currentState?.validate()}");
-                      if(formKey.currentState?.validate() == true){
-                        print("Login");
-                      }
+                      TabRoute.goToTabBarScreen(context);
                     },
                     btnText: "Login",
                   )
