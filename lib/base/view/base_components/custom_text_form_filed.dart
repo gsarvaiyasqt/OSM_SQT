@@ -114,6 +114,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
         setState(() {
           error = validator(value);
+          print("errorerrorerrorerrorerrorerror $error");
         });
 
       },
@@ -121,6 +122,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       cursorColor: kPrimaryColor,
       cursorHeight: 20,
       decoration: InputDecoration(
+        suffixIcon: widget.suffix,
           counter: const SizedBox.shrink(),
           counterStyle: const TextStyle(
               height: 0.0,
