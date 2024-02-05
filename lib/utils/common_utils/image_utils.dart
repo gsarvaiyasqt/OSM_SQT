@@ -52,6 +52,7 @@ class IconImageClass{
   Widget get profileEditIcon => const CustomSvgPictures.asset("$iconPath/profile_edit.svg", fit: BoxFit.cover);
   Widget get circleCancelIcon => const CustomSvgPictures.asset("$iconPath/circle_cancel.svg",fit: BoxFit.cover);
   Widget get closeBottomSheetIcon => const CustomSvgPictures.asset("$iconPath/close_icon.svg", fit: BoxFit.cover);
+  Widget get searchIcon => const CustomSvgPictures.asset("$iconPath/search.svg", fit: BoxFit.cover);
   Widget get deleteIcon => const CustomSvgPictures.asset("$iconPath/delete.svg", fit: BoxFit.cover,color: kWhiteColor,);
   Widget get cameraIcon =>  CustomSvgPictures.asset("$iconPath/camera.svg", fit: BoxFit.cover,width: 30.sp,height: 30.sp);
   Widget get galleryIcon => const CustomSvgPictures.asset("$iconPath/gallery.svg", fit: BoxFit.cover);

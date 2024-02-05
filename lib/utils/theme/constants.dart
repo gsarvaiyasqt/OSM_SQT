@@ -3,6 +3,7 @@ part of utils;
 
 const int primaryColorValue = 0xffEC2A24;
 const Color kBackgroundColor = Color(0xffFFFFFF);
+const Color kSecondaryBackgroundColor = Color(0xffF3F6F9);
 const Color kWhiteColor = Color(0xffFFFFFF);
 const Color kLightWhiteColor = Color(0xffF3F6F9);
 const Color kPrimaryColor = Color(0xff1C212D);
