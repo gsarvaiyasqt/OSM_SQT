@@ -1,8 +1,4 @@
 
-
-
-
-
 class SetAddStateModel{
   int? userId;
   int? associationId;

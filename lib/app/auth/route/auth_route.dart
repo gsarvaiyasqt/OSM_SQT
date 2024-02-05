@@ -7,7 +7,7 @@ import 'package:osm_flutter/app/auth/view/splash_screen.dart';
 
 class AuthRoute{
 
-  static String splashRoute = "/";
+  static String splashRoute = "/splash";
   static String loginRoute = "/login";
   static String forgotRoute = "/forgot";
   static String otpRoute = "/otp";

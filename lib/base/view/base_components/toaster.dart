@@ -6,7 +6,8 @@ class Toaster {
       behavior: SnackBarBehavior.floating,
       content: Text(msg, style: TextStyle(
         fontWeight: FontWeight.w400,
-        fontSize: 16.sp
+        fontSize: 16.sp,
+        color: kWhiteColor
       )),
       backgroundColor: (isError ?? true) ? Colors.red: Colors.lightGreen,
       // duration: const Duration(seconds: 3),
