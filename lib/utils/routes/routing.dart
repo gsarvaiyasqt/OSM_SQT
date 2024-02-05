@@ -6,9 +6,7 @@ class Routes {
     AuthRoute.loginRoute:(context) => AuthRoute.loginChild,
     AuthRoute.forgotRoute:(context) => AuthRoute.forgotChild,
     AuthRoute.otpRoute:(context) => AuthRoute.otpChild,
-    AuthRoute.changePasswordRoute:(context) => AuthRoute.changePasswordChild
-    // LendingRoute.route:(context) => LendingRoute.child,
-
+    AuthRoute.changePasswordRoute:(context) => AuthRoute.changePasswordChild,
     TabRoute.route : (context) => TabRoute.child,
     HomeRoute.route : (context) => HomeRoute.child,
     SettingRoute.route : (context) => SettingRoute.child,

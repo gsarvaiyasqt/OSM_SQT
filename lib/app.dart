@@ -38,7 +38,9 @@ class OmsApp extends StatelessWidget {
           data: data.copyWith(textScaler: const TextScaler.linear(1.0),),
           child: child ?? const SizedBox.shrink()
           );
-          },
+          }
+          )
+          );
         },
       ),
     );
