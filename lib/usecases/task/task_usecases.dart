@@ -1,0 +1,26 @@
+
+
+import 'package:dio/dio.dart';
+import 'package:osm_flutter/server_configs/config.dart';
+import 'package:osm_flutter/services/web_services.dart';
+
+import '../../app/task_tab/domain/request/get_status_count.dart';
+import '../../app/task_tab/domain/respones/get_count_status_response_model.dart';
+
+abstract class ITaskUseCases{
+   Future<GetStatusCountResponseModel?> getCountStatusCount({GetStatusCountRequestModel? getStatusCountRequestModel});
+}
+
+class TaskUseCases extends ITaskUseCases{
+  @override
+  Future<GetStatusCountResponseModel?> getCountStatusCount({GetStatusCountRequestModel? getStatusCountRequestModel}) async{
+
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.getstatuswisecount,data: getStatusCountRequestModel?.toJson()));
+
+    return GetStatusCountResponseModel.fromJson(response);
+
+
+  }
+
+
+}

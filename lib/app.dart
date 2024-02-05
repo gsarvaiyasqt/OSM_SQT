@@ -24,7 +24,8 @@ class OmsApp extends StatelessWidget {
               providers: [
                 AppProviders.mainDashboardProvider,
                 AppProviders.authProvider,
-                AppProviders.lendingProvider
+                AppProviders.lendingProvider,
+                AppProviders.taskProvider,
               ],
               child: MaterialApp(
                   debugShowCheckedModeBanner: false,
