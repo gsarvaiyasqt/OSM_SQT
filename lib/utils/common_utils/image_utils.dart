@@ -4,12 +4,13 @@ part of utils;
 const String logoPath = "assets/images/logo";
 const String graphicsPath = "assets/images/graphics";
 const String iconPath = "assets/images/icons";
-const String dummyImagePath = "assets/images/dummy_img";
+const String dummyImagePath = "assets/images/dummy_images";
 
 class ImageUtil{
  static ImageClass imageClass = ImageClass();
  static IconImageClass iconImageClass = IconImageClass();
  static LogoImage logo = LogoImage();
+ static DummyImages dummy = DummyImages();
 }
 
 
@@ -46,6 +47,11 @@ class IconImageClass{
   Widget get backArrowIcon =>  CustomSvgPictures.asset("$iconPath/back_arrow.svg", fit: BoxFit.cover,color: kBlackColor,width: 30.sp,height: 30.sp,);
 }
 
+class DummyImages{
+
+  Widget get profileImage => const AssetsImagePictures(assetName: "$dummyImagePath/profile_image.png", fit: BoxFit.cover);
+}
+
 
 class CustomSvgPictures extends StatelessWidget {
   const CustomSvgPictures.asset(
@@ -55,7 +61,7 @@ class CustomSvgPictures extends StatelessWidget {
         this.height,
         this.fit = BoxFit.cover,
         this.alignment = Alignment.center,
-        this.color
+        this.color, this.colorFilter
       }) : super(key: key);
 
   final double? width;
@@ -63,6 +69,7 @@ class CustomSvgPictures extends StatelessWidget {
   final String assetName;
   final double? height;
   final BoxFit fit;
+  final ui.ColorFilter? colorFilter;
   final AlignmentGeometry alignment;
 
   @override
@@ -74,6 +81,7 @@ class CustomSvgPictures extends StatelessWidget {
       fit: fit,
       alignment: alignment,
       color: color,
+      colorFilter: colorFilter,
       placeholderBuilder: (context) {
         return const SizedBox.shrink();
       },
