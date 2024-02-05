@@ -5,11 +5,13 @@ const String logoPath = "assets/images/logo";
 const String graphicsPath = "assets/images/graphics";
 const String iconPath = "assets/images/icons";
 const String dummyImagePath = "assets/images/dummy_img";
+const String bgImgPath = "assets/images/bg_img";
 
 class ImageUtil{
  static ImageClass imageClass = ImageClass();
  static IconImageClass iconImageClass = IconImageClass();
  static LogoImage logo = LogoImage();
+ static BackgroundImage backgroundImage = BackgroundImage();
 }
 
 
@@ -19,13 +21,23 @@ class ImageClass{
 
 class LogoImage {
 
-  Widget get appLogo => const CustomSvgPictures.asset("$logoPath/logo.svg", fit: BoxFit.contain);
+  Widget get appLogo => const AssetsImagePictures(assetName: "$logoPath/logo.png",fit: BoxFit.cover,);
+
+}
+
+class BackgroundImage {
+
+  Widget get createPassword => const AssetsImagePictures(assetName: "$bgImgPath/create_pass.png",fit: BoxFit.contain,);
+  Widget get forgot => const AssetsImagePictures(assetName: "$bgImgPath/forgot.png",fit: BoxFit.contain,);
+  Widget get verify => const AssetsImagePictures(assetName: "$bgImgPath/verify_img.png",fit: BoxFit.contain,);
+
 
 }
 
 class IconImageClass{
   Widget get eyeCloseIcon => const CustomSvgPictures.asset("$iconPath/eye_close.svg", fit: BoxFit.cover);
-  Widget get eyeOpenIcon => const CustomSvgPictures.asset("$iconPath/eye_open.svg", fit: BoxFit.cover);
+  Widget get eyeOpenIcon => const CustomSvgPictures.asset("$iconPath/eye_open.svg");
+  Widget get mailIcon => const CustomSvgPictures.asset("$iconPath/mail.svg", fit: BoxFit.contain);
   Widget get verifyIcon => const CustomSvgPictures.asset("$iconPath/blue_tick.svg", fit: BoxFit.cover);
   Widget get addIcon => const CustomSvgPictures.asset("$iconPath/add.svg", fit: BoxFit.cover);
   Widget get filterIcon => const CustomSvgPictures.asset("$iconPath/filter.svg", fit: BoxFit.cover);

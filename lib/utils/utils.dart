@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:osm_flutter/app/auth/route/auth_route.dart';
+import 'package:osm_flutter/app/lending/route/lending_route.dart';
 
 
 part 'common_utils/enums.dart';
