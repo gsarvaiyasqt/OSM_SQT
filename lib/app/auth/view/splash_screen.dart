@@ -13,13 +13,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(height: 100.sp),
-          CustomTextField(
-            hint: "hhh",
-          )
-        ],
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.sp),
+        child: Column(
+          children: [
+            SizedBox(height: 100.sp),
+            CustomTextField(
+              hint: "hhh",
+            )
+          ],
+        ),
       ),
     );
   }

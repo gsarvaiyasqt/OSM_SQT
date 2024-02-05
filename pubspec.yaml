@@ -39,6 +39,7 @@ flutter:
   assets:
     - assets/images/icons/
     - assets/images/logo/
+    - assets/images/bg_img/
     - assets/images/graphics/
     - assets/images/dummy_images/
 

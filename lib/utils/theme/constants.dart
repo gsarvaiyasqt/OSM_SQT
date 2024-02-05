@@ -4,6 +4,7 @@ part of utils;
 const int primaryColorValue = 0xffEC2A24;
 const Color kBackgroundColor = Color(0xffFFFFFF);
 const Color kWhiteColor = Color(0xffFFFFFF);
+const Color kLightWhiteColor = Color(0xffF3F6F9);
 const Color kPrimaryColor = Color(0xff1C212D);
 const Color kSecondaryColor = Color(0xff00BC8B);
 const Color kBlackColor = Color(0xff000000);
