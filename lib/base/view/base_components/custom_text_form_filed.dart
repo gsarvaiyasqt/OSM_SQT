@@ -133,6 +133,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   color: Colors.transparent),
               counterText: "",
               labelText: widget.hint ?? "",
+              labelStyle: TextStyle(
+                color: kPrimaryColor.withOpacity(0.54)
+              ),
               errorStyle: const TextStyle(height: 0,color: Colors.red,fontSize: 0,),
               border:  OutlineInputBorder(
                 borderSide: BorderSide(
@@ -146,22 +149,22 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: kPrimaryColor.withOpacity(0.54)
+                      color: kBlackColor.withOpacity(0.54)
                   )
               ),
               errorBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color:kPrimaryColor.withOpacity(0.54)
+                      color:kBlackColor.withOpacity(0.54)
                   )
               ),
               focusedErrorBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: kPrimaryColor.withOpacity(0.54)
+                      color: kBlackColor.withOpacity(0.54)
                   )
               ),
               disabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: kPrimaryColor.withOpacity(0.54)
+                      color: kBlackColor.withOpacity(0.54)
                   )
               ),
               contentPadding: EdgeInsets.only(left: widget.prefix == null ? 15.sp : 5.sp,right: 15.sp,bottom: 10.sp)

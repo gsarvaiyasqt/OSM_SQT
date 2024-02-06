@@ -45,15 +45,11 @@ class _LendingPageState extends State<LendingPage> {
 
 
     if(lendingProvider.isLogin == false) {
-
       return const LoginScreen();
-
     }
 
     if(lendingProvider.isLogin == true) {
-
       return const TabScreen();
-
     }
 
     return const SplashScreen();

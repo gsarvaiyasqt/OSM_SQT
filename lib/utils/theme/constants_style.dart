@@ -74,6 +74,12 @@ extension CustomTextStyle on TextStyle{
       fontWeight: FontWeight.w700
   );
 
+  static TextStyle get boldFont16Style=> TextStyle(
+      color: kPrimaryColor,
+      fontSize: 16.sp,
+      fontWeight: FontWeight.w700
+  );
+
   static TextStyle get regularFont12Style=> TextStyle(
       color: kBlackColor,
       fontSize: 12.sp,
@@ -161,7 +167,7 @@ extension CustomTextStyle on TextStyle{
   );
 
   static TextStyle get semiBoldFont16Style=> TextStyle(
-      color: kBackgroundColor,
+      color: kPrimaryColor,
       fontSize: 16.sp,
       fontWeight: FontWeight.w600
   );

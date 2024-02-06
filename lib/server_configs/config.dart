@@ -19,6 +19,7 @@ class ServerConfig{
   /// API_URL
   static String get loginUrl => "$baseUrl/user/login";
   static String get getstatuswisecount => "$baseUrl/task/getstatuswisecount";
-
+  static String get forgotpassword => "$baseUrl/user/forgotpassword";
+  static String get updatePasswordUrl => "$baseUrl/user/forgotpassword";
 
 }

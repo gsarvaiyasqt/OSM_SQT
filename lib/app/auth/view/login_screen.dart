@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/auth/route/auth_route.dart';
-import 'package:osm_flutter/app/auth/view/forgot_password_screen.dart';
 import 'package:osm_flutter/app/auth/view_model/auth_provider.dart';
 import 'package:osm_flutter/app/lending/domain/ui_state/set_add_state_model.dart';
 import 'package:osm_flutter/app/lending/view_model/lending_provider.dart';
-import 'package:osm_flutter/app/tab/route/tab_route.dart';
 import 'package:osm_flutter/base/base.dart';
 import 'package:osm_flutter/base/view/base_components/custom_button.dart';
 import 'package:osm_flutter/base/view/base_components/custom_text_form_filed.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-import '../../tab/view/tab_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -51,9 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 75.sp,),
                     CustomTextField(
+                      regex: StringValidation.emailValidation,
                       name: "Email",
                       isOptional: false,
                       hint: "Email",
+                      inputType: TextInputType.emailAddress,
                       controller: emailController,
                       textInputAction: TextInputAction.next,
                       suffix: Column(

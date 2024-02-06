@@ -15,11 +15,18 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
-  void goToLoginPage()async{
-    await Future.delayed(Duration(seconds: 3),() {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
-    },);
+  void goToLoginPage() async {
+    // Check if the widget is still mounted before proceeding
+    if (mounted) {
+      await Future.delayed(Duration(seconds: 2), () {
+        // Check if the widget is still mounted before accessing the context
+        if (mounted) {
+          AuthRoute.goToLoginPage(context);
+        }
+      });
+    }
   }
+
 
   @override
 
