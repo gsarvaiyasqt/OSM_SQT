@@ -6,13 +6,16 @@ import 'package:osm_flutter/base/base.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/get_status_count.dart';
+import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
+import '../domain/respones/get_user_and_project_response_model.dart';
 
 abstract class ITaskProvider {
 
   Future getTaskCount({required GetStatusCountRequestModel? getStatusCountRequestModel});
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel});
+  Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
 
 }
 
@@ -25,6 +28,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   TaskProvider({this.taskRepository}){
     _getStatusCountResponse = AppResponse.loading("");
     _resentTaskResponse = AppResponse.loading("");
+    _getProjectAndUserResponse = AppResponse.loading("");
   }
 
   late AppResponse<GetStatusCountResponseModel> _getStatusCountResponse;
@@ -33,6 +37,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<RecentTaskResponseModel> _resentTaskResponse;
   AppResponse<RecentTaskResponseModel> get resentTaskResponse => _resentTaskResponse;
+
+  late AppResponse<GetProjectAndAssignUserResponseModel> _getProjectAndUserResponse;
+  AppResponse<GetProjectAndAssignUserResponseModel> get getProjectAndUserResponse => _getProjectAndUserResponse;
 
   int? todayCount,comp,leave;
 
@@ -166,6 +173,40 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   groupItemsByCategory(List<TaskList> taskList) {
     return groupBy(taskList, (item) => item.dateRang);
+  }
+
+  @override
+  Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel}) async{
+
+        resIsLoading(_getProjectAndUserResponse);
+
+
+        try {
+
+
+          final response = await taskRepository?.getProjectAndAssignUser(getProjectAndAssignUserRequestModel: getProjectAndAssignUserRequestModel);
+
+
+          if(response?.statusCode != 1){
+
+            throw response?.message ?? "";
+
+          }else{
+
+           resIsSuccess(_getProjectAndUserResponse,response);
+
+          }
+
+
+
+        } catch (e) {
+
+          resIsFailed(_getProjectAndUserResponse, e);
+          rethrow;
+
+        }
+
+
   }
 
 }

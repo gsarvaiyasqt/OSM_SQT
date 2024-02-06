@@ -22,5 +22,6 @@ class ServerConfig{
   static String get getlistwithtimedata => "$baseUrl/task/getlistwithtimedata";
   static String get forgotpassword => "$baseUrl/user/forgotpassword";
   static String get updatePasswordUrl => "$baseUrl/user/forgotpassword";
+  static String get projectGetList => "$baseUrl/project/getlist";
 
 }
