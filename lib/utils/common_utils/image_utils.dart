@@ -37,7 +37,13 @@ class BackgroundImage {
 
 class IconImageClass{
   Widget get settingsIcon => const CustomSvgPictures.asset("$iconPath/setting.svg",fit: BoxFit.cover,);
+  Widget get messageIcon => const CustomSvgPictures.asset("$iconPath/message.svg",fit: BoxFit.cover,);
+  Widget get timeQuarterIcon => const CustomSvgPictures.asset("$iconPath/time_quarter.svg",fit: BoxFit.cover,);
+  Widget get threeCalenderIcon => const CustomSvgPictures.asset("$iconPath/three_calender.svg",fit: BoxFit.cover,);
+  Widget get verifiedIcon => const CustomSvgPictures.asset("$iconPath/verified.svg",fit: BoxFit.cover,);
+  Widget get blueClockIcon => const CustomSvgPictures.asset("$iconPath/blue_clock.svg",fit: BoxFit.cover,);
   Widget get logoutIcon => const CustomSvgPictures.asset("$iconPath/logout.svg",fit: BoxFit.cover,);
+  Widget get doubleArrow => const CustomSvgPictures.asset("$iconPath/double_arrow.svg",fit: BoxFit.cover,);
   Widget get eyeCloseIcon => const CustomSvgPictures.asset("$iconPath/eye_close.svg", fit: BoxFit.cover);
   Widget get eyeOpenIcon => const CustomSvgPictures.asset("$iconPath/eye_open.svg");
   Widget get mailIcon => const CustomSvgPictures.asset("$iconPath/mail.svg", fit: BoxFit.contain);

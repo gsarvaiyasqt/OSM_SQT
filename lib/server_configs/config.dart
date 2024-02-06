@@ -20,7 +20,8 @@ class ServerConfig{
   static String get loginUrl => "$baseUrl/user/login";
   static String get registerUrl => "$baseUrl/restaurant_user/sign_up";
   static String get forgotUrl => "$baseUrl/restaurant_user/send_otp";
-  static String get sendOtpUrl => "$baseUrl/restaurant_user/send_otp_without_auth";
+  static String get forgotpassword => "$baseUrl/user/forgotpassword";
+  static String get updatePasswordUrl => "$baseUrl/user/updatepassword";
   static String get verifyOtpUrl => "$baseUrl/restaurant_user/verify_otp";
   static String get getRestaurantTermsUrl => "$baseUrl/get_restaurant_terms";
   static String get getTagUrl => "$baseUrl/get_terms";

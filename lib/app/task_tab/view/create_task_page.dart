@@ -9,18 +9,23 @@ class CreateTaskPage extends StatefulWidget {
 }
 
 class _CreateTaskPageState extends State<CreateTaskPage> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Create Task",style: CustomTextStyle.boldFont22Style),
       ),
-      body: Column(
-        children: [
-          CustomTextField(
-            hint: "Project",
-          )
-        ],
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.sp),
+        child: Column(
+          children: [
+            SizedBox(height: 10.sp,),
+
+
+          ],
+        ),
       ),
     );
   }
