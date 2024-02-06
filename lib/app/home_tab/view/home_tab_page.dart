@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/get_status_count.dart';
 import 'package:osm_flutter/app/task_tab/route/task_route.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/utils/common_utils/custom_search_bar.dart';
 import 'package:osm_flutter/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/common_utils/custom_appbar.dart';
 class HomeTabPage extends StatefulWidget {
@@ -12,8 +15,25 @@ class HomeTabPage extends StatefulWidget {
 }
 
 class _HomeTabPageState extends State<HomeTabPage> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+      await context.read<TaskProvider>().getTaskCount(getStatusCountRequestModel: GetStatusCountRequestModel());
+    });
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
+    final taskProvider = context.watch<TaskProvider>();
+    final isLoading = taskProvider.getStatusCountResponse.state == Status.LOADING;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar: CustomAppbar(height: 100.sp,
@@ -38,7 +58,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
           ),
         ),
       ),
-      body: Padding(
+      body: isLoading ? const Center(child: CircularProgressIndicator()) :Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.sp,vertical: 20.sp),
         child: Column(
           children: [
@@ -65,7 +85,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                               color: kBlueColor,
                               borderRadius: BorderRadius.all(Radius.circular(100.sp)),
                             ),
-                            child: Text("02",style: CustomTextStyle.whiteBoldFont32Style),
+                            child: Text("0${taskProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style),
                           ),
                         ),
                         SizedBox(height: 39.sp),
@@ -105,7 +125,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                 color: kSecondaryColor,
                                 borderRadius: BorderRadius.all(Radius.circular(100.sp)),
                               ),
-                              child: Text("02",style: CustomTextStyle.whiteBoldFont32Style),
+                              child: Text("0${taskProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style),
                             ),
                             Expanded(child: Column(
                               children: [
@@ -135,8 +155,9 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                 color: kYellowColor,
                                 borderRadius: BorderRadius.all(Radius.circular(100.sp)),
                               ),
-                              child: Text("02",style: CustomTextStyle.whiteBoldFont32Style),
+                              child: Text("0${taskProvider.leave ?? 0}",style: CustomTextStyle.whiteBoldFont32Style),
                             ),
+                            SizedBox(width: 5.sp),
                             Expanded(child: Column(
                               children: [
                                 Text("Leave",style: CustomTextStyle.mediumFont14Style),

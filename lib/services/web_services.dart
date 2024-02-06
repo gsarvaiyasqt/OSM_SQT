@@ -58,7 +58,7 @@ class WebService {
       Response response = await _dio
           .post(request.url,queryParameters: request.queryParameters, data: request.data, options:Options(
               headers: {
-                "authorization":"Bearer ${SecureStorage.token.toString()}"
+                "Authorization":"Bearer ${SecureStorage.token.toString()}"
               })).timeout(const Duration(seconds: 60));
 
               print("my associationID is ${SecureStorage.userID}");
