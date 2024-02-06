@@ -61,7 +61,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
           ),
         ),
       ),
-      body: Padding(
+      body: isLoading ? const Center(child: CircularProgressIndicator(),) : Padding(
         padding: EdgeInsets.only(left: 20.sp,right: 20.sp,top: 20.sp),
         child: SingleChildScrollView(
           child: Column(
@@ -77,21 +77,19 @@ class _HomeTabPageState extends State<HomeTabPage> {
                       decoration: BoxDecoration(
                         color: kBlueColor.withOpacity(0.10),
                         borderRadius: BorderRadius.circular(5),
+
                       ),
                       child: Column(
                         children: [
                           Align(
                             alignment: Alignment.centerRight,
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15.sp, horizontal: 18.sp),
+                              padding: EdgeInsets.symmetric(vertical: 15.sp,horizontal: 18.sp),
                               decoration: BoxDecoration(
                                 color: kBlueColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(100.sp)),
+                                borderRadius: BorderRadius.all(Radius.circular(100.sp)),
                               ),
-                              child: Text("02",
-                                  style: CustomTextStyle.whiteBoldFont32Style),
+                              child: Text("0${taskProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style),
                             ),
                           ),
                           SizedBox(height: 39.sp),
@@ -100,11 +98,10 @@ class _HomeTabPageState extends State<HomeTabPage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("Today’s",
-                                    style: CustomTextStyle.mediumFont14Style),
-                                Text("Task",
-                                    style: CustomTextStyle.boldFont14Style
-                                        .copyWith(fontSize: 24.sp)),
+                                Text("Today’s",style: CustomTextStyle.mediumFont14Style),
+                                Text("Task",style: CustomTextStyle.boldFont14Style.copyWith(
+                                    fontSize: 24.sp
+                                )),
                               ],
                             ),
                           )
@@ -121,30 +118,25 @@ class _HomeTabPageState extends State<HomeTabPage> {
                           decoration: BoxDecoration(
                             color: kSecondaryColor.withOpacity(0.10),
                             borderRadius: BorderRadius.circular(5),
+
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 9.sp, horizontal: 11.sp),
+                                padding: EdgeInsets.symmetric(vertical: 9.sp,horizontal: 11.sp),
                                 decoration: BoxDecoration(
                                   color: kSecondaryColor,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(100.sp)),
+                                  borderRadius: BorderRadius.all(Radius.circular(100.sp)),
                                 ),
-                                child: Text("02",
-                                    style:
-                                        CustomTextStyle.whiteBoldFont32Style),
+                                child: Text("0${taskProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style),
                               ),
-                              Expanded(
-                                  child: Column(
+                              Expanded(child: Column(
                                 children: [
-                                  Text("Completed",
-                                      style: CustomTextStyle.mediumFont14Style),
-                                  Text("Task",
-                                      style: CustomTextStyle.boldFont14Style
-                                          .copyWith(fontSize: 24.sp)),
+                                  Text("Completed",style: CustomTextStyle.mediumFont14Style),
+                                  Text("Task",style: CustomTextStyle.boldFont14Style.copyWith(
+                                      fontSize: 24.sp
+                                  )),
                                 ],
                               ))
                             ],
@@ -156,30 +148,26 @@ class _HomeTabPageState extends State<HomeTabPage> {
                           decoration: BoxDecoration(
                             color: kYellowColor.withOpacity(0.10),
                             borderRadius: BorderRadius.circular(5),
+
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 9.sp, horizontal: 11.sp),
+                                padding: EdgeInsets.symmetric(vertical: 9.sp,horizontal: 11.sp),
                                 decoration: BoxDecoration(
                                   color: kYellowColor,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(100.sp)),
+                                  borderRadius: BorderRadius.all(Radius.circular(100.sp)),
                                 ),
-                                child: Text("02",
-                                    style:
-                                        CustomTextStyle.whiteBoldFont32Style),
+                                child: Text("0${taskProvider.leave ?? 0}",style: CustomTextStyle.whiteBoldFont32Style),
                               ),
-                              Expanded(
-                                  child: Column(
+                              SizedBox(width: 5.sp),
+                              Expanded(child: Column(
                                 children: [
-                                  Text("Leave",
-                                      style: CustomTextStyle.mediumFont14Style),
-                                  Text("Request",
-                                      style: CustomTextStyle.boldFont14Style
-                                          .copyWith(fontSize: 24.sp)),
+                                  Text("Leave",style: CustomTextStyle.mediumFont14Style),
+                                  Text("Request",style: CustomTextStyle.boldFont14Style.copyWith(
+                                      fontSize: 24.sp
+                                  )),
                                 ],
                               ))
                             ],
@@ -188,8 +176,132 @@ class _HomeTabPageState extends State<HomeTabPage> {
                       ],
                     ),
                   )
+
+
                 ],
               ),
+              // Row(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Expanded(
+              //       child: Container(
+              //         padding: EdgeInsets.all(14.sp),
+              //         decoration: BoxDecoration(
+              //           color: kBlueColor.withOpacity(0.10),
+              //           borderRadius: BorderRadius.circular(5),
+              //         ),
+              //         child: Column(
+              //           children: [
+              //             Align(
+              //               alignment: Alignment.centerRight,
+              //               child: Container(
+              //                 padding: EdgeInsets.symmetric(
+              //                     vertical: 15.sp, horizontal: 18.sp),
+              //                 decoration: BoxDecoration(
+              //                   color: kBlueColor,
+              //                   borderRadius:
+              //                       BorderRadius.all(Radius.circular(100.sp)),
+              //                 ),
+              //                 child: Text("02",
+              //                     style: CustomTextStyle.whiteBoldFont32Style),
+              //               ),
+              //             ),
+              //             SizedBox(height: 39.sp),
+              //             Align(
+              //               alignment: Alignment.centerLeft,
+              //               child: Column(
+              //                 mainAxisAlignment: MainAxisAlignment.start,
+              //                 children: [
+              //                   Text("Today’s",
+              //                       style: CustomTextStyle.mediumFont14Style),
+              //                   Text("Task",
+              //                       style: CustomTextStyle.boldFont14Style
+              //                           .copyWith(fontSize: 24.sp)),
+              //                 ],
+              //               ),
+              //             )
+              //           ],
+              //         ),
+              //       ),
+              //     ),
+              //     SizedBox(width: 10.sp),
+              //     Expanded(
+              //       child: Column(
+              //         children: [
+              //           Container(
+              //             padding: EdgeInsets.all(14.sp),
+              //             decoration: BoxDecoration(
+              //               color: kSecondaryColor.withOpacity(0.10),
+              //               borderRadius: BorderRadius.circular(5),
+              //             ),
+              //             child: Row(
+              //               crossAxisAlignment: CrossAxisAlignment.center,
+              //               children: [
+              //                 Container(
+              //                   padding: EdgeInsets.symmetric(
+              //                       vertical: 9.sp, horizontal: 11.sp),
+              //                   decoration: BoxDecoration(
+              //                     color: kSecondaryColor,
+              //                     borderRadius:
+              //                         BorderRadius.all(Radius.circular(100.sp)),
+              //                   ),
+              //                   child: Text("02",
+              //                       style:
+              //                           CustomTextStyle.whiteBoldFont32Style),
+              //                 ),
+              //                 Expanded(
+              //                     child: Column(
+              //                   children: [
+              //                     Text("Completed",
+              //                         style: CustomTextStyle.mediumFont14Style),
+              //                     Text("Task",
+              //                         style: CustomTextStyle.boldFont14Style
+              //                             .copyWith(fontSize: 24.sp)),
+              //                   ],
+              //                 ))
+              //               ],
+              //             ),
+              //           ),
+              //           SizedBox(height: 10.sp),
+              //           Container(
+              //             padding: EdgeInsets.all(14.sp),
+              //             decoration: BoxDecoration(
+              //               color: kYellowColor.withOpacity(0.10),
+              //               borderRadius: BorderRadius.circular(5),
+              //             ),
+              //             child: Row(
+              //               crossAxisAlignment: CrossAxisAlignment.center,
+              //               children: [
+              //                 Container(
+              //                   padding: EdgeInsets.symmetric(
+              //                       vertical: 9.sp, horizontal: 11.sp),
+              //                   decoration: BoxDecoration(
+              //                     color: kYellowColor,
+              //                     borderRadius:
+              //                         BorderRadius.all(Radius.circular(100.sp)),
+              //                   ),
+              //                   child: Text("02",
+              //                       style:
+              //                           CustomTextStyle.whiteBoldFont32Style),
+              //                 ),
+              //                 Expanded(
+              //                     child: Column(
+              //                   children: [
+              //                     Text("Leave",
+              //                         style: CustomTextStyle.mediumFont14Style),
+              //                     Text("Request",
+              //                         style: CustomTextStyle.boldFont14Style
+              //                             .copyWith(fontSize: 24.sp)),
+              //                   ],
+              //                 ))
+              //               ],
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     )
+              //   ],
+              // ),
               SizedBox(height: 10.sp),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
