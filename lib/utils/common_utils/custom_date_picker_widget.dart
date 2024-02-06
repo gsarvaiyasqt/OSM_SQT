@@ -24,11 +24,11 @@ class _CustomDatePickerWidgetState extends State<CustomDatePickerWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 10.sp,vertical: 8.sp),
+      padding: EdgeInsets.symmetric(horizontal: 10.sp,vertical: 13.sp),
       decoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.rectangle,
-          border: Border.all(color: Colors.grey.withOpacity(0.6)),
+          border: Border.all(color: kBlackColor),
           borderRadius: BorderRadius.circular(widget.radius ?? 0)
       ),
       child: GestureDetector(

@@ -63,7 +63,8 @@ class IconImageClass{
   Widget get deleteIcon => const CustomSvgPictures.asset("$iconPath/delete.svg", fit: BoxFit.cover,color: kWhiteColor,);
   Widget get cameraIcon =>  CustomSvgPictures.asset("$iconPath/camera.svg", fit: BoxFit.cover,width: 30.sp,height: 30.sp);
   Widget get galleryIcon => const CustomSvgPictures.asset("$iconPath/gallery.svg", fit: BoxFit.cover);
-  Widget get calenderIcon =>  CustomSvgPictures.asset("$iconPath/calender.svg", fit: BoxFit.cover,width: 30.sp,height: 30.sp,);
+  Widget get dropdownIcon => const CustomSvgPictures.asset("$iconPath/dropdown.svg", fit: BoxFit.cover);
+  Widget get calenderIcon =>  CustomSvgPictures.asset("$iconPath/calendar.svg", fit: BoxFit.cover,width: 30.sp,height: 30.sp,);
   Widget get backArrowIcon =>  CustomSvgPictures.asset("$iconPath/back_arrow.svg", fit: BoxFit.cover,color: kBlackColor,width: 30.sp,height: 30.sp,);
 }
 

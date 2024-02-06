@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/get_status_count.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
 import 'package:osm_flutter/app/home_tab/components/custom_recent_task_component.dart';
 import 'package:osm_flutter/app/task_tab/route/task_route.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/utils/common_utils/custom_search_bar.dart';
 import 'package:osm_flutter/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/common_utils/custom_appbar.dart';
 
@@ -15,29 +18,45 @@ class HomeTabPage extends StatefulWidget {
 }
 
 class _HomeTabPageState extends State<HomeTabPage> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+      await context.read<TaskProvider>().getTaskCount(getStatusCountRequestModel: GetStatusCountRequestModel());
+    });
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
+    final taskProvider = context.watch<TaskProvider>();
+    final isLoading = taskProvider.getStatusCountResponse.state == Status.LOADING;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
-      appBar: CustomAppbar(
-        height: 100.sp,
-        lending: ImageUtil.dummy.profileImage,
-        titleText: "Create setting Inner page design",
-        action: Center(
+      appBar: CustomAppbar(height: 100.sp,
+          lending: ImageUtil.dummy.profileImage,
+          titleText: "Create setting Inner page design",
+        action:  Center(
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 9.sp, vertical: 9.sp),
+                padding: EdgeInsets.symmetric(horizontal: 9.sp,vertical: 9.sp),
                 decoration: BoxDecoration(
                   color: kBackgroundColor,
                   borderRadius: BorderRadius.circular(100),
                 ),
-                child: Icon(Icons.pause, size: 20.sp),
+                child: Icon(Icons.pause,size: 20.sp),
               ),
               SizedBox(width: 10.sp),
-              Text("01:34 hr",
-                  style: CustomTextStyle.boldFont22Style
-                      .copyWith(color: kBackgroundColor))
+              Text("01:34 hr",style: CustomTextStyle.boldFont22Style.copyWith(
+                color: kBackgroundColor
+              ))
             ],
           ),
         ),

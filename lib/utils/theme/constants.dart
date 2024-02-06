@@ -15,6 +15,7 @@ const Color kRedColor = Color(0xffF04141);
 const Color KLightGrayColor = Color(0xffF3F6F9);
 const Color kSkyBlueColor = Color(0xFF45C5FC);
 const Color kGreenColor = Color(0xFF00815F);
+const Color kBorderColor = Color(0xFFCAD3E0);
 
 
 
