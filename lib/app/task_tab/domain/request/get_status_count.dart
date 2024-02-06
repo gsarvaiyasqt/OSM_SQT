@@ -25,7 +25,7 @@ class GetStatusCountRequestModel {
   );
 
   Map<String, dynamic> toJson() => {
-    "projectID": projectId ?? "",
+    "projectID": (projectId ?? null),
     "userID": userId,
     "associationID": associationId,
     "associationType": associationType ?? "",

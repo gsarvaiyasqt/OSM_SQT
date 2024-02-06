@@ -42,6 +42,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
        final leave = response?.data?.indexWhere((element) => element.status == "Leave Count");
        final today = response?.data?.indexWhere((element) => element.status == "TodayTask");
+       final comp = response?.data?.indexWhere((element) => element.status == "Closed");
 
       if(leave != null){
 
@@ -53,6 +54,12 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
        if(today != null){
 
          todayCount = response?.data?[today].taskCount;
+
+       }
+
+       if(comp != null){
+
+         this.comp = response?.data?[comp].taskCount;
 
        }
 

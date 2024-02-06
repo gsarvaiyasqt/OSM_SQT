@@ -58,7 +58,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
           ),
         ),
       ),
-      body: isLoading ? Center(child: CircularProgressIndicator()) :Padding(
+      body: isLoading ? const Center(child: CircularProgressIndicator()) :Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.sp,vertical: 20.sp),
         child: Column(
           children: [
