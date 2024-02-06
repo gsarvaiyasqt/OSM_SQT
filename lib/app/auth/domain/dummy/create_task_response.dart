@@ -1,11 +1,13 @@
+import 'package:osm_flutter/app/task_tab/domain/respones/get_recent_task_response_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
 
 class CreateTaskListModel{
   String? date;
   String?time;
+  List<TaskList>? testList;
   List<CreateTaskDataModel>? list;
 
-  CreateTaskListModel({this.time,this.date,this.list});
+  CreateTaskListModel({this.time,this.date,this.list,this.testList});
 
 
  static List<CreateTaskListModel> dummyTaskList = [

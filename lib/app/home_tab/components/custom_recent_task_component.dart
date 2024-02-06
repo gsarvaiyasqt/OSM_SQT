@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
 
+import '../../../base/view/base_components/custom_image_view.dart';
 import '../../../utils/utils.dart';
 
 class CustomRecentTaskComponent extends StatefulWidget {
@@ -46,9 +48,9 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                 },
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: widget.taskData?.list?.length ?? 0,
+                itemCount: widget.taskData?.testList?.length ?? 0,
                 itemBuilder: (context, dataIndex) {
-                  final data = widget.taskData?.list?[dataIndex];
+                  final data = widget.taskData?.testList?[dataIndex];
                   return Column(
                     children: [
                       Row(
@@ -57,7 +59,9 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                           SizedBox(
                               height: 40.sp,
                               width: 40.sp,
-                              child: Image.asset(data?.profilePic ?? "")),
+                              child: CustomImageView(
+                                uri: data?.projectLogo ?? "",fit: BoxFit.cover,
+                              )),
                           SizedBox(
                             width: 9.sp,
                           ),
@@ -67,7 +71,7 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                               CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  data?.dashboardName ?? "",
+                                  data?.projectName ?? "",
                                   style: CustomTextStyle
                                       .regularFont14Style
                                       .copyWith(
@@ -89,7 +93,8 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                           SizedBox(
                             width: 10.sp,
                           ),
-                          Text(data?.time ?? "",
+                          // Time Working
+                          Text(DateFormat("hh:mm").format(DateTime.now()) ?? "",
                               style: CustomTextStyle
                                   .regularFont14Style
                                   .copyWith(
