@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/get_recent_task_request_model.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/get_status_count.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
 import 'package:osm_flutter/app/home_tab/components/custom_recent_task_component.dart';
@@ -26,7 +27,15 @@ class _HomeTabPageState extends State<HomeTabPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      await context.read<TaskProvider>().getTaskCount(getStatusCountRequestModel: GetStatusCountRequestModel());
+      final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
+      final taskProvider = context.read<TaskProvider>();
+      await taskProvider.getTaskCount(getStatusCountRequestModel: GetStatusCountRequestModel());
+      await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+        endDate: DateTime.now(),
+        startDate: startDate
+
+      ));
+
     });
 
   }
@@ -34,9 +43,24 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final taskProvider = context.watch<TaskProvider>();
     final isLoading = taskProvider.getStatusCountResponse.state == Status.LOADING;
+    final resentListData =  taskProvider.listData;
+
+
+    for (var element in resentListData) {
+
+      element.testList?.forEach((Eelement) {
+
+
+        print("Eelement.totalTimeInMinites is ${Eelement.totalTimeInMinites}");
+
+
+      });
+
+
+    }
+
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar: CustomAppbar(height: 100.sp,
@@ -180,128 +204,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
                 ],
               ),
-              // Row(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Expanded(
-              //       child: Container(
-              //         padding: EdgeInsets.all(14.sp),
-              //         decoration: BoxDecoration(
-              //           color: kBlueColor.withOpacity(0.10),
-              //           borderRadius: BorderRadius.circular(5),
-              //         ),
-              //         child: Column(
-              //           children: [
-              //             Align(
-              //               alignment: Alignment.centerRight,
-              //               child: Container(
-              //                 padding: EdgeInsets.symmetric(
-              //                     vertical: 15.sp, horizontal: 18.sp),
-              //                 decoration: BoxDecoration(
-              //                   color: kBlueColor,
-              //                   borderRadius:
-              //                       BorderRadius.all(Radius.circular(100.sp)),
-              //                 ),
-              //                 child: Text("02",
-              //                     style: CustomTextStyle.whiteBoldFont32Style),
-              //               ),
-              //             ),
-              //             SizedBox(height: 39.sp),
-              //             Align(
-              //               alignment: Alignment.centerLeft,
-              //               child: Column(
-              //                 mainAxisAlignment: MainAxisAlignment.start,
-              //                 children: [
-              //                   Text("Today’s",
-              //                       style: CustomTextStyle.mediumFont14Style),
-              //                   Text("Task",
-              //                       style: CustomTextStyle.boldFont14Style
-              //                           .copyWith(fontSize: 24.sp)),
-              //                 ],
-              //               ),
-              //             )
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //     SizedBox(width: 10.sp),
-              //     Expanded(
-              //       child: Column(
-              //         children: [
-              //           Container(
-              //             padding: EdgeInsets.all(14.sp),
-              //             decoration: BoxDecoration(
-              //               color: kSecondaryColor.withOpacity(0.10),
-              //               borderRadius: BorderRadius.circular(5),
-              //             ),
-              //             child: Row(
-              //               crossAxisAlignment: CrossAxisAlignment.center,
-              //               children: [
-              //                 Container(
-              //                   padding: EdgeInsets.symmetric(
-              //                       vertical: 9.sp, horizontal: 11.sp),
-              //                   decoration: BoxDecoration(
-              //                     color: kSecondaryColor,
-              //                     borderRadius:
-              //                         BorderRadius.all(Radius.circular(100.sp)),
-              //                   ),
-              //                   child: Text("02",
-              //                       style:
-              //                           CustomTextStyle.whiteBoldFont32Style),
-              //                 ),
-              //                 Expanded(
-              //                     child: Column(
-              //                   children: [
-              //                     Text("Completed",
-              //                         style: CustomTextStyle.mediumFont14Style),
-              //                     Text("Task",
-              //                         style: CustomTextStyle.boldFont14Style
-              //                             .copyWith(fontSize: 24.sp)),
-              //                   ],
-              //                 ))
-              //               ],
-              //             ),
-              //           ),
-              //           SizedBox(height: 10.sp),
-              //           Container(
-              //             padding: EdgeInsets.all(14.sp),
-              //             decoration: BoxDecoration(
-              //               color: kYellowColor.withOpacity(0.10),
-              //               borderRadius: BorderRadius.circular(5),
-              //             ),
-              //             child: Row(
-              //               crossAxisAlignment: CrossAxisAlignment.center,
-              //               children: [
-              //                 Container(
-              //                   padding: EdgeInsets.symmetric(
-              //                       vertical: 9.sp, horizontal: 11.sp),
-              //                   decoration: BoxDecoration(
-              //                     color: kYellowColor,
-              //                     borderRadius:
-              //                         BorderRadius.all(Radius.circular(100.sp)),
-              //                   ),
-              //                   child: Text("02",
-              //                       style:
-              //                           CustomTextStyle.whiteBoldFont32Style),
-              //                 ),
-              //                 Expanded(
-              //                     child: Column(
-              //                   children: [
-              //                     Text("Leave",
-              //                         style: CustomTextStyle.mediumFont14Style),
-              //                     Text("Request",
-              //                         style: CustomTextStyle.boldFont14Style
-              //                             .copyWith(fontSize: 24.sp)),
-              //                   ],
-              //                 ))
-              //               ],
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     )
-              //   ],
-              // ),
+
               SizedBox(height: 10.sp),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -329,10 +232,9 @@ class _HomeTabPageState extends State<HomeTabPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: CreateTaskListModel.dummyTaskList.length,
+                itemCount: resentListData.length,
                 itemBuilder: (context, index) {
-                  final createTaskData =
-                      CreateTaskListModel.dummyTaskList[index];
+                  final createTaskData = resentListData[index];
                   return CustomRecentTaskComponent(
                     taskData: createTaskData,
                   );
