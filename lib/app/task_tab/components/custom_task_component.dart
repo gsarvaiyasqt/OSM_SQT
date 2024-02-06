@@ -15,13 +15,8 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: 15.sp, vertical: 13.sp),
       margin: EdgeInsets.only(bottom: 10.sp),
-      decoration: BoxDecoration(
-        color: kWhiteColor,
-        borderRadius: BorderRadius.circular(15.sp),
-      ),
+
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -36,119 +31,211 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
             height: 10.sp,
           ),
 
-          Column(
-            children: [
-              ListView.separated(
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    color: kPrimaryColor.withOpacity(0.10),
-                  );
-                },
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: widget.taskData?.list?.length ?? 0,
-                itemBuilder: (context, dataIndex) {
-                  final data = widget.taskData?.list?[dataIndex];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                              height: 40.sp,
-                              width: 40.sp,
-                              child: Image.asset(data?.profilePic ?? "")),
-                          SizedBox(
-                            width: 9.sp,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data?.dashboardName ?? "",
-                                  style: CustomTextStyle
-                                      .regularFont14Style
-                                      .copyWith(
-                                      color: kPrimaryColor
-                                          .withOpacity(0.50)),
-                                ),
-                                Text(
-                                  data?.title ?? "",
-                                  style: CustomTextStyle
-                                      .semiBoldFont16Style,
-                                ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 15.sp,vertical: 15.sp),
+            decoration: BoxDecoration(
+              color: kWhiteColor,
+              borderRadius: BorderRadius.circular(15.sp),
+            ),
+            child: Column(
+              children: [
+                ListView.separated(
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      color: kPrimaryColor.withOpacity(0.10),
+                    );
+                  },
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: widget.taskData?.list?.length ?? 0,
+                  itemBuilder: (context, dataIndex) {
+                    final data = widget.taskData?.list?[dataIndex];
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
 
-                                SizedBox(height: 15.sp,),
-
-                                Row(
-                                  children: [
-
-                                    SizedBox(
-                                        height: 24.sp,
-                                        child: ImageUtil.dummy.profileImage),
-
-                                    SizedBox(width: 9.sp,),
-                                    
-                                    Expanded(child: Text(data?.name ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)),
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                      child: ImageUtil.iconImageClass.doubleArrow,
-                                    ),
-
-                                    SizedBox(width: 10.sp,),
-                                    
-                                    Text(data?.time ?? "",style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
-
-                                    SizedBox(width: 10.sp,),
-
-                                    SizedBox(
-                                      height: 18.sp,
-                                      width: 18.sp,
-                                      child:dataIndex.isEven ?  ImageUtil.iconImageClass.blueClockIcon : ImageUtil.iconImageClass.verifiedIcon,
-                                    )
-                                  ],
-                                ),
-
-                                SizedBox(height: 10.sp,),
-
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      height: 18.sp,
-                                      width: 18.sp,
-                                      child: ImageUtil.iconImageClass.threeCalenderIcon,
-                                    ),
-
-                                    SizedBox(width: 10.sp,),
-
-                                    Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
-
-                                    Container(
-                                      margin: EdgeInsets.symmetric(horizontal: 12.sp),
-                                      width: 1.sp,
-                                      height: 14.sp,
-                                      color: kPrimaryColor.withOpacity(0.80),
-                                    ),
-
-                                    // SizedBox(
-                                    //   child: ImageUtil,
-                                    // )
-                                  ],
-                                )
-                              ],
+                            SizedBox(
+                                height: 40.sp,
+                                width: 40.sp,
+                                child: Image.asset(data?.profilePic ?? "")),
+                            SizedBox(
+                              width: 9.sp,
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                },),
-            ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data?.dashboardName ?? "",
+                                    style: CustomTextStyle
+                                        .regularFont14Style
+                                        .copyWith(
+                                        color: kPrimaryColor
+                                            .withOpacity(0.50)),
+                                  ),
+                                  Text(
+                                    data?.title ?? "",
+                                    style: CustomTextStyle
+                                        .semiBoldFont16Style,
+                                  ),
+
+                                  SizedBox(height: 15.sp,),
+
+                                  Row(
+                                    children: [
+
+                                      SizedBox(
+                                          height: 24.sp,
+                                          child: ImageUtil.dummy.profileImage),
+
+                                      SizedBox(width: 9.sp,),
+
+                                      Expanded(child: Text(data?.name ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)),
+
+                                      SizedBox(
+                                        height: 16.sp,
+                                        child: ImageUtil.iconImageClass.doubleArrow,
+                                      ),
+
+                                      SizedBox(width: 10.sp,),
+
+                                      Text(data?.time ?? "",style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+
+                                      SizedBox(width: 10.sp,),
+
+                                      SizedBox(
+                                        height: 18.sp,
+                                        width: 18.sp,
+                                        child:dataIndex.isEven ?  ImageUtil.iconImageClass.blueClockIcon : ImageUtil.iconImageClass.verifiedIcon,
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 10.sp,),
+
+
+                                  // Row(
+                                  //   children: [
+                                  //
+                                  //     SizedBox(
+                                  //       height: 18.sp,
+                                  //       width: 18.sp,
+                                  //       child: ImageUtil.iconImageClass.threeCalenderIcon,
+                                  //     ),
+                                  //
+                                  //     SizedBox(width: 10.sp,),
+                                  //
+                                  //     Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+                                  //
+                                  //     Container(
+                                  //       margin: EdgeInsets.symmetric(horizontal: 6.sp),
+                                  //       width: 1.sp,
+                                  //       height: 14.sp,
+                                  //       color: kPrimaryColor.withOpacity(0.80),
+                                  //     ),
+                                  //
+                                  //
+                                  //     SizedBox(
+                                  //       height: 18.sp,
+                                  //       width: 18.sp,
+                                  //       child: ImageUtil.iconImageClass.timeQuarterIcon,
+                                  //     ),
+                                  //
+                                  //     SizedBox(width: 10.sp,),
+                                  //
+                                  //     Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
+                                  //
+                                  //     SizedBox(width: 10.sp,),
+                                  //
+                                  //     Row(
+                                  //       children: [
+                                  //         SizedBox(
+                                  //           height: 18.sp,
+                                  //           width: 18.sp,
+                                  //           child: ImageUtil.iconImageClass.messageIcon,
+                                  //         ),
+                                  //
+                                  //         SizedBox(width: 8.sp,),
+                                  //
+                                  //         Text(data?.messageCount.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
+                                  //       ],
+                                  //     )
+                                  //
+                                  //   ],
+                                  // ),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+
+                                    children: [
+                                      Wrap(
+
+                                        direction: Axis.horizontal,
+                                        spacing: 12.sp,
+                                        children: [
+
+                                          Row(
+                                            children: [
+
+                                              SizedBox(
+                                                height: 18.sp,
+                                                width: 18.sp,
+                                                child: ImageUtil.iconImageClass.threeCalenderIcon,
+                                              ),
+
+                                              SizedBox(width: 5.sp,),
+
+                                              Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+                                            ],
+                                          ),
+
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                height: 18.sp,
+                                                width: 18.sp,
+                                                child: ImageUtil.iconImageClass.timeQuarterIcon,
+                                              ),
+
+                                              SizedBox(width: 5.sp,),
+
+                                              Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
+                                            ],
+                                          ),
+
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                height: 18.sp,
+                                                width: 18.sp,
+                                                child: ImageUtil.iconImageClass.messageIcon,
+                                              ),
+
+                                              SizedBox(width: 5.sp,),
+
+                                              Text(data?.messageCount.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
+                                            ],
+                                          )
+
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },),
+              ],
+            ),
           ),
 
         ],

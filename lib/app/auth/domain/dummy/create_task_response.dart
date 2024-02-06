@@ -22,7 +22,7 @@ class CreateTaskListModel{
          date: "31 Jan 2023",
          name: "Satish Thummar",
          fullTime: "15 Feb 2023",
-         messageCount: 5
+         messageCount: 1
        )
      ]
    ),
@@ -39,7 +39,7 @@ class CreateTaskListModel{
              date: "31 Jan 2023",
              name: "Harshil Patel",
              fullTime: "15 Feb 2023",
-             messageCount: 5
+             messageCount: 1
          ),
 
          CreateTaskDataModel(
@@ -50,7 +50,7 @@ class CreateTaskListModel{
              date: "31 Jan 2023",
              name: "Satish Thummar",
              fullTime: "15 Feb 2023",
-             messageCount: 5
+             messageCount: 100
          ),
 
          CreateTaskDataModel(

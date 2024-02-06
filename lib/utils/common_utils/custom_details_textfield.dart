@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 
-class CustomTextField extends StatefulWidget {
-  CustomTextField(
+class CustomDescriptionField extends StatefulWidget {
+  CustomDescriptionField(
       {Key? key,
         FocusNode? focusNode,
         this.hint,
@@ -22,7 +22,7 @@ class CustomTextField extends StatefulWidget {
         this.validationMessage,
         this.emptyMessage,
         this.name,
-        this.suffix, this.instructions, this.maxLength, this.prefix, this.radius, this.hintTextStyle})
+        this.suffix, this.instructions, this.maxLength, this.prefix, this.radius, this.hintTextStyle, this.maxLine, this.minLine})
       : focusNode = focusNode ?? FocusNode(),
         isOptional = isOptional ?? true,
         isSecure = isSecure ?? false,
@@ -30,6 +30,8 @@ class CustomTextField extends StatefulWidget {
 
   final String? hint;
   final bool isOptional;
+  final int? maxLine;
+  final int? minLine;
   final FocusNode focusNode;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
@@ -53,10 +55,10 @@ class CustomTextField extends StatefulWidget {
 
 
   @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
+  State<CustomDescriptionField> createState() => _CustomDescriptionFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class _CustomDescriptionFieldState extends State<CustomDescriptionField> {
 
   bool hasTypedSomething = false;
 
@@ -87,6 +89,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
+          minLines: widget.minLine,
+          maxLines: widget.maxLine,
           maxLength: widget.maxLength,
           obscureText: widget.isSecure,
           autofocus: false,
@@ -97,7 +101,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             setState(() {
               error = validator(value);
             });
-        
+
             return error;
           },
           enabled: widget.isEnable,
@@ -109,68 +113,69 @@ class _CustomTextFieldState extends State<CustomTextField> {
             setState(() {
               hasTypedSomething = value.isNotEmpty;
             });
-        
+
             if(widget.onChanged != null) {
               widget.onChanged!(value);
               widget.controller?.selection = TextSelection.fromPosition(TextPosition(offset: widget.controller?.text.length ?? 0));
             }
-        
+
             setState(() {
               error = validator(value);
               print("errorerrorerrorerrorerrorerror $error");
             });
-        
+
           },
           style:CustomTextStyle.regularFont16Style,
           cursorColor: kPrimaryColor,
           cursorHeight: 20,
           decoration: InputDecoration(
-            suffixIcon: widget.suffix,
+              suffixIcon: widget.suffix,
               counter: const SizedBox.shrink(),
               counterStyle: const TextStyle(
                   height: 0.0,
                   fontSize: 0.0,
                   color: Colors.transparent),
               counterText: "",
+              alignLabelWithHint: true,
               labelText: widget.hint ?? "",
               labelStyle: TextStyle(
-                color: kBlackColor
+                  color: kBlackColor
               ),
               errorStyle: const TextStyle(height: 0,color: Colors.red,fontSize: 0,),
               border:  OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: kPrimaryColor
-                )
+                  borderSide: BorderSide(
+                      color: kPrimaryColor,
+                  )
               ),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: kPrimaryColor
+                      color: kPrimaryColor,
                   )
               ),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: kBlackColor
+                      color: kBlackColor,
                   )
               ),
               errorBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color:kBlackColor
+                      color:kBlackColor,
                   )
               ),
               focusedErrorBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: kBlackColor
+                      color: kBlackColor,
                   )
               ),
               disabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: kBlackColor
+                      color: kBlackColor,
                   )
               ),
               contentPadding: EdgeInsets.only(left: widget.prefix == null ? 15.sp : 5.sp,right: 15.sp,bottom: 10.sp)
           ),
         ),
-        
+
         if(error != null)
           Text(error ?? "",style: CustomTextStyle.regularFont14Style.copyWith(color: kRedColor),)
       ],

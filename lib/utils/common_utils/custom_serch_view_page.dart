@@ -22,7 +22,7 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
         backgroundColor: kSecondaryBackgroundColor,
         appBar: AppBar(
           backgroundColor: kSecondaryBackgroundColor,
-          title: Text(widget.name ?? "",style: CustomTextStyle.boldFont22Style),
+          title: Text(widget.name ?? "",style: CustomTextStyle.boldFont16Style),
         ),
         body: CustomSearchViewDemo(
           // list: widget.list,
