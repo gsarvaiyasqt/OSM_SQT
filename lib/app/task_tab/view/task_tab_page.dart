@@ -16,6 +16,7 @@ class _TaskTabPageState extends State<TaskTabPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kSecondaryBackgroundColor,
       appBar:  CustomAppbar(
         height: 100.sp,
         lending: ImageUtil.dummy.profileImage,
@@ -40,7 +41,8 @@ class _TaskTabPageState extends State<TaskTabPage> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: 20.sp,right: 20.sp,top: 20.sp),
+        padding: EdgeInsets.symmetric(horizontal: 20.sp),
+        // padding: EdgeInsets.symmetric(left: 20.sp,right: 20.sp,top: 20.sp),
         child: SingleChildScrollView(
           child: Column(
             children: [

@@ -268,7 +268,7 @@ class PickImageSheet extends StatelessWidget {
                                       SizedBox(
                                           height: 40.sp,
                                           width: 40.sp,
-                                          child: ImageUtil.iconImageClass.cameraIcon),
+                                          child: Icon(Icons.camera_alt,size: 40.sp,)),
                                       Text("Camera",style: CustomTextStyle.semiBoldFont18Style)
                                     ],
                                   ),
