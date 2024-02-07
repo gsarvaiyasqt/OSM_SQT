@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
+import 'package:osm_flutter/base/view/base_components/custom_image_view.dart';
 
 import '../../../utils/utils.dart';
 
@@ -47,9 +49,9 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                   },
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: widget.taskData?.list?.length ?? 0,
+                  itemCount: widget.taskData?.testList?.length ?? 0,
                   itemBuilder: (context, dataIndex) {
-                    final data = widget.taskData?.list?[dataIndex];
+                    final data = widget.taskData?.testList?[dataIndex];
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -61,7 +63,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                             SizedBox(
                                 height: 40.sp,
                                 width: 40.sp,
-                                child: Image.asset(data?.profilePic ?? "")),
+                                child: CustomImageView(uri: data?.projectLogo,fit: BoxFit.cover,)),
                             SizedBox(
                               width: 9.sp,
                             ),
@@ -71,7 +73,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                 CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    data?.dashboardName ?? "",
+                                    data?.projectName ?? "",
                                     style: CustomTextStyle
                                         .regularFont14Style
                                         .copyWith(
@@ -95,16 +97,17 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                       SizedBox(width: 9.sp,),
 
-                                      Expanded(child: Text(data?.name ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)),
+                                      Expanded(child: Text(data?.projectName ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)),
+
 
                                       SizedBox(
                                         height: 16.sp,
-                                        child: ImageUtil.iconImageClass.doubleArrow,
+                                        child: data?.priority == "Normal" ? ImageUtil.iconImageClass.normalIcon : ImageUtil.iconImageClass.doubleArrow,
                                       ),
 
                                       SizedBox(width: 10.sp,),
 
-                                      Text(data?.time ?? "",style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+                                      Text(data?.totalTimeInMinites.toString() ?? "",style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
 
                                       SizedBox(width: 10.sp,),
 
@@ -190,7 +193,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                               SizedBox(width: 5.sp,),
 
-                                              Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+                                              Text(DateFormat.yMd().format(data?.startDate ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
                                             ],
                                           ),
 
@@ -204,7 +207,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                               SizedBox(width: 5.sp,),
 
-                                              Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
+                                              Text(DateFormat.yMMMd().format(data?.dateRang ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
                                             ],
                                           ),
 
@@ -218,7 +221,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                               SizedBox(width: 5.sp,),
 
-                                              Text(data?.messageCount.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
+                                              Text(data?.projectId.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
                                             ],
                                           )
 

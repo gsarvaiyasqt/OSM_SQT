@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/common_utils/custom_appbar.dart';
 import '../../../utils/utils.dart';
+import '../../tab/view_model/tab_bar_provider.dart';
 class SettingTabPage extends StatefulWidget {
   const SettingTabPage({Key? key}) : super(key: key);
 
@@ -17,6 +18,7 @@ class _SettingTabPageState extends State<SettingTabPage> {
   @override
   Widget build(BuildContext context) {
     final lendingProvider = context.watch<LendingProvider>();
+    final tabProvider = context.read<TabBarProvider>();
     return Scaffold(
       backgroundColor: Color(0xffF3F6F9),
       appBar: CustomAppbar(height: 100.sp,
@@ -61,6 +63,7 @@ class _SettingTabPageState extends State<SettingTabPage> {
                   onTap: () {
                     if(index == 1)
                     lendingProvider.clearAppState();
+                    tabProvider.tabChangeIndex(index: 0);
                     Navigator.popUntil(context, (route) => route.isFirst);
                   },
                   child: Container(

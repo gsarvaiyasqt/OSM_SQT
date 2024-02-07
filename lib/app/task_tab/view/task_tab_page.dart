@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/task_tab/components/custom_task_component.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/common_utils/custom_appbar.dart';
 import '../../../utils/common_utils/custom_search_bar.dart';
@@ -15,6 +17,8 @@ class TaskTabPage extends StatefulWidget {
 class _TaskTabPageState extends State<TaskTabPage> {
   @override
   Widget build(BuildContext context) {
+    final taskProvider = context.watch<TaskProvider>();
+    final listData = taskProvider.listData;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar:  CustomAppbar(
@@ -46,6 +50,9 @@ class _TaskTabPageState extends State<TaskTabPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+
+              SizedBox(height: 20.sp,),
+
               CustomSearchBar(),
           
               SizedBox(height: 15.sp,),
@@ -77,12 +84,12 @@ class _TaskTabPageState extends State<TaskTabPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: CreateTaskListModel.dummyTaskList.length,
+                itemCount: listData.length,
                 itemBuilder: (context, index) {
-                  final createTaskData =
+                  final taskData = listData[index];
                   CreateTaskListModel.dummyTaskList[index];
                   return CustomTaskComponent(
-                    taskData: createTaskData,
+                    taskData: taskData,
                   );
                 },
               )
