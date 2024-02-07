@@ -12,12 +12,15 @@ import '../../app/task_tab/domain/request/get_status_count.dart';
 import '../../app/task_tab/domain/request/get_user_and_project_request_model.dart';
 import '../../app/task_tab/domain/respones/get_count_status_response_model.dart';
 import '../../app/task_tab/domain/respones/get_recent_task_response_model.dart';
+import '../../app/task_tab/domain/respones/get_status_and_priority_res_model.dart';
 import '../../app/task_tab/domain/respones/get_user_and_project_response_model.dart';
+import '../../utils/utils.dart';
 
 abstract class ITaskUseCases{
    Future<GetStatusCountResponseModel?> getCountStatusCount({GetStatusCountRequestModel? getStatusCountRequestModel});
    Future<RecentTaskResponseModel?> getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel});
    Future<GetProjectAndAssignUserResponseModel?> getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
+   Future<GerStatusAndPriorityResponseModel?> getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
 }
 
 class TaskUseCases extends ITaskUseCases{
@@ -44,6 +47,14 @@ class TaskUseCases extends ITaskUseCases{
 
     final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.projectGetList,data: getProjectAndAssignUserRequestModel?.toJson()));
     return GetProjectAndAssignUserResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<GerStatusAndPriorityResponseModel?> getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.projectTermGetList,data: {
+      "category":getStatusAndPriorityType?.str
+    }));
+    return GerStatusAndPriorityResponseModel.fromJson(response);
   }
 
 

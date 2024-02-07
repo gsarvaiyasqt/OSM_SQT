@@ -88,20 +88,10 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
 
               },
               selectedItem: (p0) async{
-
                 await context.read<TaskProvider>().resetData();
-
-                print("p0.projectId is ${p0.projectId}");
-                print("p0.projectId is ${p0.name}");
-
                 widget.onChange!(p0);
-                //print("selected po is ${p0['dial_code']}");
-                // widget.onChange!(p0);
-                //
-
                 Navigator.pop(context);
-
-              },
+                },
             ),
           ),
         )
@@ -120,11 +110,10 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
          await taskProvider.getProjectAndAssignUser(getProjectAndAssignUserRequestModel: GetProjectAndAssignUserRequestModel(
            projectId: widget.projectId
          ));
-        // await taskProvider.updateProjectAssignList(taskProvider.getProjectAndUserResponse.data?.data?.projectUser);
-      case CreateTaskEnum.STATUS:
-
+         case CreateTaskEnum.STATUS:
+        await taskProvider.getStatusAndPriorityTerm(getStatusAndPriorityType: GetStatusAndPriorityType.TaskStatus);
       case CreateTaskEnum.PRIORITY:
-      // TODO: Handle this case.
+      await taskProvider.getStatusAndPriorityTerm(getStatusAndPriorityType: GetStatusAndPriorityType.TaskPriority);
       case null:
         // TODO: Handle this case.
     }

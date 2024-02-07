@@ -20,6 +20,7 @@ class CustomSearchViewDemo<T> extends StatefulWidget {
 
 class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
   List<T> filterListData = [];
+  List<T> multiSelectionListData = [];
   int selected = 0;
   @override
   void initState() {
@@ -27,13 +28,13 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
     super.initState();
     setState(() {
       filterListData = widget.list ?? [];
+
     });
   }
 
 
   @override
   Widget build(BuildContext context) {
-    print('getContactDataRes  list data ${filterListData}');
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.sp),
       child: Column(
@@ -43,7 +44,6 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
               setState(() {
                 if(widget.onChange != null){
                   filterListData =  widget.onChange?.call(widget.list ?? [],value ?? "") ?? [];
-                  print("if list  length is ${filterListData.length}");
                 }
               });
             },
@@ -58,7 +58,9 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
                       onTap: () {
                         widget.selectedItem?.call(filterListData[index]);
                       },
-                      child: widget.itemDataBuilder?.call(context,filterListData[index],index));
+                      onLongPress: () {},
+                      child: widget.itemDataBuilder?.call(context,filterListData[index],index)
+                  );
                 }),
           ),
         ],

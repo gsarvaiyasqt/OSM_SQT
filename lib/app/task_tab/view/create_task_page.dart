@@ -80,26 +80,11 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                             setState(() {
                               createTasRequestModel.projectName = value.name;
                               createTasRequestModel.projectId = value.projectId;
-
                               if(value.name != null){
-
                                 createTasRequestModel.assignInName = null;
-
-
                               }
-
-
                             });
-
-                            final taskProvider = context.read<TaskProvider>();
-
-                            if(value.projectId != null){
-                              // await taskProvider.resetData();
-                              // await taskProvider.assignList(value.projectId);
-                            }
-
-
-                          },
+                            },
                         );
                       },
                     ));
@@ -177,6 +162,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
           
               CustomDropDownWidget(
                 name: "Status",
+                selectedItem: createTasRequestModel.status,
                 onTap: () async{
                   setState(() {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -195,9 +181,20 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
               ),
           
               CustomDropDownWidget(
+                selectedItem: createTasRequestModel.priority,
                 name: "Priority",
                 onTap: () {
-          
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return CustomSearchViewPage(
+                      createTaskEnum: CreateTaskEnum.PRIORITY,
+                      name: "Priority",
+                      onChange: (value) {
+                        setState(() {
+                          createTasRequestModel.priority = value.name;
+                        });
+                      },
+                    );
+                  },));
                 },
               ),
 

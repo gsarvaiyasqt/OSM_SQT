@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 import 'package:osm_flutter/base/base.dart';
 
+import '../../../utils/utils.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/get_status_count.dart';
@@ -10,6 +11,7 @@ import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/request/search_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
+import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 
 abstract class ITaskProvider {
@@ -17,6 +19,7 @@ abstract class ITaskProvider {
   Future getTaskCount({required GetStatusCountRequestModel? getStatusCountRequestModel});
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel});
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
+  Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
 
 }
 
@@ -30,6 +33,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _getStatusCountResponse = AppResponse.loading("");
     _resentTaskResponse = AppResponse.loading("");
     _getProjectAndUserResponse = AppResponse.loading("");
+    _getGerStatusAndPriorityResponse = AppResponse.loading("");
   }
 
   late AppResponse<GetStatusCountResponseModel> _getStatusCountResponse;
@@ -42,15 +46,14 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   late AppResponse<GetProjectAndAssignUserResponseModel> _getProjectAndUserResponse;
   AppResponse<GetProjectAndAssignUserResponseModel> get getProjectAndUserResponse => _getProjectAndUserResponse;
 
+
+  late AppResponse<GerStatusAndPriorityResponseModel> _getGerStatusAndPriorityResponse;
+  AppResponse<GerStatusAndPriorityResponseModel> get getGerStatusAndPriorityResponse => _getGerStatusAndPriorityResponse;
+
   int? todayCount,comp,leave;
 
 
-  List<SearchModel> projectUserList = [];
-
   List<SearchModel> list = [];
-
-
-
 
   List<CreateTaskListModel> listData = [];
 
@@ -183,10 +186,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel}) async{
 
 
-
-    print("getProjectAndAssignUserRequestModel is ${getProjectAndAssignUserRequestModel?.projectId}");
-
-        resIsLoading(_getProjectAndUserResponse);
+    resIsLoading(_getProjectAndUserResponse);
 
 
         try {
@@ -231,6 +231,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   }
   
+
   Future updateProjectAssignList(List<ProjectUser>? assignList) async {
     
     if(assignList != null){
@@ -259,11 +260,51 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   }
 
 
-
   Future resetData()async{
 
     list = [];
     notifyListeners();
+
+  }
+
+  @override
+  Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType}) async{
+
+    resIsLoading(_getGerStatusAndPriorityResponse);
+
+    try {
+
+
+      final response = await taskRepository?.getStatusAndPriorityTerm(getStatusAndPriorityType: getStatusAndPriorityType);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        response?.data?.forEach((element) {
+
+          list.add(SearchModel(name: element.defaultValues,projectId: element.termId));
+
+        });
+
+        resIsSuccess(_getGerStatusAndPriorityResponse,response);
+
+      }
+
+
+    } catch (e) {
+
+      resIsFailed(_getGerStatusAndPriorityResponse, e);
+      rethrow;
+
+    }
+
+
+
+
+
 
   }
 
