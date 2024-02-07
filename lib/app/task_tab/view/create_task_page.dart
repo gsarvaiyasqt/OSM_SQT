@@ -52,8 +52,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    final taskProvider = context.watch<TaskProvider>();
-    return Scaffold(
+   return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar: AppBar(
         backgroundColor: kSecondaryBackgroundColor,
@@ -135,7 +134,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       builder: (context) {
                         return CustomSearchViewPage(
                           name: "Project Name",
-                          list: [],
                         );
                       },
                     ));

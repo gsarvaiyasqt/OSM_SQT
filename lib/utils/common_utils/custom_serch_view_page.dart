@@ -60,33 +60,40 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
              await context.read<TaskProvider>().resetData();
              await searchRefresh(widget.createTaskEnum, context);
           },
-          child: CustomSearchViewDemo(
-             list: taskProvider.list,
-            itemDataBuilder: (context, data, index) {
-              return Padding(
-                padding: EdgeInsets.all(20.sp),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("${data.name}" ?? "",style: CustomTextStyle.regularFont18Style),
-                  ],
-                ),
-              );
-            },
-
-            onChange: (p0, value) {
-              if(value.isNotEmpty){
-                return p0.where((element) => ((element.name ?? "").toLowerCase().contains(value.toLowerCase()))).toList();
-              }else{
-                return p0;
-              }
+          child: WillPopScope(
+            onWillPop: () async{
+              Navigator.of(context).pop();
+             return await context.read<TaskProvider>().resetData();
 
             },
-            selectedItem: (p0) {
-              //print("selected po is ${p0['dial_code']}");
-              widget.onChange!(p0);
-              Navigator.pop(context);
-            },
+            child: CustomSearchViewDemo(
+               list: taskProvider.list,
+              itemDataBuilder: (context, data, index) {
+                return Padding(
+                  padding: EdgeInsets.all(20.sp),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("${data.name}" ?? "",style: CustomTextStyle.regularFont18Style),
+                    ],
+                  ),
+                );
+              },
+
+              onChange: (p0, value) {
+                if(value.isNotEmpty){
+                  return p0.where((element) => ((element.name ?? "").toLowerCase().contains(value.toLowerCase()))).toList();
+                }else{
+                  return p0;
+                }
+
+              },
+              selectedItem: (p0) {
+                //print("selected po is ${p0['dial_code']}");
+                widget.onChange!(p0);
+                Navigator.pop(context);
+              },
+            ),
           ),
         )
     );
