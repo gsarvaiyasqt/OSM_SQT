@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/utils/utils.dart';
 class CustomSearchBar extends StatefulWidget {
-  const CustomSearchBar({Key? key}) : super(key: key);
+  final ValueChanged<String>? onChanged;
+
+  const CustomSearchBar({Key? key, this.onChanged}) : super(key: key);
 
   @override
   State<CustomSearchBar> createState() => _CustomSearchBarState();
@@ -27,6 +29,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           SizedBox(width: 15.sp),
           Expanded(
             child: TextFormField(
+              onChanged: (value) => widget.onChanged?.call(value),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: "Search anything...",

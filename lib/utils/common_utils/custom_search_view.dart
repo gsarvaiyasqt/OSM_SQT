@@ -29,6 +29,8 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
       filterListData = widget.list ?? [];
     });
   }
+
+
   @override
   Widget build(BuildContext context) {
     print('getContactDataRes  list data ${filterListData}');
@@ -37,12 +39,19 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
       child: Column(
         children: [
           CustomSearchBar(
-
+            onChanged: (value) {
+              setState(() {
+                if(widget.onChange != null){
+                  filterListData =  widget.onChange?.call(widget.list ?? [],value ?? "") ?? [];
+                  print("if list  length is ${filterListData.length}");
+                }
+              });
+            },
           ),
           Expanded(
             child: ListView.separated(
                 itemCount: filterListData.length,
-                separatorBuilder: (context, index) =>  Divider(height: 1.sp,color: KLightGrayColor.withOpacity(0.2),endIndent: 20.sp,indent: 20.sp),
+                separatorBuilder: (context, index) =>  Divider(height: 4.sp,color: kPrimaryColor.withOpacity(0.10)) /*Divider(height: 1.sp,color: KLightGrayColor.withOpacity(0.2),endIndent: 20.sp,indent: 20.sp)*/,
                 itemBuilder: (context, index) {
                   selected = index;
                   return InkWell(

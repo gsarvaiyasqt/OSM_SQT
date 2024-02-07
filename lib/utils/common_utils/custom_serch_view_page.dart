@@ -11,9 +11,10 @@ import 'custom_search_view.dart';
 
 class CustomSearchViewPage extends StatefulWidget {
   final String? name;
+  final int? projectId;
   final ValueChanged<SearchModel>? onChange;
   final CreateTaskEnum? createTaskEnum;
-  const CustomSearchViewPage({Key? key, this.name, this.onChange, this.createTaskEnum}) : super(key: key);
+  const CustomSearchViewPage({Key? key, this.name, this.onChange, this.createTaskEnum, this.projectId}) : super(key: key);
 
   @override
   State<CustomSearchViewPage> createState() => _CustomSearchViewPageState();
@@ -32,13 +33,10 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
 
-      await searchRefresh(widget.createTaskEnum, context);
+      await searchRefresh(widget.createTaskEnum, context,widget.projectId);
 
     });
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +51,12 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
                 Navigator.of(context).pop();
               },
               child: const Icon(Icons.arrow_back)),
-          title: Text(widget.name ?? "",style: CustomTextStyle.boldFont16Style),
+          title: Text(widget.name ?? "",style: CustomTextStyle.boldFont22Style),
         ),
         body: RefreshIndicator(
           onRefresh: ()async {
              await context.read<TaskProvider>().resetData();
-             await searchRefresh(widget.createTaskEnum, context);
+             await searchRefresh(widget.createTaskEnum, context,widget.projectId);
           },
           child: WillPopScope(
             onWillPop: () async{
@@ -67,6 +65,7 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
 
             },
             child: CustomSearchViewDemo(
+              onTap: () {},
                list: taskProvider.list,
               itemDataBuilder: (context, data, index) {
                 return Padding(
@@ -88,17 +87,27 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
                 }
 
               },
-              selectedItem: (p0) {
-                //print("selected po is ${p0['dial_code']}");
+              selectedItem: (p0) async{
+
+                await context.read<TaskProvider>().resetData();
+
+                print("p0.projectId is ${p0.projectId}");
+                print("p0.projectId is ${p0.name}");
+
                 widget.onChange!(p0);
+                //print("selected po is ${p0['dial_code']}");
+                // widget.onChange!(p0);
+                //
+
                 Navigator.pop(context);
+
               },
             ),
           ),
         )
     );
   }
-  Future searchRefresh(CreateTaskEnum? createTaskEnum,BuildContext context)async{
+  Future searchRefresh(CreateTaskEnum? createTaskEnum,BuildContext context,int? project)async{
 
     final taskProvider = context.read<TaskProvider>();
 
@@ -108,9 +117,12 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
         await taskProvider.getProjectAndAssignUser(getProjectAndAssignUserRequestModel: GetProjectAndAssignUserRequestModel());
         await taskProvider.updateSearchList(taskProvider.getProjectAndUserResponse.data?.data?.projectList);
         case CreateTaskEnum.ASSIGN:
-      // TODO: Handle this case.
+         await taskProvider.getProjectAndAssignUser(getProjectAndAssignUserRequestModel: GetProjectAndAssignUserRequestModel(
+           projectId: widget.projectId
+         ));
+        // await taskProvider.updateProjectAssignList(taskProvider.getProjectAndUserResponse.data?.data?.projectUser);
       case CreateTaskEnum.STATUS:
-      // TODO: Handle this case.
+
       case CreateTaskEnum.PRIORITY:
       // TODO: Handle this case.
       case null:
