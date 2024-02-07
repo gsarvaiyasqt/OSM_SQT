@@ -93,10 +93,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
        }
 
-
        resIsSuccess(_getStatusCountResponse,response);
-
-
 
      }
 
@@ -185,6 +182,10 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   @override
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel}) async{
 
+
+
+    print("getProjectAndAssignUserRequestModel is ${getProjectAndAssignUserRequestModel?.projectId}");
+
         resIsLoading(_getProjectAndUserResponse);
 
 
@@ -200,17 +201,19 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
           }else{
 
-            final projectUser = response?.data?.projectUser;
 
-            if(projectUser != null){
+            if(getProjectAndAssignUserRequestModel?.projectId != null){
 
+              response?.data?.projectUser?.where((wElement) => wElement.projectId == getProjectAndAssignUserRequestModel?.projectId).forEach((element) {
 
-              for (var element in projectUser) {
-
-                projectUserList.add(SearchModel(name: element.displayName));
+                list.add(SearchModel(name: element.displayName,projectId: element.projectId));
 
               }
+
+              );
+
             }
+
 
            resIsSuccess(_getProjectAndUserResponse,response);
 
@@ -227,6 +230,18 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
 
   }
+  
+  Future updateProjectAssignList(List<ProjectUser>? assignList) async {
+    
+    if(assignList != null){
+      for(var element in assignList){
+        list.add(SearchModel(name: element.displayName));
+      }
+      
+    }
+    notifyListeners();
+  }
+  
 
   Future updateSearchList(List<ProjectList>? projectList)async{
 
@@ -234,15 +249,16 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
       for (var element in projectList) {
 
-        list.add(SearchModel(name: element.projectName));
+        list.add(SearchModel(name: element.projectName,projectId: element.projectId));
 
       }
-
 
     }
     notifyListeners();
 
   }
+
+
 
   Future resetData()async{
 

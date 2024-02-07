@@ -120,6 +120,7 @@ class ProjectUser {
   int? projectId;
   int? projectUserId;
   int? userId;
+
   int? isManager;
   int? isTeamLead;
   int? projectRoleId;

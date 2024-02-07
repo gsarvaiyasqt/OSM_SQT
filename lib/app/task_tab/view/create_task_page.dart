@@ -17,6 +17,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../base/view/base_components/multi_selection_images.dart';
 import '../domain/request/create_sub_point_model.dart';
+import '../domain/request/create_task_req_model.dart';
 
 class CreateTaskPage extends StatefulWidget {
   const CreateTaskPage({Key? key}) : super(key: key);
@@ -33,11 +34,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   DateTime? startDate;
   DateTime? endDate;
   List<File>? mediaFileList = [];
-
+  String? selectedProjectName;
+  String? assignedName;
+  String? status;
  List<CreateSubPoint> createSubPoint = [];
 
 
-
+  CreateTasRequestModel createTasRequestModel = CreateTasRequestModel();
 
  @override
   void initState() {
@@ -65,26 +68,52 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
           child: Column(
             children: [
               CustomDropDownWidget(
+                selectedItem: createTasRequestModel.projectName,
                 name: "Project Name",
                 onTap: () {
-                  setState(() {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
                           createTaskEnum: CreateTaskEnum.PROJECT,
                           name: "Project Name",
+                          onChange: (value) async{
+                            setState(() {
+                              createTasRequestModel.projectName = value.name;
+                              createTasRequestModel.projectId = value.projectId;
+
+                              if(value.name != null){
+
+                                createTasRequestModel.assignInName = null;
+
+
+                              }
+
+
+                            });
+
+                            final taskProvider = context.read<TaskProvider>();
+
+                            if(value.projectId != null){
+                              // await taskProvider.resetData();
+                              // await taskProvider.assignList(value.projectId);
+                            }
+
+
+                          },
                         );
                       },
                     ));
-                  });
+
                 },
               ),
               SizedBox(height: 10.sp),
+
               CustomTextField(
                 name: "Title",
                 hint: "Title",
                 controller: titleController,
               ),
+
               SizedBox(height: 10.sp),
           
               Row(
@@ -124,27 +153,44 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
               SizedBox(height: 10.sp),
           
               CustomDropDownWidget(
+                selectedItem: createTasRequestModel.assignInName,
                 name: "Assign to",
                 onTap: () async{
-
-
-
-                  setState(() {
+                  if(createTasRequestModel.projectName != null){
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
-                          name: "Project Name",
+                          projectId: createTasRequestModel.projectId,
+                          createTaskEnum: CreateTaskEnum.ASSIGN,
+                          name: "Assign To",
+                          onChange: (value) {
+                            setState(() {
+                              createTasRequestModel.assignInName = value.name;
+                            });
+                          },
                         );
                       },
                     ));
-                  });
+                  }
                 },
               ),
           
               CustomDropDownWidget(
                 name: "Status",
-                onTap: () {
-          
+                onTap: () async{
+                  setState(() {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return CustomSearchViewPage(
+                        createTaskEnum: CreateTaskEnum.STATUS,
+                        name: "Status",
+                        onChange: (value) {
+                          setState(() {
+                            status = value.name;
+                          });
+                        },
+                      );
+                    },));
+                  });
                 },
               ),
           

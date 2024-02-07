@@ -7,6 +7,7 @@ class GetProjectAndAssignUserRequestModel {
   DateTime? endDate;
   String? technologies;
   String? searchText;
+  int? projectId;
 
   GetProjectAndAssignUserRequestModel({
     this.projectName,
@@ -15,6 +16,7 @@ class GetProjectAndAssignUserRequestModel {
     this.endDate,
     this.technologies,
     this.searchText,
+    this.projectId
   });
 
   factory GetProjectAndAssignUserRequestModel.fromRawJson(String str) => GetProjectAndAssignUserRequestModel.fromJson(json.decode(str));
