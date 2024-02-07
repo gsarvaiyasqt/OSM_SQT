@@ -36,7 +36,9 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
       padding: EdgeInsets.symmetric(horizontal: 20.sp),
       child: Column(
         children: [
-          CustomSearchBar(),
+          CustomSearchBar(
+
+          ),
           Expanded(
             child: ListView.separated(
                 itemCount: filterListData.length,

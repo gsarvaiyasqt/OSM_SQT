@@ -7,6 +7,7 @@ import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/get_status_count.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
+import '../domain/request/search_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
@@ -42,6 +43,12 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   AppResponse<GetProjectAndAssignUserResponseModel> get getProjectAndUserResponse => _getProjectAndUserResponse;
 
   int? todayCount,comp,leave;
+
+
+  List<SearchModel> projectUserList = [];
+
+  List<SearchModel> list = [];
+
 
 
 
@@ -193,6 +200,18 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
           }else{
 
+            final projectUser = response?.data?.projectUser;
+
+            if(projectUser != null){
+
+
+              for (var element in projectUser) {
+
+                projectUserList.add(SearchModel(name: element.displayName));
+
+              }
+            }
+
            resIsSuccess(_getProjectAndUserResponse,response);
 
           }
@@ -206,6 +225,29 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
         }
 
+
+  }
+
+  Future updateSearchList(List<ProjectList>? projectList)async{
+
+    if(projectList != null){
+
+      for (var element in projectList) {
+
+        list.add(SearchModel(name: element.projectName));
+
+      }
+
+
+    }
+    notifyListeners();
+
+  }
+
+  Future resetData()async{
+
+    list = [];
+    notifyListeners();
 
   }
 

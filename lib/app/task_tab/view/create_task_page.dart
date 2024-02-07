@@ -35,7 +35,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
 
  List<CreateSubPoint> createSubPoint = [];
 
- List<SearchModel> projectList = [];
+
 
 
  @override
@@ -46,23 +46,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
       final taskProvider = context.read<TaskProvider>();
      await taskProvider.getProjectAndAssignUser(getProjectAndAssignUserRequestModel: GetProjectAndAssignUserRequestModel());
-      final projectList = taskProvider.getProjectAndUserResponse.data?.data?.projectList;
-      if(projectList != null){
-
-        for (var element in projectList) {
-
-          this.projectList.add(SearchModel(name: element.projectName));
-
-        }
-
-      }
-
-
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final taskProvider = context.watch<TaskProvider>();
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar: AppBar(
@@ -82,8 +71,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
+                          createTaskEnum: CreateTaskEnum.PROJECT,
                           name: "Project Name",
-                          list: projectList,
                         );
                       },
                     ));

@@ -107,6 +107,13 @@ enum GetTermType {
 
 }
 
+enum CreateTaskEnum{
+
+  PROJECT,ASSIGN,STATUS,PRIORITY
+
+
+}
+
 
 
 
