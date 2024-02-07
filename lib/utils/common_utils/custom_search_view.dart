@@ -32,23 +32,26 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
   @override
   Widget build(BuildContext context) {
     print('getContactDataRes  list data ${filterListData}');
-    return Column(
-      children: [
-        CustomSearchBar(),
-        Expanded(
-          child: ListView.separated(
-              itemCount: filterListData.length,
-              separatorBuilder: (context, index) =>  Divider(height: 1.sp,color: KLightGrayColor.withOpacity(0.2),endIndent: 20.sp,indent: 20.sp),
-              itemBuilder: (context, index) {
-                selected = index;
-                return InkWell(
-                    onTap: () {
-                      widget.selectedItem?.call(filterListData[index]);
-                    },
-                    child: widget.itemDataBuilder?.call(context,filterListData[index],index));
-              }),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.sp),
+      child: Column(
+        children: [
+          CustomSearchBar(),
+          Expanded(
+            child: ListView.separated(
+                itemCount: filterListData.length,
+                separatorBuilder: (context, index) =>  Divider(height: 1.sp,color: KLightGrayColor.withOpacity(0.2),endIndent: 20.sp,indent: 20.sp),
+                itemBuilder: (context, index) {
+                  selected = index;
+                  return InkWell(
+                      onTap: () {
+                        widget.selectedItem?.call(filterListData[index]);
+                      },
+                      child: widget.itemDataBuilder?.call(context,filterListData[index],index));
+                }),
+          ),
+        ],
+      ),
     );
   }
 }
