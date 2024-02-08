@@ -111,8 +111,83 @@ enum CreateTaskEnum{
 
   PROJECT,ASSIGN,STATUS,PRIORITY
 
+}
+
+enum PriorityType {
+  normalType(value: "Normal"),
+  highType(value: "High"),
+  lowType(value: "Low");
+
+
+  const PriorityType({required this.value});
+
+  final String value;
+
+  static PriorityType? fromStr ({required String? str}){
+    try {
+      return PriorityType.values.firstWhere((element) => element.value == str);
+    } catch (e) {
+      return null;
+    }
+  }
 
 }
+
+
+Widget? priorityFunc({String? priority}){
+  print("priority ${priority}");
+  switch(priority){
+
+    case "Normal":
+      return ImageUtil.iconImageClass.normalIcon;
+
+    case "Highest":
+      return ImageUtil.iconImageClass.doubleArrow;
+
+    case "High":
+      return ImageUtil.iconImageClass.doubleArrow;
+
+    case "Low":
+      return ImageUtil.iconImageClass.downIcon;
+  }
+
+  return SizedBox.shrink();
+}
+
+
+formattedTime({required int timeInSecond}) {
+  int sec = timeInSecond % 60;
+  int min = (timeInSecond / 60).floor();
+  String minute = min.toString().length <= 1 ? "0$min" : "$min";
+  String second = sec.toString().length <= 1 ? "0$sec" : "$sec";
+  return "$minute:$second";
+}
+
+
+Widget? statusFunc({String? status}){
+  print("priority ${status}");
+  switch(status){
+
+    case "In Process":
+      return ImageUtil.iconImageClass.blueClockIcon;
+
+    case "Not Started":
+      return ImageUtil.iconImageClass.onHoldIcon;
+
+    case "Closed":
+      return ImageUtil.iconImageClass.verifiedIcon;
+
+    case "On Hold":
+      return ImageUtil.iconImageClass.onHoldIcon;
+  }
+
+  return SizedBox.shrink();
+}
+
+
+
+
+
 
 
 

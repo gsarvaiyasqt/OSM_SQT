@@ -32,8 +32,6 @@ class OmsApp extends StatelessWidget {
                   title: 'OSM',
                   routes: Routes().routes,
                   initialRoute: LendingRoute.route,
-                  // theme: appTheme(context),
-                  // home: LoginScreen(),
                   builder: (context, child) {
                     final data = MediaQuery.of(context);
                     return MediaQuery(
