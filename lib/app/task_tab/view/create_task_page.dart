@@ -80,7 +80,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               createTaskReqModel.name = value.name;
                               createTaskReqModel.projectID = value.projectId;
                               if(value.name != null){
-                                createTaskReqModel.assignInName = null;
+
+                                createTasRequestModel.assignInName = null;
                               }
                             });
                             },

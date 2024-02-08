@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 import 'package:osm_flutter/base/base.dart';
+import 'package:osm_flutter/utils/utils.dart';
 
 import '../../../utils/utils.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
@@ -148,6 +149,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
           Map<DateTime?,List<TaskList>> recentTaskMapData  =  groupItemsByCategory(list);
 
+
           listData = [];
 
           recentTaskMapData.forEach((key, value) {
@@ -170,16 +172,25 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
             }
 
+            final taskValueList = value;
+
+            for(int i = 0; i < taskValueList.length; i ++){
+
+              final hourConvert = formattedTime(timeInSecond: taskValueList[i].totalTimeInMinites ?? 0);
+
+              print("$hourConvert ===  check this hourConvert");
+
+              // final total = hourConvert.fold(0, (sum, item) => sum + item.amount);
+
+              // print("$total ===  check this total check this");
+
+            }
+
             listData.add(CreateTaskListModel(date: isDate,testList: value));
 
           });
 
-
-
         }
-
-
-
 
 
         resIsSuccess(_resentTaskResponse,response);

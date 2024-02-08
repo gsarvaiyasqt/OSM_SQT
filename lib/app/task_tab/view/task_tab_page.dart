@@ -19,6 +19,9 @@ class _TaskTabPageState extends State<TaskTabPage> {
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
     final listData = taskProvider.listData;
+
+
+
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar:  CustomAppbar(
@@ -86,8 +89,12 @@ class _TaskTabPageState extends State<TaskTabPage> {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: listData.length,
                 itemBuilder: (context, index) {
+
                   final taskData = listData[index];
-                  // CreateTaskListModel.dummyTaskList[index];
+
+
+
+
                   return CustomTaskComponent(
                     taskData: taskData,
                   );
