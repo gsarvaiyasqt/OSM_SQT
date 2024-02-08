@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
 import 'package:osm_flutter/base/view/base_components/custom_image_view.dart';
-
 import '../../../utils/utils.dart';
 
 class CustomTaskComponent extends StatefulWidget {
@@ -14,8 +13,11 @@ class CustomTaskComponent extends StatefulWidget {
 }
 
 class _CustomTaskComponentState extends State<CustomTaskComponent> {
+
+
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: EdgeInsets.only(bottom: 10.sp),
 
@@ -52,6 +54,9 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                   itemCount: widget.taskData?.testList?.length ?? 0,
                   itemBuilder: (context, dataIndex) {
                     final data = widget.taskData?.testList?[dataIndex];
+
+                    final hourTime = formattedTime(timeInSecond: data?.totalTimeInMinites ?? 0);
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -60,18 +65,24 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
 
-                            SizedBox(
-                                height: 40.sp,
-                                width: 40.sp,
-                                child: CustomImageView(uri: data?.projectLogo,fit: BoxFit.cover,)),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100.sp),
+                              child: SizedBox(
+                                  height: 40.sp,
+                                  width: 40.sp,
+                                  child: CustomImageView(uri: data?.projectLogo,fit: BoxFit.cover,)
+                              ),
+                            ),
+                            
                             SizedBox(
                               width: 9.sp,
                             ),
+
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+
                                   Text(
                                     data?.projectName ?? "",
                                     style: CustomTextStyle
@@ -80,6 +91,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                         color: kPrimaryColor
                                             .withOpacity(0.50)),
                                   ),
+
                                   Text(
                                     data?.title ?? "",
                                     style: CustomTextStyle
@@ -93,7 +105,8 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                       SizedBox(
                                           height: 24.sp,
-                                          child: ImageUtil.dummy.profileImage),
+                                          child: ImageUtil.dummy.profileImage
+                                      ),
 
                                       SizedBox(width: 9.sp,),
 
@@ -102,19 +115,19 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                       SizedBox(
                                         height: 16.sp,
-                                        child: data?.priority == "Normal" ? ImageUtil.iconImageClass.normalIcon : ImageUtil.iconImageClass.doubleArrow,
+                                        child: priorityFunc(priority: data?.priority)
                                       ),
 
                                       SizedBox(width: 10.sp,),
 
-                                      Text(data?.totalTimeInMinites.toString() ?? "",style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+                                      Text(hourTime == 0 ? "-" :  hourTime,style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
 
                                       SizedBox(width: 10.sp,),
 
                                       SizedBox(
                                         height: 18.sp,
                                         width: 18.sp,
-                                        child:dataIndex.isEven ?  ImageUtil.iconImageClass.blueClockIcon : ImageUtil.iconImageClass.verifiedIcon,
+                                        child: statusFunc(status: data?.status),
                                       )
                                     ],
                                   ),
@@ -193,9 +206,11 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                               SizedBox(width: 5.sp,),
 
-                                              Text(DateFormat.yMd().format(data?.startDate ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+                                              Text(DateFormat.yMMMd().format(data?.startDate ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
                                             ],
                                           ),
+
+                                          Container(width: 1.sp,height: 20.sp,color: kPrimaryColor.withOpacity(0.80),),
 
                                           Row(
                                             children: [
@@ -236,7 +251,8 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                         ),
                       ],
                     );
-                  },),
+                  },
+                ),
               ],
             ),
           ),
@@ -244,5 +260,16 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
         ],
       ),
     );
+  }
+
+  formattedTime({required int timeInSecond}) {
+    int sec = timeInSecond % 60;
+    int min = (timeInSecond / 60).floor();
+    String minute = min.toString().length <= 1 ? "0$min" : "$min";
+    String second = sec.toString().length <= 1 ? "0$sec" : "$sec";
+
+    return "$minute:$second hrs";
+
+
   }
 }

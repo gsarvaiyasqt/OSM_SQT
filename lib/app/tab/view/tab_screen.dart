@@ -1,15 +1,12 @@
+import '../domain/menu_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:osm_flutter/utils/utils.dart';
+import '../../task_tab/view/task_tab_page.dart';
+import '../../setting_tab/view/setting_tab_page.dart';
 import 'package:osm_flutter/app/home_tab/view/home_tab_page.dart';
 import 'package:osm_flutter/app/project_tab/view/project_tab_page.dart';
 import 'package:osm_flutter/app/tab/view_model/tab_bar_provider.dart';
-import 'package:osm_flutter/utils/common_utils/custom_appbar.dart';
-import 'package:osm_flutter/utils/utils.dart';
-import 'package:provider/provider.dart';
-
-import '../../setting_tab/view/setting_tab_page.dart';
-import '../../task_tab/view/task_tab_page.dart';
-import '../domain/menu_list.dart';
 class TabScreen extends StatefulWidget {
   const TabScreen({Key? key}) : super(key: key);
 

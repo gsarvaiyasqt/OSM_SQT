@@ -85,7 +85,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
 
                                 createTasRequestModel.assignInName = null;
 
-
                               }
 
 
