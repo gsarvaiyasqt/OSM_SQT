@@ -186,6 +186,27 @@ Widget? statusFunc({String? status}){
 
 
 
+enum GetStatusAndPriorityType {
+  TaskStatus,TaskPriority
+}
+
+extension GetStatusAndPriorityTypeExt on GetStatusAndPriorityType{
+
+  String? get str {
+    switch(this){
+      case GetStatusAndPriorityType.TaskStatus:
+      return "TaskStatus";
+      case GetStatusAndPriorityType.TaskPriority:
+       return "TaskPriority";
+    }
+
+
+    return "";
+
+}
+
+}
+
 
 
 
