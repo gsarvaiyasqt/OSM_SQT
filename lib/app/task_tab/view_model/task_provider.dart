@@ -5,11 +5,13 @@ import 'package:osm_flutter/base/base.dart';
 
 import '../../../utils/utils.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
+import '../domain/request/create_task_req_model.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/get_status_count.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/request/search_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
+import '../domain/respones/get_create_task_response.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
@@ -20,6 +22,7 @@ abstract class ITaskProvider {
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel});
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
   Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
+  Future getCreateTaskData();
 
 }
 
@@ -34,6 +37,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _resentTaskResponse = AppResponse.loading("");
     _getProjectAndUserResponse = AppResponse.loading("");
     _getGerStatusAndPriorityResponse = AppResponse.loading("");
+    _getGetCreateTaskResponse = AppResponse();
   }
 
   late AppResponse<GetStatusCountResponseModel> _getStatusCountResponse;
@@ -50,12 +54,25 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   late AppResponse<GerStatusAndPriorityResponseModel> _getGerStatusAndPriorityResponse;
   AppResponse<GerStatusAndPriorityResponseModel> get getGerStatusAndPriorityResponse => _getGerStatusAndPriorityResponse;
 
+
+  late AppResponse<GetCreateTaskResponseModel> _getGetCreateTaskResponse;
+  AppResponse<GetCreateTaskResponseModel> get getGetCreateTaskResponse => _getGetCreateTaskResponse;
+
   int? todayCount,comp,leave;
+
+
 
 
   List<SearchModel> list = [];
 
   List<CreateTaskListModel> listData = [];
+
+  CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
+    multipleAssignUser: [],
+    userList: [],
+    userTaskSubPointList: [],
+    docList: []
+  );
 
 
   @override
@@ -206,7 +223,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
               response?.data?.projectUser?.where((wElement) => wElement.projectId == getProjectAndAssignUserRequestModel?.projectId).forEach((element) {
 
-                list.add(SearchModel(name: element.displayName,projectId: element.projectId));
+                list.add(SearchModel(name: element.displayName,projectId: element.userId));
 
               }
 
@@ -229,18 +246,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
         }
 
 
-  }
-  
-
-  Future updateProjectAssignList(List<ProjectUser>? assignList) async {
-    
-    if(assignList != null){
-      for(var element in assignList){
-        list.add(SearchModel(name: element.displayName));
-      }
-      
-    }
-    notifyListeners();
   }
   
 
@@ -270,10 +275,11 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   @override
   Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType}) async{
 
-    resIsLoading(_getGerStatusAndPriorityResponse);
+
 
     try {
 
+      resIsLoading(_getGerStatusAndPriorityResponse);
 
       final response = await taskRepository?.getStatusAndPriorityTerm(getStatusAndPriorityType: getStatusAndPriorityType);
 
@@ -303,6 +309,71 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
 
 
+
+
+
+  }
+
+  @override
+  Future getCreateTaskData() async{
+
+
+
+    if(createTaskReqModel.name == null && createTaskReqModel.projectID == null){
+
+      throw "Please select project name";
+
+    }
+    if(createTaskReqModel.title == null){
+
+      throw "Please write a title";
+
+    }
+    if(createTaskReqModel.priority == null){
+
+      throw "Please select priority";
+
+    }
+    if(createTaskReqModel.status == null){
+
+      throw "Please select status";
+
+    }
+
+    try {
+
+
+      resIsLoading(_getGetCreateTaskResponse);
+
+
+      final response = await taskRepository?.getCreateTaskData(createTasRequestModel: createTaskReqModel);
+
+
+      if(response?.statusCode != 1){
+
+       throw response?.message ?? "";
+
+      }else{
+
+        createTaskReqModel = CreateTaskReqModel(
+            multipleAssignUser: [],
+          docList: [],
+          userTaskSubPointList: [],
+          userList: [],
+        );
+        resIsSuccess(_getGetCreateTaskResponse,response);
+
+      }
+
+
+    } catch (e) {
+
+      resIsFailed(_getGetCreateTaskResponse, e);
+      rethrow;
+
+
+
+    }
 
 
 

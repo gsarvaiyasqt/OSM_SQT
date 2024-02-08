@@ -87,7 +87,7 @@ class _TaskTabPageState extends State<TaskTabPage> {
                 itemCount: listData.length,
                 itemBuilder: (context, index) {
                   final taskData = listData[index];
-                  CreateTaskListModel.dummyTaskList[index];
+                  // CreateTaskListModel.dummyTaskList[index];
                   return CustomTaskComponent(
                     taskData: taskData,
                   );

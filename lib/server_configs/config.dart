@@ -21,6 +21,7 @@ class ServerConfig{
   static String get getstatuswisecount => "$baseUrl/task/getstatuswisecount";
   static String get getlistwithtimedata => "$baseUrl/task/getlistwithtimedata";
   static String get projectTermGetList => "$baseUrl/projectterm/getlist";
+  static String get createTask => "$baseUrl/task/save";
   static String get forgotpassword => "$baseUrl/user/forgotpassword";
   static String get updatePasswordUrl => "$baseUrl/user/forgotpassword";
   static String get projectGetList => "$baseUrl/project/getlist";

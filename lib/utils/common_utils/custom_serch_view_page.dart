@@ -13,18 +13,15 @@ class CustomSearchViewPage extends StatefulWidget {
   final String? name;
   final int? projectId;
   final ValueChanged<SearchModel>? onChange;
+  final ValueChanged<List<SearchModel>>? onMultipleSelectedChange;
   final CreateTaskEnum? createTaskEnum;
-  const CustomSearchViewPage({Key? key, this.name, this.onChange, this.createTaskEnum, this.projectId}) : super(key: key);
+  const CustomSearchViewPage({Key? key, this.name, this.onChange, this.createTaskEnum, this.projectId, this.onMultipleSelectedChange}) : super(key: key);
 
   @override
   State<CustomSearchViewPage> createState() => _CustomSearchViewPageState();
 }
 
 class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
-
-
-
-  List<SearchModel> searchList = [];
 
   @override
   void initState() {
@@ -41,6 +38,8 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
+    final isLoading = taskProvider.getProjectAndUserResponse.state == Status.LOADING;
+    final isStatusAndPriorityLoading = taskProvider.getGerStatusAndPriorityResponse.state == Status.LOADING;
     return Scaffold(
         backgroundColor: kSecondaryBackgroundColor,
         appBar: AppBar(
@@ -53,7 +52,11 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
               child: const Icon(Icons.arrow_back)),
           title: Text(widget.name ?? "",style: CustomTextStyle.boldFont22Style),
         ),
-        body: RefreshIndicator(
+        body: (isLoading || isStatusAndPriorityLoading)? Center(
+          child: CircularProgressIndicator(
+            color: kSecondaryColor,
+          ),
+        ) :RefreshIndicator(
           onRefresh: ()async {
              await context.read<TaskProvider>().resetData();
              await searchRefresh(widget.createTaskEnum, context,widget.projectId);
@@ -65,16 +68,29 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
 
             },
             child: CustomSearchViewDemo(
+              createTaskEnum: widget.createTaskEnum,
               onTap: () {},
                list: taskProvider.list,
-              itemDataBuilder: (context, data, index) {
-                return Padding(
-                  padding: EdgeInsets.all(20.sp),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("${data.name}" ?? "",style: CustomTextStyle.regularFont18Style),
-                    ],
+
+              onMultiSelectionChange: (p0) async{
+                setState(() {
+                  widget.onMultipleSelectedChange!(p0);
+                });
+                await context.read<TaskProvider>().resetData();
+
+              },
+
+              itemDataBuilder: (context, data, index,isSelected) {
+                return Container(
+                  color: isSelected == true ? kWhiteColor : Colors.transparent,
+                  child: Padding(
+                    padding: EdgeInsets.all(20.sp),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${data.name}" ?? "",style: CustomTextStyle.regularFont18Style),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -87,6 +103,7 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
                 }
 
               },
+
               selectedItem: (p0) async{
                 await context.read<TaskProvider>().resetData();
                 widget.onChange!(p0);
