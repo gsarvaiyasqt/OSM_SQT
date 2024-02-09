@@ -140,7 +140,7 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
                     color: Color(0xffF2F2F2),
                     borderRadius: BorderRadius.circular(6.sp)
                 ),
-                child: Text(widget.projectData?.status ?? "",style: CustomTextStyle.redBoldFont14Style,),
+                child: statusProject(projectStatus: widget.projectData?.status ?? ""),
               ),
 
               SizedBox(width: 10.sp,),
