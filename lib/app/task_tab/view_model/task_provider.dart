@@ -49,9 +49,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   List<SearchModel> list = [];
 
-
-
-
   List<CreateTaskListModel> listData = [];
 
 
@@ -151,17 +148,10 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
             }
 
             listData.add(CreateTaskListModel(date: isDate,testList: value));
+            notifyListeners();
 
           });
-
-
-
         }
-
-
-
-
-
         resIsSuccess(_resentTaskResponse,response);
 
       }
@@ -214,12 +204,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
             }
 
-
            resIsSuccess(_getProjectAndUserResponse,response);
 
           }
-
-
 
         } catch (e) {
 
@@ -257,8 +244,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     notifyListeners();
 
   }
-
-
 
   Future resetData()async{
 

@@ -120,7 +120,7 @@ class ProjectUser {
   int? projectId;
   int? projectUserId;
   int? userId;
-
+  String? technologies;
   int? isManager;
   int? isTeamLead;
   int? projectRoleId;
@@ -131,6 +131,7 @@ class ProjectUser {
   ProjectUser({
     this.projectId,
     this.projectUserId,
+    this.technologies,
     this.userId,
     this.isManager,
     this.isTeamLead,
@@ -149,6 +150,7 @@ class ProjectUser {
     projectUserId: json["ProjectUserID"],
     userId: json["UserID"],
     isManager: json["IsManager"],
+    technologies: json["Technologies"],
     isTeamLead: json["IsTeamLead"],
     projectRoleId: json["ProjectRoleID"],
     displayName: json["DisplayName"],

@@ -37,6 +37,7 @@ class BackgroundImage {
 
 class IconImageClass{
   Widget get settingsIcon => const CustomSvgPictures.asset("$iconPath/setting.svg",fit: BoxFit.cover,);
+  Widget get listIcon => const CustomSvgPictures.asset("$iconPath/list.svg",fit: BoxFit.cover,);
   Widget get normalIcon => const CustomSvgPictures.asset("$iconPath/normal.svg",fit: BoxFit.cover,);
   Widget get messageIcon => const CustomSvgPictures.asset("$iconPath/message.svg",fit: BoxFit.cover,);
   Widget get timeQuarterIcon => const CustomSvgPictures.asset("$iconPath/time_quarter.svg",fit: BoxFit.cover,);
