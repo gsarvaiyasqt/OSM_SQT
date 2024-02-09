@@ -29,11 +29,12 @@ class _HomeTabPageState extends State<HomeTabPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
       final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
       final taskProvider = context.read<TaskProvider>();
+
       await taskProvider.getTaskCount(getStatusCountRequestModel: GetStatusCountRequestModel());
+
       await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
         endDate: DateTime.now(),
         startDate: startDate
-
       ));
 
     });
@@ -46,7 +47,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
     final taskProvider = context.watch<TaskProvider>();
     final isLoading = taskProvider.getStatusCountResponse.state == Status.LOADING;
     final resentListData =  taskProvider.listData;
-
 
     for (var element in resentListData) {
 
@@ -91,7 +91,9 @@ class _HomeTabPageState extends State<HomeTabPage> {
           child: Column(
             children: [
               CustomSearchBar(),
+
               SizedBox(height: 15.sp),
+
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -105,24 +107,28 @@ class _HomeTabPageState extends State<HomeTabPage> {
                       ),
                       child: Column(
                         children: [
+
                           Align(
                             alignment: Alignment.centerRight,
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 15.sp,horizontal: 18.sp),
                               decoration: BoxDecoration(
                                 color: kBlueColor,
-                                borderRadius: BorderRadius.all(Radius.circular(100.sp)),
+                                shape: BoxShape.circle
                               ),
                               child: Text("0${taskProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style),
                             ),
                           ),
-                          SizedBox(height: 39.sp),
+
+                          SizedBox(height: 54.sp),
+
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text("Today’s",style: CustomTextStyle.mediumFont14Style),
+
                                 Text("Task",style: CustomTextStyle.boldFont14Style.copyWith(
                                     fontSize: 24.sp
                                 )),
@@ -133,12 +139,14 @@ class _HomeTabPageState extends State<HomeTabPage> {
                       ),
                     ),
                   ),
+
                   SizedBox(width: 10.sp),
+
                   Expanded(
                     child: Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.all(14.sp),
+                          padding: EdgeInsets.symmetric(horizontal: 14.sp,vertical: 22.5.sp),
                           decoration: BoxDecoration(
                             color: kSecondaryColor.withOpacity(0.10),
                             borderRadius: BorderRadius.circular(5),
@@ -151,11 +159,17 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                 padding: EdgeInsets.symmetric(vertical: 9.sp,horizontal: 11.sp),
                                 decoration: BoxDecoration(
                                   color: kSecondaryColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(100.sp)),
+                                    shape: BoxShape.circle
                                 ),
-                                child: Text("0${taskProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style),
+                                child: Text("0${taskProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
                               ),
+
+                              SizedBox(
+                                width: 15.sp,
+                              ),
+
                               Expanded(child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Completed",style: CustomTextStyle.mediumFont14Style),
                                   Text("Task",style: CustomTextStyle.boldFont14Style.copyWith(
@@ -166,13 +180,14 @@ class _HomeTabPageState extends State<HomeTabPage> {
                             ],
                           ),
                         ),
+
                         SizedBox(height: 10.sp),
+
                         Container(
-                          padding: EdgeInsets.all(14.sp),
+                          padding: EdgeInsets.symmetric(horizontal: 14.sp,vertical: 22.5.sp),
                           decoration: BoxDecoration(
                             color: kYellowColor.withOpacity(0.10),
                             borderRadius: BorderRadius.circular(5),
-
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -181,12 +196,13 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                 padding: EdgeInsets.symmetric(vertical: 9.sp,horizontal: 11.sp),
                                 decoration: BoxDecoration(
                                   color: kYellowColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(100.sp)),
+                                  shape: BoxShape.circle
                                 ),
-                                child: Text("0${taskProvider.leave ?? 0}",style: CustomTextStyle.whiteBoldFont32Style),
+                                child: Text("0${taskProvider.leave ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
                               ),
-                              SizedBox(width: 5.sp),
+                              SizedBox(width: 15.sp),
                               Expanded(child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Leave",style: CustomTextStyle.mediumFont14Style),
                                   Text("Request",style: CustomTextStyle.boldFont14Style.copyWith(
@@ -200,12 +216,11 @@ class _HomeTabPageState extends State<HomeTabPage> {
                       ],
                     ),
                   )
-
-
                 ],
               ),
 
               SizedBox(height: 10.sp),
+
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

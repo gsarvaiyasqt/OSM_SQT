@@ -42,6 +42,7 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
             children: [
               ListView.separated(
                 separatorBuilder: (context, index) {
+
                   return Divider(
                     color: kPrimaryColor.withOpacity(0.10),
                   );
@@ -50,21 +51,28 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                 shrinkWrap: true,
                 itemCount: widget.taskData?.testList?.length ?? 0,
                 itemBuilder: (context, dataIndex) {
+
                   final data = widget.taskData?.testList?[dataIndex];
+
+                  final hourTime = formattedTime(timeInSecond: data?.totalTimeInMinites ?? 0);
                   return Column(
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
-                              height: 40.sp,
-                              width: 40.sp,
-                              child: CustomImageView(
-                                uri: data?.projectLogo ?? "",fit: BoxFit.cover,
-                              )),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: SizedBox(
+                                height: 40.sp,
+                                width: 40.sp,
+                                child: CustomImageView(
+                                  uri: data?.projectLogo ?? "",fit: BoxFit.cover,
+                                )),
+                          ),
                           SizedBox(
                             width: 9.sp,
                           ),
+
                           Expanded(
                             child: Column(
                               crossAxisAlignment:
@@ -86,23 +94,34 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                               ],
                             ),
                           ),
+
                           SizedBox(
                               height: 16.sp,
-                              child: ImageUtil
-                                  .iconImageClass.doubleArrow),
+                              child: priorityFunc(priority: data?.priority)
+                          ),
+
+
                           SizedBox(
                             width: 10.sp,
                           ),
+
                           // Time Working
-                          Text(DateFormat("hh:mm").format(DateTime.now()) ?? "",
+                          Text("${hourTime} hrs",
                               style: CustomTextStyle
                                   .regularFont14Style
                                   .copyWith(
-                                  color: kPrimaryColor
-                                      .withOpacity(0.50))),
+                                  color: kPrimaryColor)),
+
+                          SizedBox(width: 5.sp),
+
                           SizedBox(
-                            width: 26.sp,
-                          )
+                              height: 24.sp,
+                              width: 24.sp,
+                              child: statusFunc(status: data?.status)
+                          ),
+                          // SizedBox(
+                          //   width: 26.sp,
+                          // )
                         ],
                       ),
                     ],
@@ -177,5 +196,25 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
         ],
       ),
     );
+  }
+
+  Widget? priorityFunc({String? priority}){
+    print("priority ${priority}");
+    switch(priority){
+
+      case "Normal":
+        return ImageUtil.iconImageClass.normalIcon;
+
+    case "Highest":
+      return ImageUtil.iconImageClass.doubleArrow;
+
+      case "High":
+        return ImageUtil.iconImageClass.doubleArrow;
+
+      case "Low":
+        return ImageUtil.iconImageClass.downIcon;
+    }
+
+    return SizedBox.shrink();
   }
 }
