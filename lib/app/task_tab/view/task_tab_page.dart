@@ -92,9 +92,6 @@ class _TaskTabPageState extends State<TaskTabPage> {
 
                   final taskData = listData[index];
 
-
-
-
                   return CustomTaskComponent(
                     taskData: taskData,
                   );

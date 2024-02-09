@@ -62,10 +62,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   int? todayCount,comp,leave;
 
 
-
-
-  List<SearchModel> list = [];
-
   List<CreateTaskListModel> listData = [];
 
   CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
@@ -242,12 +238,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
             }
 
-
            resIsSuccess(_getProjectAndUserResponse,response);
 
           }
-
-
 
         } catch (e) {
 
