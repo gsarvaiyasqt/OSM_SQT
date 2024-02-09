@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/utils/utils.dart';
-class CustomDropDownWidget extends StatelessWidget {
+class CustomDropDownWidget extends StatefulWidget {
   final String? name;
   final String? selectedItem;
   final GestureTapCallback? onTap;
-  const CustomDropDownWidget({Key? key, this.name, this.selectedItem, this.onTap}) : super(key: key);
+  final List<String>? multiSelection;
+  const CustomDropDownWidget({Key? key, this.name, this.selectedItem, this.onTap, this.multiSelection}) : super(key: key);
 
+  @override
+  State<CustomDropDownWidget> createState() => _CustomDropDownWidgetState();
+}
+
+class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -16,7 +22,7 @@ class CustomDropDownWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10.sp),
           child: GestureDetector(
-            onTap: onTap,
+            onTap: widget.multiSelection?.isNotEmpty == true ? null:widget.onTap,
             child: Container(
                height: 50.sp,
                alignment: Alignment.centerLeft,
@@ -29,9 +35,50 @@ class CustomDropDownWidget extends StatelessWidget {
                ),
               child: Padding(
                 padding: EdgeInsets.only(right: 10.sp,left: 20.sp),
-                child: Row(
+                child: widget.multiSelection?.isNotEmpty == true?
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(widget.multiSelection?.length ?? 0, (index) {
+                      return Stack(
+                        children: [
+
+
+                       Container(
+                         margin: EdgeInsets.symmetric(horizontal: 8.sp,vertical: 5.sp),
+                        padding: EdgeInsets.all(5.sp),
+                        decoration: BoxDecoration(
+                            color: kWhiteColor,
+                          borderRadius: BorderRadius.circular(5.sp)
+                        ),
+                       child: Text(widget.multiSelection?[index] ?? "")
+                       ),
+                          Positioned(
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  widget.multiSelection?.removeAt(index);
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                    color: kSecondaryColor,
+                                    borderRadius: BorderRadius.circular(100)
+                                ),
+                                child: Icon(Icons.close,size: 13.sp),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                ):
+                Row(
                   children: [
-                    Expanded(child: Text(selectedItem ?? "Select",style: CustomTextStyle.regularFont18Style)),
+                    Expanded(child: Text(widget.selectedItem ?? "Select",style: CustomTextStyle.regularFont18Style)),
                     SizedBox(height: 24.sp,width: 24.sp,child: ImageUtil.iconImageClass.dropdownIcon)
                   ],
                 ),
@@ -44,7 +91,7 @@ class CustomDropDownWidget extends StatelessWidget {
             left: 23.sp,
             child: Container(
                 color: kSecondaryBackgroundColor,
-                child: Text(name ?? "",style: CustomTextStyle.lightFont16BlackStyle))),
+                child: Text(widget.name ?? "",style: CustomTextStyle.lightFont16BlackStyle))),
 
       ],
     );

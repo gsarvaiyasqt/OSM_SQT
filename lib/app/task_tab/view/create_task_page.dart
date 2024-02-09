@@ -6,6 +6,7 @@ import 'package:osm_flutter/app/tab/view_model/tab_bar_provider.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/get_user_and_project_request_model.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:osm_flutter/base/base.dart';
 import 'package:osm_flutter/base/view/base_components/custom_button.dart';
 import 'package:osm_flutter/base/view/base_components/custom_text_form_filed.dart';
 import 'package:osm_flutter/utils/common_utils/custom_details_textfield.dart';
@@ -30,24 +31,14 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
 
   TextEditingController descriptionController = TextEditingController();
   TextEditingController titleController = TextEditingController();
-
-  DateTime? startDate;
-  DateTime? endDate;
   List<File>? mediaFileList = [];
-  String? selectedProjectName;
-  String? assignedName;
-  String? status;
- List<CreateSubPoint> createSubPoint = [];
 
-
-  CreateTasRequestModel createTasRequestModel = CreateTasRequestModel();
-
- @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async{
       final taskProvider = context.read<TaskProvider>();
      await taskProvider.getProjectAndAssignUser(getProjectAndAssignUserRequestModel: GetProjectAndAssignUserRequestModel());
     });
@@ -55,6 +46,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
 
   @override
   Widget build(BuildContext context) {
+   final taskProvider = context.watch<TaskProvider>();
+   final createTaskLoading = taskProvider.getGetCreateTaskResponse.state == Status.LOADING;
+   final createTaskReqModel = taskProvider.createTaskReqModel;
    return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar: AppBar(
@@ -68,37 +62,29 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
           child: Column(
             children: [
               CustomDropDownWidget(
-                selectedItem: createTasRequestModel.projectName,
+                selectedItem: createTaskReqModel.name,
                 name: "Project Name",
                 onTap: () {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
+                          onMultipleSelectedChange: (value) {
+                            setState(() {
+
+                            });
+                          },
                           createTaskEnum: CreateTaskEnum.PROJECT,
                           name: "Project Name",
                           onChange: (value) async{
                             setState(() {
-                              createTasRequestModel.projectName = value.name;
-                              createTasRequestModel.projectId = value.projectId;
-
+                              createTaskReqModel.name = value.name;
+                              createTaskReqModel.projectID = value.projectId;
                               if(value.name != null){
 
                                 createTasRequestModel.assignInName = null;
-
                               }
-
-
                             });
-
-                            final taskProvider = context.read<TaskProvider>();
-
-                            if(value.projectId != null){
-                              // await taskProvider.resetData();
-                              // await taskProvider.assignList(value.projectId);
-                            }
-
-
-                          },
+                            },
                         );
                       },
                     ));
@@ -111,6 +97,11 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 name: "Title",
                 hint: "Title",
                 controller: titleController,
+                onChanged: (value) {
+                  setState(() {
+                    createTaskReqModel.title = value;
+                  });
+                },
               ),
 
               SizedBox(height: 10.sp),
@@ -121,14 +112,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     child: CustomDatePickerWidget(
                         onSelectedDateTime: (p0) {
                           setState(() {
-                            startDate = p0;
+                            createTaskReqModel.startDate = p0;
                           });
                         },
                         shoDatePicker: false,
                         radius: 5,
-                        name: startDate != null
-                            ? DateFormat("MM/dd/yyyy")
-                                .format(startDate ?? DateTime.now())
+                        name: createTaskReqModel.startDate != null
+                            ? DateFormat("MM/dd/yyyy").format(createTaskReqModel.startDate!)
                             : "Start Date"),
                   ),
                   SizedBox(width: 5.sp),
@@ -136,14 +126,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     child: CustomDatePickerWidget(
                         onSelectedDateTime: (p0) {
                           setState(() {
-                            endDate = p0;
+                            createTaskReqModel.endDate = p0;
                           });
                         },
                         shoDatePicker: false,
                         radius: 5,
-                        name: endDate != null
-                            ? DateFormat("MM/dd/yyyy")
-                                .format(endDate ?? DateTime.now())
+                        name: createTaskReqModel.endDate != null
+                            ? DateFormat("MM/dd/yyyy").format(createTaskReqModel.endDate!)
                             : "End Date"),
                   ),
                 ],
@@ -152,20 +141,27 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
               SizedBox(height: 10.sp),
           
               CustomDropDownWidget(
-                selectedItem: createTasRequestModel.assignInName,
+                multiSelection: createTaskReqModel.multipleAssignUser,
                 name: "Assign to",
                 onTap: () async{
-                  if(createTasRequestModel.projectName != null){
+                  if(createTaskReqModel.name != null){
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
-                          projectId: createTasRequestModel.projectId,
+                          onMultipleSelectedChange: (value) {
+                            for(var i = 0; i < value.length;i++){
+                              createTaskReqModel.multipleAssignUser.add(value[i].name ?? "");
+                              createTaskReqModel.userList?.add(UserListReqModel(userId: value[i].projectId.toString()));
+                            }
+                            setState(() {});
+                            },
+                          projectId: createTaskReqModel.projectID,
                           createTaskEnum: CreateTaskEnum.ASSIGN,
                           name: "Assign To",
                           onChange: (value) {
-                            setState(() {
-                              createTasRequestModel.assignInName = value.name;
-                            });
+                            // setState(() {
+                            //   createTasRequestModel.assignInName = value.name;
+                            // });
                           },
                         );
                       },
@@ -176,6 +172,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
           
               CustomDropDownWidget(
                 name: "Status",
+                selectedItem: createTaskReqModel.status,
                 onTap: () async{
                   setState(() {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -184,7 +181,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         name: "Status",
                         onChange: (value) {
                           setState(() {
-                            status = value.name;
+                            createTaskReqModel.status = value.name;
                           });
                         },
                       );
@@ -194,9 +191,20 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
               ),
           
               CustomDropDownWidget(
+                selectedItem: createTaskReqModel.priority,
                 name: "Priority",
                 onTap: () {
-          
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return CustomSearchViewPage(
+                      createTaskEnum: CreateTaskEnum.PRIORITY,
+                      name: "Priority",
+                      onChange: (value) {
+                        setState(() {
+                          createTaskReqModel.priority = value.name;
+                        });
+                      },
+                    );
+                  },));
                 },
               ),
 
@@ -206,6 +214,11 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   controller: descriptionController,
                   hint: "Details",
                   maxLine: 5,
+                onChanged: (value) {
+                  setState(() {
+                    createTaskReqModel.details = value;
+                  });
+                },
               ),
 
 
@@ -218,11 +231,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       btnText: "Add SubPoint",
                       btnColor: kSecondaryColor,
                       onTap: () {
-
-                        var uuid = const Uuid();
-
                         setState(() {
-                          createSubPoint.add(CreateSubPoint(uuid: uuid.v1()));
+                          createTaskReqModel.userTaskSubPointList?.add(UserTaskSubPointReqModel());
                         });
                       },
                     ),
@@ -235,32 +245,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
 
               ListView.builder(
                 shrinkWrap: true,
-                itemCount: createSubPoint.length,
+                itemCount: createTaskReqModel.userTaskSubPointList?.length,
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  createSubPoint[index].index = index;
-                return Stack(
+                  return Stack(
                   children: [
-                    Positioned(
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              createSubPoint.remove(createSubPoint[index]);
-                            });
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: kBlackColor,
-                                ),
-                                borderRadius: BorderRadius.circular(100)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(1.0),
-                                child: Icon(Icons.delete,color: kBlackColor,size: 25.sp),
-                              )),
-                        )),
+
                     Padding(
                       padding:  EdgeInsets.all(10.sp),
                       child: CustomTextField(
@@ -268,12 +258,36 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         onChanged: (value) {
                           setState(() {
 
-                            createSubPoint[index].text = value;
+                            createTaskReqModel.userTaskSubPointList?[index].title = value;
 
                           });
                         },
                       ),
-                    )
+                    ),
+                    Positioned(
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+
+
+                              print("createTaskReqModel.userTaskSubPointList is Test");
+
+                              createTaskReqModel.userTaskSubPointList?.remove(createTaskReqModel.userTaskSubPointList?[index]);
+                            });
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: kBlackColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(100)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(1.0),
+                                child: Icon(Icons.delete,color: kBlackColor,size: 25.sp),
+                              )),
+                        )),
                   ],
                 );
               },),
@@ -283,7 +297,15 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 // apiImgList: imageList,
                 imageFileList: mediaFileList,
                 imageFileDataTap: (val){
-                  setState(() {});
+
+
+
+
+                   setState(() {
+
+                     createTaskReqModel.docList = val;
+
+                   });
                 },
                 deleteImageOnTap: (val)async{
                 },
@@ -296,8 +318,14 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     child: CustomButton(
                       btnText: "Create",
                       btnColor: kSecondaryColor,
-                      onTap: () {
-                        Navigator.of(context).pop();
+                      isLoading: createTaskLoading,
+                      onTap: () async{
+                        try {
+                          await context.read<TaskProvider>().getCreateTaskData();
+                          Navigator.of(context).pop();
+                        } catch (e) {
+                          Toaster.showMessage(context, msg: e.toString());
+                        }
                       },
                     ),
                   ),

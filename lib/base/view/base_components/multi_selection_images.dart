@@ -46,6 +46,8 @@ class _MultiSelectionImageState extends State<MultiSelectionImage> {
       setState(() {
         // file = File(value[0]);
         widget.imageFileList?.add(File(value[0]));
+        widget.imageFileDataTap!(widget.imageFileList ?? []);
+
       });
     };
 
@@ -63,17 +65,20 @@ class _MultiSelectionImageState extends State<MultiSelectionImage> {
 
 
 
-    // customImagePicker.onMultiSelectFile = (val) {
-    //   setState(() {
-    //
-    //     for (var element in val) {
-    //
-    //       widget.imageFileList?.add(File(element.path));
-    //
-    //       widget.imageFileDataTap!(imageFileList);
-    //     }
-    //   });
-    // };
+    customImagePicker.onMultiSelectFile = (val) {
+      setState(() {
+
+        for (var element in val) {
+
+          widget.imageFileList?.add(File(element.path));
+
+
+
+
+          widget.imageFileDataTap!(imageFileList);
+        }
+      });
+    };
   }
 
 
