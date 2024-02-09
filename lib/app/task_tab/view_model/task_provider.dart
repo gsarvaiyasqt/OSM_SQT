@@ -37,6 +37,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   int? todayCount,comp,leave;
 
+  List<SearchModel> list = [];
 
   List<SearchModel> projectUserList = [];
 
