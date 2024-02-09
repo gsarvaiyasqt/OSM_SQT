@@ -7,6 +7,8 @@ import '../../../utils/common_utils/custom_appbar.dart';
 import '../../../utils/common_utils/custom_search_bar.dart';
 import '../../../utils/utils.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
+import '../domain/request/get_recent_task_request_model.dart';
+import '../domain/request/get_status_count.dart';
 class TaskTabPage extends StatefulWidget {
   const TaskTabPage({Key? key}) : super(key: key);
 
@@ -15,6 +17,26 @@ class TaskTabPage extends StatefulWidget {
 }
 
 class _TaskTabPageState extends State<TaskTabPage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+      final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
+      final endDate = DateTime(DateTime.now().year - 3,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
+
+      final taskProvider = context.read<TaskProvider>();
+
+      await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+        endDate: DateTime.now(),
+        startDate: endDate
+      ));
+
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
@@ -89,9 +111,7 @@ class _TaskTabPageState extends State<TaskTabPage> {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: listData.length,
                 itemBuilder: (context, index) {
-
                   final taskData = listData[index];
-
                   return CustomTaskComponent(
                     taskData: taskData,
                   );

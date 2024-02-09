@@ -135,7 +135,7 @@ enum PriorityType {
 
 
 Widget? priorityFunc({String? priority}){
-  print("priority ${priority}");
+
   switch(priority){
 
     case "Normal":
@@ -165,7 +165,6 @@ formattedTime({required int timeInSecond}) {
 
 
 Widget? statusFunc({String? status}){
-  print("priority ${status}");
   switch(status){
 
     case "In Process":
