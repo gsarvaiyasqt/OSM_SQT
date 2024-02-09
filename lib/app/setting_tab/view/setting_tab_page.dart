@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:osm_flutter/app/lending/view_model/lending_provider.dart';
+import 'package:osm_flutter/app/setting_tab/component/custom_setting_component.dart';
 import 'package:osm_flutter/app/tab/domain/menu_list.dart';
 import 'package:provider/provider.dart';
 
@@ -43,64 +43,113 @@ class _SettingTabPageState extends State<SettingTabPage> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-
-          SizedBox(height: 10.sp,),
-
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 20.sp),
-            decoration: BoxDecoration(
-                color: kWhiteColor,
-                borderRadius: BorderRadius.circular(15.sp)
-            ),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: MenuItem.settingsList.length,
-              itemBuilder: (context, index) {
-                final settingsData = MenuItem.settingsList[index];
-                return InkWell(
-                  onTap: () {
-                    if(index == 1)
-                    lendingProvider.clearAppState();
-                    tabProvider.tabChangeIndex(index: 0);
-                    Navigator.popUntil(context, (route) => route.isFirst);
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.sp),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+          
+              SizedBox(height: 20.sp,),
+          
+              Text("Settings",style: CustomTextStyle.boldFont24Style,),
+          
+              SizedBox(height: 10.sp,),
+          
+              Container(
+                decoration: BoxDecoration(
+                    color: kWhiteColor,
+                    borderRadius: BorderRadius.circular(15.sp)
+                ),
+                child: ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 25.sp),
+                      height: 1.sp,
+                      width: double.infinity,
+                      color: kSecondaryColor.withOpacity(0.10),
+                    );
                   },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20.sp),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(15.sp),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                  height: 24.sp,
-                                  width: 24.sp,
-                                  child: SvgPicture.asset(settingsData.icon ?? "")),
-                  
-                              SizedBox(width: 15.sp,),
-                  
-                              Expanded(child: Text(settingsData.name ?? "")),
-                  
-                              Icon(Icons.arrow_forward_ios_sharp,size: 24.sp,)
-                            ],
-                          ),
-                        ),
-                  
-                      index == 0 ?  Container(
-                        height: 1.sp,
-                        width: double.infinity,
-                        color: kSecondaryColor.withOpacity(0.10),
-                      ) : SizedBox.shrink()
-                      ],
-                    ),
-                  ),
-                );
-              },),
-          )
-        ],
+                  shrinkWrap: true,
+                  itemCount: MenuItem.profileList.length,
+                  itemBuilder: (context, index) {
+                    final profileData = MenuItem.profileList[index];
+                    return CustomSettingComponent(
+                      name: profileData.name,
+                      icon: profileData.icon,
+                    );
+                  },),
+              ),
+          
+              SizedBox(height: 10.sp,),
+          
+              Container(
+                decoration: BoxDecoration(
+                    color: kWhiteColor,
+                    borderRadius: BorderRadius.circular(15.sp)
+                ),
+                child: ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 25.sp),
+                      height: 1.sp,
+                      width: double.infinity,
+                      color: kSecondaryColor.withOpacity(0.10),
+                    );
+                  },
+                  shrinkWrap: true,
+                  itemCount: MenuItem.privacyList.length,
+                  itemBuilder: (context, index) {
+                    final privacyData = MenuItem.privacyList[index];
+                    return CustomSettingComponent(
+                      name: privacyData.name,
+                      icon: privacyData.icon,
+                    );
+                  },),
+              ),
+          
+              SizedBox(height: 10.sp,),
+          
+              Container(
+                decoration: BoxDecoration(
+                    color: kWhiteColor,
+                    borderRadius: BorderRadius.circular(15.sp)
+                ),
+                child: ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 25.sp),
+                      height: 1.sp,
+                      width: double.infinity,
+                      color: kSecondaryColor.withOpacity(0.10),
+                    );
+                  },
+                  shrinkWrap: true,
+                  itemCount: MenuItem.settingsList.length,
+                  itemBuilder: (context, index) {
+                    final settingsData = MenuItem.settingsList[index];
+                    return GestureDetector(
+                        onTap: () {
+                          if(index == 1){
+                            lendingProvider.clearAppState();
+                            tabProvider.tabChangeIndex(index: 0);
+                            Navigator.popUntil(context, (route) => route.isFirst);
+                          }
+                        },
+                        child: CustomSettingComponent(
+                          name: settingsData.name,
+                          icon: settingsData.icon,
+                        )
+                    );
+                  },),
+              )
+          
+            ],
+          ),
+        ),
       ),
     );
   }
