@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../utils/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
 import 'package:osm_flutter/base/view/base_components/custom_image_view.dart';
-import '../../../utils/utils.dart';
 
 class CustomTaskComponent extends StatefulWidget {
   final CreateTaskListModel? taskData;
@@ -28,7 +28,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(widget.taskData?.date ?? ""),
-              Text(widget.taskData?.time ?? ""),
+              Text("${widget.taskData?.time} hrs" ?? "",style: CustomTextStyle.semiBoldFont16Style),
             ],
           ),
           SizedBox(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osm_flutter/app/home_tab/view_model/home_provider.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/get_recent_task_request_model.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/get_status_count.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
@@ -28,11 +29,12 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
       final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
-      final taskProvider = context.read<TaskProvider>();
 
-      await taskProvider.getTaskCount(getStatusCountRequestModel: GetStatusCountRequestModel());
+      final homeProvider = context.read<HomeProvider>();
 
-      await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+      await homeProvider.getTaskCount(getStatusCountRequestModel: GetStatusCountRequestModel());
+
+      await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
         endDate: DateTime.now(),
         startDate: startDate
       ));
@@ -44,22 +46,9 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    final taskProvider = context.watch<TaskProvider>();
-    final isLoading = taskProvider.getStatusCountResponse.state == Status.LOADING;
-    final resentListData =  taskProvider.listData;
-
-    for (var element in resentListData) {
-
-      element.testList?.forEach((Eelement) {
-
-
-        print("Eelement.totalTimeInMinites is ${Eelement.totalTimeInMinites}");
-
-
-      });
-
-
-    }
+    final homeProvider = context.watch<HomeProvider>();
+    final isLoading = homeProvider.getStatusCountResponse.state == Status.LOADING;
+    final resentListData =  homeProvider.listData;
 
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
@@ -85,7 +74,9 @@ class _HomeTabPageState extends State<HomeTabPage> {
           ),
         ),
       ),
-      body: isLoading ? const Center(child: CircularProgressIndicator(),) : Padding(
+      body: isLoading ?
+      const Center(child: CircularProgressIndicator(),) :
+      Padding(
         padding: EdgeInsets.only(left: 20.sp,right: 20.sp,top: 20.sp),
         child: SingleChildScrollView(
           child: Column(
@@ -112,11 +103,11 @@ class _HomeTabPageState extends State<HomeTabPage> {
                             alignment: Alignment.centerRight,
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 15.sp,horizontal: 18.sp),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: kBlueColor,
                                 shape: BoxShape.circle
                               ),
-                              child: Text("0${taskProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style),
+                              child: Text("0${homeProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style),
                             ),
                           ),
 
@@ -161,7 +152,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                   color: kSecondaryColor,
                                     shape: BoxShape.circle
                                 ),
-                                child: Text("0${taskProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
+                                child: Text("0${homeProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
                               ),
 
                               SizedBox(
@@ -198,9 +189,10 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                   color: kYellowColor,
                                   shape: BoxShape.circle
                                 ),
-                                child: Text("0${taskProvider.leave ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
+                                child: Text("0${homeProvider.leave ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
                               ),
                               SizedBox(width: 15.sp),
+
                               Expanded(child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

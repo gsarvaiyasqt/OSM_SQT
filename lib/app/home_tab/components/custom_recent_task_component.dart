@@ -31,7 +31,9 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(widget.taskData?.date ?? ""),
-              Text(widget.taskData?.time ?? ""),
+
+              Text("${widget.taskData?.time} hrs" ?? "",style: CustomTextStyle.semiBoldFont16Style),
+
             ],
           ),
           SizedBox(
@@ -59,6 +61,7 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
+
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(100),
@@ -80,19 +83,19 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                               children: [
                                 Text(
                                   data?.projectName ?? "",
-                                  style: CustomTextStyle
-                                      .regularFont14Style
-                                      .copyWith(
-                                      color: kPrimaryColor
-                                          .withOpacity(0.50)),
+                                  style: CustomTextStyle.regularFont14Style.copyWith(
+                                      color: kPrimaryColor.withOpacity(0.50)),
                                 ),
                                 Text(
                                   data?.title ?? "",
-                                  style: CustomTextStyle
-                                      .semiBoldFont16Style,
+                                  style: CustomTextStyle.semiBoldFont16Style,
                                 )
                               ],
                             ),
+                          ),
+
+                          SizedBox(
+                            width: 3.sp,
                           ),
 
                           SizedBox(
@@ -106,22 +109,16 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                           ),
 
                           // Time Working
-                          Text("${hourTime} hrs",
-                              style: CustomTextStyle
-                                  .regularFont14Style
-                                  .copyWith(
-                                  color: kPrimaryColor)),
+                          Text("$hourTime hrs",
+                              style: CustomTextStyle.regularFont14Style.copyWith(color: kPrimaryColor)),
 
-                          SizedBox(width: 5.sp),
+                          SizedBox(width: 10.sp),
 
                           SizedBox(
                               height: 24.sp,
                               width: 24.sp,
                               child: statusFunc(status: data?.status)
                           ),
-                          // SizedBox(
-                          //   width: 26.sp,
-                          // )
                         ],
                       ),
                     ],
@@ -129,77 +126,12 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                 },),
             ],
           ),
-
-          /*  Column(
-                          children: List.generate(
-                              createTaskData.list?.length ?? 0, (dataIndex) {
-                            final data = createTaskData.list?[dataIndex];
-                            return Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                        height: 40.sp,
-                                        width: 40.sp,
-                                        child: ImageUtil.dummy.profileImage),
-                                    SizedBox(
-                                      width: 9.sp,
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            data?.time ?? "",
-                                            style: CustomTextStyle
-                                                .regularFont14Style
-                                                .copyWith(
-                                                    color: kPrimaryColor
-                                                        .withOpacity(0.50)),
-                                          ),
-                                          Text(
-                                            data?.dashboardName ?? "",
-                                            style: CustomTextStyle
-                                                .semiBoldFont16Style,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height: 16.sp,
-                                        child: ImageUtil
-                                            .iconImageClass.doubleArrow),
-                                    SizedBox(
-                                      width: 10.sp,
-                                    ),
-                                    Text(data?.time ?? "",
-                                        style: CustomTextStyle
-                                            .regularFont14Style
-                                            .copyWith(
-                                                color: kPrimaryColor
-                                                    .withOpacity(0.50))),
-                                    SizedBox(
-                                      width: 26.sp,
-                                    )
-                                  ],
-                                ),
-                                createTaskData.list?.length !=
-                                        createTaskData.list!.length - 1
-                                    ? Divider()
-                                    : SizedBox.shrink()
-                              ],
-                            );
-                          }),
-                        )*/
         ],
       ),
     );
   }
 
   Widget? priorityFunc({String? priority}){
-    print("priority ${priority}");
     switch(priority){
 
       case "Normal":
