@@ -1,14 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
-import '../domain/request/search_model.dart';
 import 'package:osm_flutter/base/base.dart';
-import '../domain/request/get_status_count.dart';
-import '../../../utils/utils.dart';
-import '../../auth/domain/dummy/create_task_response.dart';
+import '../domain/request/search_model.dart';
+import 'package:osm_flutter/utils/utils.dart';
 import '../domain/request/create_task_req_model.dart';
-import '../domain/request/get_recent_task_request_model.dart';
-import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/respones/get_create_task_response.dart';
+import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
@@ -37,6 +34,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _getGetCreateTaskResponse = AppResponse();
   }
 
+  bool isLoading = false;
+
 
 
   late AppResponse<RecentTaskResponseModel> _resentTaskResponse;
@@ -45,7 +44,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   late AppResponse<GetProjectAndAssignUserResponseModel> _getProjectAndUserResponse;
   AppResponse<GetProjectAndAssignUserResponseModel> get getProjectAndUserResponse => _getProjectAndUserResponse;
 
-
   late AppResponse<GerStatusAndPriorityResponseModel> _getGerStatusAndPriorityResponse;
   AppResponse<GerStatusAndPriorityResponseModel> get getGerStatusAndPriorityResponse => _getGerStatusAndPriorityResponse;
 
@@ -53,12 +51,19 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   late AppResponse<GetCreateTaskResponseModel> _getGetCreateTaskResponse;
   AppResponse<GetCreateTaskResponseModel> get getGetCreateTaskResponse => _getGetCreateTaskResponse;
 
-  int? todayCount,comp,leave;
+  CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
+      multipleAssignUser: [],
+      userList: [],
+      userTaskSubPointList: [],
+      docList: [],
+  );
 
   List<SearchModel> list = [];
 
-  List<CreateTaskListModel> listData = [];
+  int? todayCount,comp,leave;
 
+  List<SearchModel> projectUserList = [];
+  
   bool isLoading = false;
 
   CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
@@ -69,6 +74,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     multipleTestAssignUser: []
   );
 
+  List<CreateTaskListModel> listData = [];
 
   @override
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel}) async{
@@ -149,7 +155,10 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel}) async{
 
 
-    resIsLoading(_getProjectAndUserResponse);
+
+    print("getProjectAndAssignUserRequestModel is ${getProjectAndAssignUserRequestModel?.projectId}");
+
+        resIsLoading(_getProjectAndUserResponse);
 
 
        await isUpdateLoading(isLoading: true);
@@ -171,7 +180,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
               response?.data?.projectUser?.where((wElement) => wElement.projectId == getProjectAndAssignUserRequestModel?.projectId).forEach((element) {
 
-                list.add(SearchModel(name: element.displayName,projectId: element.userId));
+                list.add(SearchModel(name: element.displayName,projectId: element.projectId));
 
               });
 
@@ -200,12 +209,16 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
               });
             }
 
+
             await isUpdateLoading(isLoading: false);
+
 
            resIsSuccess(_getProjectAndUserResponse,response);
 
 
           }
+
+
 
         } catch (e) {
           resIsFailed(_getProjectAndUserResponse, e);
@@ -215,6 +228,17 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
         }
 
 
+  }
+  
+  Future updateProjectAssignList(List<ProjectUser>? assignList) async {
+    
+    if(assignList != null){
+      for(var element in assignList){
+        list.add(SearchModel(name: element.displayName));
+      }
+      
+    }
+    notifyListeners();
   }
   
 
@@ -233,13 +257,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   }
 
-
-  Future resetData()async{
-
-    list = [];
-    notifyListeners();
-
-  }
 
   @override
   Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType}) async{
@@ -323,12 +340,12 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
       if(response?.statusCode != 1){
 
-       throw response?.message ?? "";
+        throw response?.message ?? "";
 
       }else{
 
         createTaskReqModel = CreateTaskReqModel(
-            multipleAssignUser: [],
+          multipleAssignUser: [],
           docList: [],
           userTaskSubPointList: [],
           userList: [],
@@ -360,6 +377,29 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     notifyListeners();
 
     return false;
+  }
+
+
+  Future<bool?> isUpdateLoading({bool? isLoading})async{
+
+    if (isLoading != null){
+
+      this.isLoading = isLoading;
+
+    }
+
+    notifyListeners();
+
+    return false;
+  }
+
+
+
+  Future resetData()async{
+
+    list = [];
+    notifyListeners();
+
   }
 
 }

@@ -219,14 +219,11 @@ class HomeProvider extends BaseNotifier implements IHomeProvider{
 
           Map<DateTime?,List<TaskList>> recentTaskMapData  =  groupItemsByCategory(list);
 
-
           listData = [];
 
           recentTaskMapData.forEach((key, value) {
 
-
             var isDate = "";
-
 
             if(key?.day == DateTime.now().day){
 

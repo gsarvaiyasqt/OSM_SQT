@@ -134,57 +134,6 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                   SizedBox(height: 10.sp,),
 
-
-                                  // Row(
-                                  //   children: [
-                                  //
-                                  //     SizedBox(
-                                  //       height: 18.sp,
-                                  //       width: 18.sp,
-                                  //       child: ImageUtil.iconImageClass.threeCalenderIcon,
-                                  //     ),
-                                  //
-                                  //     SizedBox(width: 10.sp,),
-                                  //
-                                  //     Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
-                                  //
-                                  //     Container(
-                                  //       margin: EdgeInsets.symmetric(horizontal: 6.sp),
-                                  //       width: 1.sp,
-                                  //       height: 14.sp,
-                                  //       color: kPrimaryColor.withOpacity(0.80),
-                                  //     ),
-                                  //
-                                  //
-                                  //     SizedBox(
-                                  //       height: 18.sp,
-                                  //       width: 18.sp,
-                                  //       child: ImageUtil.iconImageClass.timeQuarterIcon,
-                                  //     ),
-                                  //
-                                  //     SizedBox(width: 10.sp,),
-                                  //
-                                  //     Text(data?.date ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
-                                  //
-                                  //     SizedBox(width: 10.sp,),
-                                  //
-                                  //     Row(
-                                  //       children: [
-                                  //         SizedBox(
-                                  //           height: 18.sp,
-                                  //           width: 18.sp,
-                                  //           child: ImageUtil.iconImageClass.messageIcon,
-                                  //         ),
-                                  //
-                                  //         SizedBox(width: 8.sp,),
-                                  //
-                                  //         Text(data?.messageCount.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
-                                  //       ],
-                                  //     )
-                                  //
-                                  //   ],
-                                  // ),
-
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
 
