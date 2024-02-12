@@ -22,5 +22,17 @@ class MenuItem{
     MenuItem(icon: "$iconPath/logout.svg",name: "Logout"),
   ];
 
+  static List<MenuItem> profileList = [
+    MenuItem(name: "Profile",icon: "$iconPath/profile.svg"),
+    MenuItem(name: "Vault",icon: "$iconPath/vault.svg"),
+    MenuItem(name: "Document",icon: "$iconPath/document.svg")
+  ];
+
+  static List<MenuItem> privacyList = [
+    MenuItem(name: "About us",icon: "$iconPath/about_us.svg"),
+    MenuItem(name: "Privacy Policy",icon: "$iconPath/privacy_policy.svg"),
+    MenuItem(name: "Terms and Conditions",icon: "$iconPath/privacy_policy.svg")
+  ];
+
 
 }

@@ -6,8 +6,8 @@ import 'package:osm_flutter/utils/utils.dart';
 import '../domain/request/create_task_req_model.dart';
 import '../domain/respones/get_create_task_response.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
-import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
+import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
@@ -58,12 +58,21 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
       docList: [],
   );
 
+  List<SearchModel> list = [];
 
   int? todayCount,comp,leave;
 
-  List<SearchModel> list = [];
-
   List<SearchModel> projectUserList = [];
+  
+  bool isLoading = false;
+
+  CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
+    multipleAssignUser: [],
+    userList: [],
+    userTaskSubPointList: [],
+    docList: [],
+    multipleTestAssignUser: []
+  );
 
   List<CreateTaskListModel> listData = [];
 
@@ -152,6 +161,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
         resIsLoading(_getProjectAndUserResponse);
 
 
+       await isUpdateLoading(isLoading: true);
+
+
         try {
 
 
@@ -164,29 +176,53 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
           }else{
 
-
             if(getProjectAndAssignUserRequestModel?.projectId != null){
 
               response?.data?.projectUser?.where((wElement) => wElement.projectId == getProjectAndAssignUserRequestModel?.projectId).forEach((element) {
 
                 list.add(SearchModel(name: element.displayName,projectId: element.projectId));
 
+              });
+
+
+              final listData =  getProjectAndAssignUserRequestModel?.multipleUserList ??= [];
+
+              if(listData != null){
+
+                for (var element in listData) {
+
+                  final isSelected = list.map((e) => e.projectId ?? "").contains(element.projectId) == true;
+
+                }
+
+
+
+
+
               }
 
-              );
 
+              getProjectAndAssignUserRequestModel?.multipleUserList?.forEach((element) {
+
+                print("getProjectAndAssignUserRequestModel data id is ${element.projectId} and name is ${element.name}");
+
+              });
             }
 
 
+            await isUpdateLoading(isLoading: false);
+
+
            resIsSuccess(_getProjectAndUserResponse,response);
+
 
           }
 
 
 
         } catch (e) {
-
           resIsFailed(_getProjectAndUserResponse, e);
+          await isUpdateLoading(isLoading: false);
           rethrow;
 
         }
@@ -328,8 +364,19 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
     }
 
+  }
 
+  Future<bool?> isUpdateLoading({bool? isLoading})async{
 
+    if (isLoading != null){
+
+     this.isLoading = isLoading;
+
+    }
+
+    notifyListeners();
+
+    return false;
   }
 
 

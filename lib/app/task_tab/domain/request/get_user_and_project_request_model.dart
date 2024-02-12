@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
+
 class GetProjectAndAssignUserRequestModel {
   String? projectName;
   String? status;
@@ -8,7 +10,7 @@ class GetProjectAndAssignUserRequestModel {
   String? technologies;
   String? searchText;
   int? projectId;
-
+  List<SearchModel>? multipleUserList;
   GetProjectAndAssignUserRequestModel({
     this.projectName,
     this.status,
@@ -16,7 +18,8 @@ class GetProjectAndAssignUserRequestModel {
     this.endDate,
     this.technologies,
     this.searchText,
-    this.projectId
+    this.projectId,
+    this.multipleUserList
   });
 
   factory GetProjectAndAssignUserRequestModel.fromRawJson(String str) => GetProjectAndAssignUserRequestModel.fromJson(json.decode(str));

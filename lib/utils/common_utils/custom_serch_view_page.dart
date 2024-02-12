@@ -51,11 +51,7 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
               child: const Icon(Icons.arrow_back)),
           title: Text(widget.name ?? "",style: CustomTextStyle.boldFont22Style),
         ),
-        body: (isLoading || isStatusAndPriorityLoading)? Center(
-          child: CircularProgressIndicator(
-            color: kSecondaryColor,
-          ),
-        ) :RefreshIndicator(
+        body: RefreshIndicator(
           onRefresh: ()async {
              await context.read<TaskProvider>().resetData();
              await searchRefresh(widget.createTaskEnum, context,widget.projectId);
