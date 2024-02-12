@@ -41,6 +41,7 @@ class TaskUseCases extends ITaskUseCases{
   Future<RecentTaskResponseModel?> getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel}) async{
 
     final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.getlistwithtimedata,data: recentTaskRequestModel?.toJson()));
+
     return RecentTaskResponseModel.fromJson(response);
 
   }
@@ -49,6 +50,7 @@ class TaskUseCases extends ITaskUseCases{
   Future<GetProjectAndAssignUserResponseModel?> getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel}) async{
 
     final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.projectGetList,data: getProjectAndAssignUserRequestModel?.toJson()));
+
     return GetProjectAndAssignUserResponseModel.fromJson(response);
   }
 

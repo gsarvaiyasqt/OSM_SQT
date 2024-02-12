@@ -135,7 +135,7 @@ enum PriorityType {
 
 
 Widget? priorityFunc({String? priority}){
-  print("priority ${priority}");
+
   switch(priority){
 
     case "Normal":
@@ -163,9 +163,27 @@ formattedTime({required int timeInSecond}) {
   return "$minute:$second";
 }
 
+Widget? statusProject({String? projectStatus}){
+  switch(projectStatus){
+    case "In Queue":
+      return Text("In Queue",style: CustomTextStyle.boldFont14Style.copyWith(color: kRedColor),);
+
+    case "Running":
+      return Text("Running",style: CustomTextStyle.boldFont14Style.copyWith(color: kBlueColor) );
+
+    case "Stop":
+      return Text("Stop",style: CustomTextStyle.boldFont14Style.copyWith(color: kSecondaryColor));
+
+    case "OnHold":
+      return Text("OnHold",style: CustomTextStyle.boldFont14Style.copyWith(color: kYellowColor));
+
+    case "Completed":
+      return Text("Completed",style: CustomTextStyle.boldFont14Style.copyWith(color: kBlackColor));
+  }
+  return null;
+}
 
 Widget? statusFunc({String? status}){
-  print("priority ${status}");
   switch(status){
 
     case "In Process":

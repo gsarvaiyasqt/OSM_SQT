@@ -2,8 +2,9 @@ import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import '../domain/request/search_model.dart';
 import 'package:osm_flutter/base/base.dart';
-import 'package:osm_flutter/utils/utils.dart';
 import '../domain/request/get_status_count.dart';
+import '../../../utils/utils.dart';
+import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/create_task_req_model.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
@@ -16,8 +17,6 @@ import '../domain/respones/get_user_and_project_response_model.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 
 abstract class ITaskProvider {
-
-  Future getTaskCount({required GetStatusCountRequestModel? getStatusCountRequestModel});
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel});
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
   Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
@@ -32,15 +31,12 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
 
   TaskProvider({this.taskRepository}){
-    _getStatusCountResponse = AppResponse.loading("");
     _resentTaskResponse = AppResponse.loading("");
     _getProjectAndUserResponse = AppResponse.loading("");
     _getGerStatusAndPriorityResponse = AppResponse.loading("");
     _getGetCreateTaskResponse = AppResponse();
   }
 
-  late AppResponse<GetStatusCountResponseModel> _getStatusCountResponse;
-  AppResponse<GetStatusCountResponseModel> get getStatusCountResponse => _getStatusCountResponse;
 
 
   late AppResponse<RecentTaskResponseModel> _resentTaskResponse;
@@ -73,58 +69,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     multipleTestAssignUser: []
   );
 
-
-  @override
-  Future getTaskCount({required GetStatusCountRequestModel? getStatusCountRequestModel}) async{
-
-    resIsLoading(_getStatusCountResponse);
-
-    try {
-
-     final response = await taskRepository?.getCountStatusCount(getStatusCountRequestModel: getStatusCountRequestModel);
-
-     if(response?.statusCode != 1){
-
-       throw response?.message ?? "";
-
-     }else{
-
-       final leave = response?.data?.indexWhere((element) => element.status == "Leave Count");
-       final today = response?.data?.indexWhere((element) => element.status == "TodayTask");
-       final comp = response?.data?.indexWhere((element) => element.status == "Closed");
-
-      if(leave != null){
-
-        this.leave = response?.data?[leave].taskCount;
-
-      }
-
-
-       if(today != null){
-
-         todayCount = response?.data?[today].taskCount;
-
-       }
-
-       if(comp != null){
-
-         this.comp = response?.data?[comp].taskCount;
-
-       }
-
-       resIsSuccess(_getStatusCountResponse,response);
-
-     }
-
-    } catch (e) {
-
-      resIsFailed(_getStatusCountResponse, e);
-      rethrow;
-
-    }
-
-
-  }
 
   @override
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel}) async{
@@ -172,24 +116,17 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
             final taskValueList = value;
 
-            for(int i = 0; i < taskValueList.length; i ++){
+            List listVal = taskValueList.map((e) => e.totalTimeInMinites!).toList();
 
-              final hourConvert = formattedTime(timeInSecond: taskValueList[i].totalTimeInMinites ?? 0);
+            double sum = listVal.fold(0, (p, c) => p + c);
 
-              print("$hourConvert ===  check this hourConvert");
+            final hourConvert = formattedTime(timeInSecond: sum.toInt());
 
-              // final total = hourConvert.fold(0, (sum, item) => sum + item.amount);
-
-              // print("$total ===  check this total check this");
-
-            }
-
-            listData.add(CreateTaskListModel(date: isDate,testList: value));
+            listData.add(CreateTaskListModel(date: isDate,testList: value,time: hourConvert));
 
           });
 
         }
-
 
         resIsSuccess(_resentTaskResponse,response);
 
@@ -263,13 +200,12 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
               });
             }
 
-            resIsSuccess(_getProjectAndUserResponse,response);
-
             await isUpdateLoading(isLoading: false);
 
+           resIsSuccess(_getProjectAndUserResponse,response);
+
+
           }
-
-
 
         } catch (e) {
           resIsFailed(_getProjectAndUserResponse, e);

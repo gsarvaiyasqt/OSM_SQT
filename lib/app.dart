@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:osm_flutter/app/auth/route/auth_route.dart';
-import 'package:osm_flutter/app/auth/view/login_screen.dart';
-import 'package:osm_flutter/app/tab/route/tab_route.dart';
 import 'package:osm_flutter/providers.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +21,10 @@ class OmsApp extends StatelessWidget {
               providers: [
                 AppProviders.mainDashboardProvider,
                 AppProviders.authProvider,
+                AppProviders.homeProvider,
                 AppProviders.lendingProvider,
                 AppProviders.taskProvider,
+                AppProviders.projectProvider
               ],
               child: MaterialApp(
                   debugShowCheckedModeBanner: false,

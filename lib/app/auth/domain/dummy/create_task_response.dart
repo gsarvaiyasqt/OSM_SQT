@@ -3,14 +3,11 @@ import 'package:osm_flutter/utils/utils.dart';
 
 class CreateTaskListModel{
   String? date;
-  String?time;
+  String? time;
   List<TaskList>? testList;
   List<CreateTaskDataModel>? list;
 
   CreateTaskListModel({this.time,this.date,this.list,this.testList});
-
-
-
 }
 
 
