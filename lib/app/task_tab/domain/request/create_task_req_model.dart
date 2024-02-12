@@ -1,5 +1,5 @@
-import 'dart:ffi';
 import 'dart:io';
+import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
 
 
 class CreateTasRequestModel{
@@ -25,6 +25,7 @@ class CreateTaskReqModel{
   DateTime? endDate;
   int? projectID;
   List<String> multipleAssignUser = [];
+  List<SearchModel>? multipleTestAssignUser;
   List<File>? docList;
   List<UserTaskSubPointReqModel>? userTaskSubPointList;
   List<UserListReqModel>? userList;
@@ -33,6 +34,7 @@ class CreateTaskReqModel{
     this.title,this.details,this.docList,this.endDate,
     this.projectID,this.taskID,this.userList,
     this.userTaskSubPointList,this.name,
+    this.multipleTestAssignUser,
     this.assignInName,
     required this.multipleAssignUser
   });

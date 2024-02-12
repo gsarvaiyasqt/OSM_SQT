@@ -1,19 +1,20 @@
-import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
-import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
+import 'package:collection/collection.dart';
+import '../domain/request/search_model.dart';
 import 'package:osm_flutter/base/base.dart';
+import '../domain/request/get_status_count.dart';
 import '../../../utils/utils.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/create_task_req_model.dart';
 import '../domain/request/get_recent_task_request_model.dart';
-import '../domain/request/get_status_count.dart';
-import '../domain/request/get_user_and_project_request_model.dart';
-import '../domain/request/search_model.dart';
-import '../domain/respones/get_count_status_response_model.dart';
+import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/respones/get_create_task_response.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
+import '../domain/respones/get_count_status_response_model.dart';
+import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
+import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 
 abstract class ITaskProvider {
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel});
@@ -58,11 +59,14 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   List<CreateTaskListModel> listData = [];
 
+  bool isLoading = false;
+
   CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
     multipleAssignUser: [],
     userList: [],
     userTaskSubPointList: [],
-    docList: []
+    docList: [],
+    multipleTestAssignUser: []
   );
 
 
@@ -148,6 +152,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     resIsLoading(_getProjectAndUserResponse);
 
 
+       await isUpdateLoading(isLoading: true);
+
+
         try {
 
 
@@ -160,26 +167,49 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
           }else{
 
-
             if(getProjectAndAssignUserRequestModel?.projectId != null){
 
               response?.data?.projectUser?.where((wElement) => wElement.projectId == getProjectAndAssignUserRequestModel?.projectId).forEach((element) {
 
                 list.add(SearchModel(name: element.displayName,projectId: element.userId));
 
+              });
+
+
+              final listData =  getProjectAndAssignUserRequestModel?.multipleUserList ??= [];
+
+              if(listData != null){
+
+                for (var element in listData) {
+
+                  final isSelected = list.map((e) => e.projectId ?? "").contains(element.projectId) == true;
+
+                }
+
+
+
+
+
               }
 
-              );
 
+              getProjectAndAssignUserRequestModel?.multipleUserList?.forEach((element) {
+
+                print("getProjectAndAssignUserRequestModel data id is ${element.projectId} and name is ${element.name}");
+
+              });
             }
 
+            await isUpdateLoading(isLoading: false);
+
            resIsSuccess(_getProjectAndUserResponse,response);
+
 
           }
 
         } catch (e) {
-
           resIsFailed(_getProjectAndUserResponse, e);
+          await isUpdateLoading(isLoading: false);
           rethrow;
 
         }
@@ -220,6 +250,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
       resIsLoading(_getGerStatusAndPriorityResponse);
 
+      await isUpdateLoading(isLoading: true);
+
       final response = await taskRepository?.getStatusAndPriorityTerm(getStatusAndPriorityType: getStatusAndPriorityType);
 
       if(response?.statusCode != 1){
@@ -236,11 +268,12 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
         resIsSuccess(_getGerStatusAndPriorityResponse,response);
 
+        await isUpdateLoading(isLoading: false);
       }
 
 
     } catch (e) {
-
+      await isUpdateLoading(isLoading: false);
       resIsFailed(_getGerStatusAndPriorityResponse, e);
       rethrow;
 
@@ -314,8 +347,19 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
     }
 
+  }
 
+  Future<bool?> isUpdateLoading({bool? isLoading})async{
 
+    if (isLoading != null){
+
+     this.isLoading = isLoading;
+
+    }
+
+    notifyListeners();
+
+    return false;
   }
 
 }
