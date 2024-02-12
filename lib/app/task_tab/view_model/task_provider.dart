@@ -1,18 +1,23 @@
-import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
-import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
+import 'package:collection/collection.dart';
 import 'package:osm_flutter/base/base.dart';
 import '../domain/request/search_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
+import '../domain/request/create_task_req_model.dart';
+import '../domain/respones/get_create_task_response.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/get_recent_task_request_model.dart';
-import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
+import '../domain/request/get_user_and_project_request_model.dart';
+import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
+import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 
 abstract class ITaskProvider {
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel});
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
+  Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
+  Future getCreateTaskData();
 
 }
 
@@ -25,7 +30,11 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   TaskProvider({this.taskRepository}){
     _resentTaskResponse = AppResponse.loading("");
     _getProjectAndUserResponse = AppResponse.loading("");
+    _getGerStatusAndPriorityResponse = AppResponse.loading("");
+    _getGetCreateTaskResponse = AppResponse();
   }
+
+  bool isLoading = false;
 
 
 
@@ -35,13 +44,26 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   late AppResponse<GetProjectAndAssignUserResponseModel> _getProjectAndUserResponse;
   AppResponse<GetProjectAndAssignUserResponseModel> get getProjectAndUserResponse => _getProjectAndUserResponse;
 
+  late AppResponse<GerStatusAndPriorityResponseModel> _getGerStatusAndPriorityResponse;
+  AppResponse<GerStatusAndPriorityResponseModel> get getGerStatusAndPriorityResponse => _getGerStatusAndPriorityResponse;
+
+
+  late AppResponse<GetCreateTaskResponseModel> _getGetCreateTaskResponse;
+  AppResponse<GetCreateTaskResponseModel> get getGetCreateTaskResponse => _getGetCreateTaskResponse;
+
+  CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
+      multipleAssignUser: [],
+      userList: [],
+      userTaskSubPointList: [],
+      docList: [],
+  );
+
+
   int? todayCount,comp,leave;
 
   List<SearchModel> list = [];
 
   List<SearchModel> projectUserList = [];
-
-  List<SearchModel> list = [];
 
   List<CreateTaskListModel> listData = [];
 
@@ -197,6 +219,131 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     }
     notifyListeners();
 
+  }
+
+
+  @override
+  Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType}) async{
+
+
+
+    try {
+
+      resIsLoading(_getGerStatusAndPriorityResponse);
+
+      await isUpdateLoading(isLoading: true);
+
+      final response = await taskRepository?.getStatusAndPriorityTerm(getStatusAndPriorityType: getStatusAndPriorityType);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        response?.data?.forEach((element) {
+
+          list.add(SearchModel(name: element.defaultValues,projectId: element.termId));
+
+        });
+
+        resIsSuccess(_getGerStatusAndPriorityResponse,response);
+
+        await isUpdateLoading(isLoading: false);
+      }
+
+
+    } catch (e) {
+      await isUpdateLoading(isLoading: false);
+      resIsFailed(_getGerStatusAndPriorityResponse, e);
+      rethrow;
+
+    }
+
+
+
+
+
+
+  }
+
+  @override
+  Future getCreateTaskData() async{
+
+
+
+    if(createTaskReqModel.name == null && createTaskReqModel.projectID == null){
+
+      throw "Please select project name";
+
+    }
+    if(createTaskReqModel.title == null){
+
+      throw "Please write a title";
+
+    }
+    if(createTaskReqModel.priority == null){
+
+      throw "Please select priority";
+
+    }
+    if(createTaskReqModel.status == null){
+
+      throw "Please select status";
+
+    }
+
+    try {
+
+
+      resIsLoading(_getGetCreateTaskResponse);
+
+
+      final response = await taskRepository?.getCreateTaskData(createTasRequestModel: createTaskReqModel);
+
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        createTaskReqModel = CreateTaskReqModel(
+          multipleAssignUser: [],
+          docList: [],
+          userTaskSubPointList: [],
+          userList: [],
+        );
+        resIsSuccess(_getGetCreateTaskResponse,response);
+
+      }
+
+
+    } catch (e) {
+
+      resIsFailed(_getGetCreateTaskResponse, e);
+      rethrow;
+
+
+
+    }
+
+
+
+  }
+
+
+  Future<bool?> isUpdateLoading({bool? isLoading})async{
+
+    if (isLoading != null){
+
+      this.isLoading = isLoading;
+
+    }
+
+    notifyListeners();
+
+    return false;
   }
 
 

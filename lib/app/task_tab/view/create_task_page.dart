@@ -1,23 +1,19 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:osm_flutter/app/tab/view_model/tab_bar_provider.dart';
-import 'package:osm_flutter/app/task_tab/domain/request/get_user_and_project_request_model.dart';
-import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
-import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:osm_flutter/base/base.dart';
+import 'package:osm_flutter/utils/utils.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import '../../../base/view/base_components/multi_selection_images.dart';
 import 'package:osm_flutter/base/view/base_components/custom_button.dart';
-import 'package:osm_flutter/base/view/base_components/custom_text_form_filed.dart';
 import 'package:osm_flutter/utils/common_utils/custom_details_textfield.dart';
 import 'package:osm_flutter/utils/common_utils/custom_drop_down_widget.dart';
 import 'package:osm_flutter/utils/common_utils/custom_serch_view_page.dart';
-import 'package:osm_flutter/utils/utils.dart';
-import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
+import 'package:osm_flutter/base/view/base_components/custom_text_form_filed.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/get_user_and_project_request_model.dart';
 
-import '../../../base/view/base_components/multi_selection_images.dart';
-import '../domain/request/create_sub_point_model.dart';
 import '../domain/request/create_task_req_model.dart';
 
 class CreateTaskPage extends StatefulWidget {
