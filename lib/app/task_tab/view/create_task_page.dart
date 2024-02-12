@@ -149,6 +149,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         return CustomSearchViewPage(
                           onMultipleSelectedChange: (value) {
                             for(var i = 0; i < value.length;i++){
+                              createTaskReqModel.multipleTestAssignUser?.removeWhere((element) => element.projectId == value[i].projectId);
                               createTaskReqModel.multipleAssignUser.add(value[i].name ?? "");
                               createTaskReqModel.userList?.add(UserListReqModel(userId: value[i].projectId.toString()));
                             }
