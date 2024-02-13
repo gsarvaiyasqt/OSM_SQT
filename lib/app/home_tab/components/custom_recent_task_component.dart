@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
+import 'package:provider/provider.dart';
 
 import '../../../base/view/base_components/custom_image_view.dart';
+import '../../../base/view/base_components/skeleton_loading.dart';
 import '../../../utils/utils.dart';
+import '../view_model/home_provider.dart';
 
 class CustomRecentTaskComponent extends StatefulWidget {
   final CreateTaskListModel? taskData;
@@ -16,6 +19,9 @@ class CustomRecentTaskComponent extends StatefulWidget {
 class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
   @override
   Widget build(BuildContext context) {
+    final homeProvider = context.watch<HomeProvider>();
+    final recentLoader = homeProvider.resentTaskResponse.state == Status.LOADING;
+
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: 15.sp, vertical: 13.sp),
@@ -30,9 +36,28 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(widget.taskData?.date ?? ""),
 
-              Text("${widget.taskData?.time} hrs" ?? "",style: CustomTextStyle.semiBoldFont16Style),
+              SkeletonView(
+                borderRadius: BorderRadius.circular(8.sp),
+                isLoading: recentLoader,
+                skeletonBody: SizedBox(
+                  height: 14.sp,
+                  width: 70.sp,
+                ),
+                child: Text(widget.taskData?.date ?? ""),
+              ),
+
+              SkeletonView(
+                borderRadius: BorderRadius.circular(8.sp),
+                isLoading: recentLoader,
+                skeletonBody: SizedBox(
+                  height: 16.sp,
+                  width: 70.sp,
+                ),
+                child: Text("${widget.taskData?.time} hrs" ?? "",style: CustomTextStyle.semiBoldFont16Style),
+              ),
+
+
 
             ],
           ),

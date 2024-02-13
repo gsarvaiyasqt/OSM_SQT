@@ -1,9 +1,10 @@
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:osm_flutter/base/base.dart';
+import '../domain/request/create_task_req_model.dart';
+import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/search_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
-import '../domain/request/create_task_req_model.dart';
 import '../domain/respones/get_create_task_response.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/get_recent_task_request_model.dart';
@@ -56,7 +57,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   int? todayCount,comp,leave;
 
   List<SearchModel> projectUserList = [];
-
 
   CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
     multipleAssignUser: [],
@@ -370,7 +370,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
     return false;
   }
-
 
   Future resetData()async{
 

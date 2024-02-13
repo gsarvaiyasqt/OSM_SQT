@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import '../../../utils/common_utils/custom_timer_appbar.dart';
 import '../domain/menu_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +10,7 @@ import '../../setting_tab/view/setting_tab_page.dart';
 import 'package:osm_flutter/app/home_tab/view/home_tab_page.dart';
 import 'package:osm_flutter/app/project_tab/view/project_tab_page.dart';
 import 'package:osm_flutter/app/tab/view_model/tab_bar_provider.dart';
+
 class TabScreen extends StatefulWidget {
   const TabScreen({Key? key}) : super(key: key);
 
@@ -15,11 +19,86 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
+  Stopwatch watch = Stopwatch();
+  Timer? timer;
+  bool startStop = true;
+
+  String elapsedTime = '';
+
+  updateTime(Timer timer) {
+    if (watch.isRunning) {
+      setState(() {
+        elapsedTime = transformMilliSeconds(watch.elapsedMilliseconds);
+      });
+    }
+  }
+
+  startOrStop() {
+    if(startStop) {
+      startWatch();
+    } else {
+      stopWatch();
+    }
+  }
+
+  startWatch() {
+    setState(() {
+      startStop = false;
+      watch.start();
+      timer = Timer.periodic(Duration(milliseconds: 100), updateTime);
+    });
+  }
+
+  stopWatch() {
+    setState(() {
+      startStop = true;
+      watch.stop();
+      setTime();
+    });
+  }
+
+  setTime() {
+    var timeSoFar = watch.elapsedMilliseconds;
+    setState(() {
+      elapsedTime = transformMilliSeconds(timeSoFar);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final tabProvider = context.watch<TabBarProvider>();
     return SafeArea(
       child: Scaffold(
+        appBar: CustomTimerAppbar(height: 100.sp,
+          lending: ImageUtil.dummy.profileImage,
+          titleText: "Create setting Inner page design",
+          action:  Center(
+            child: Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    startOrStop();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 9.sp,vertical: 9.sp),
+                    decoration: BoxDecoration(
+                      color: kBackgroundColor,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Icon(startStop ? Icons.play_arrow : Icons.pause,size: 20.sp),
+                  ),
+                ),
+
+                SizedBox(width: 10.sp),
+
+                Text("$elapsedTime",style: CustomTextStyle.boldFont22Style.copyWith(
+                    color: kBackgroundColor
+                ))
+
+              ],
+            ),
+          ),
+        ),
         backgroundColor: kWhiteColor,
         body: IndexedStack(
           index: tabProvider.currentIndex,
@@ -101,4 +180,17 @@ class _TabScreenState extends State<TabScreen> {
     //   ),
     // );
   }
+
+  transformMilliSeconds(int milliseconds) {
+    int hundreds = (milliseconds / 10).truncate();
+    int seconds = (hundreds / 100).truncate();
+    int minutes = (seconds / 60).truncate();
+    int hours = (minutes / 60).truncate();
+
+    String hoursStr = (hours % 60).toString().padLeft(2, '0');
+    String minutesStr = (minutes % 60).toString().padLeft(2, '0');
+
+    return "$hoursStr:$minutesStr";
+  }
+
 }
