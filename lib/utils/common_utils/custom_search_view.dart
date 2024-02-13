@@ -66,6 +66,7 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
                       separatorBuilder: (context, index) =>  Divider(height: 4.sp,color: kPrimaryColor.withOpacity(0.10)) /*Divider(height: 1.sp,color: KLightGrayColor.withOpacity(0.2),endIndent: 20.sp,indent: 20.sp)*/,
                       itemBuilder: (context, index) {
                         final isSelected = multiSelectionListData.contains(filterListData[index]);
+                        return widget.itemDataBuilder?.call(context,filterListData[index],index,isSelected);
                         return InkWell(
                             onTap: () {
 
@@ -109,14 +110,11 @@ class _CustomSearchViewDemoState<T> extends State<CustomSearchViewDemo<T>> {
               ],
             ),
           ),
-          if(assign && multiSelectionListData.isNotEmpty == true)
+          if(assign)
           CustomButton(
             btnColor: kSecondaryColor,
             btnText: "Submit",
-            onTap: () {
-              widget.onMultiSelectionChange!(multiSelectionListData);
-              Navigator.of(context).pop();
-            },
+            onTap: widget.onSubmitTap,
           ),
           SizedBox(height: 10.sp,)
         ],
