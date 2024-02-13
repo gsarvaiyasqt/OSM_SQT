@@ -10,10 +10,11 @@ import 'package:osm_flutter/app/task_tab/domain/request/get_user_and_project_req
 class CustomSearchViewPage extends StatefulWidget {
   final String? name;
   final int? projectId;
+  final bool? isLoading;
   final ValueChanged<SearchModel>? onChange;
   final ValueChanged<List<SearchModel>>? onMultipleSelectedChange;
   final CreateTaskEnum? createTaskEnum;
-  const CustomSearchViewPage({Key? key, this.name, this.onChange, this.createTaskEnum, this.projectId, this.onMultipleSelectedChange}) : super(key: key);
+  const CustomSearchViewPage({Key? key, this.name, this.onChange, this.createTaskEnum, this.projectId, this.onMultipleSelectedChange, this.isLoading}) : super(key: key);
 
   @override
   State<CustomSearchViewPage> createState() => _CustomSearchViewPageState();
@@ -36,8 +37,6 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
-    final isLoading = taskProvider.getProjectAndUserResponse.state == Status.LOADING;
-    final isStatusAndPriorityLoading = taskProvider.getGerStatusAndPriorityResponse.state == Status.LOADING;
     return Scaffold(
         backgroundColor: kSecondaryBackgroundColor,
         appBar: AppBar(
@@ -50,7 +49,9 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
               child: const Icon(Icons.arrow_back)),
           title: Text(widget.name ?? "",style: CustomTextStyle.boldFont22Style),
         ),
-        body: RefreshIndicator(
+        body: widget.isLoading == true ?
+            Center(child: CircularProgressIndicator()):
+        RefreshIndicator(
           onRefresh: ()async {
              await context.read<TaskProvider>().resetData();
              await searchRefresh(widget.createTaskEnum, context,widget.projectId);
