@@ -44,6 +44,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   Widget build(BuildContext context) {
    final taskProvider = context.watch<TaskProvider>();
    final createTaskLoading = taskProvider.getGetCreateTaskResponse.state == Status.LOADING;
+   final getStatusLoading = taskProvider.getGerStatusAndPriorityResponse.state == Status.LOADING;
+   final getProjectLoading = taskProvider.getProjectAndUserResponse.state == Status.LOADING;
    final createTaskReqModel = taskProvider.createTaskReqModel;
    return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
@@ -64,6 +66,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
+                          isLoading: getProjectLoading,
                           onMultipleSelectedChange: (value) {
                             setState(() {
 
@@ -143,6 +146,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
+                          isLoading: getProjectLoading,
                           onMultipleSelectedChange: (value) {
                             for(var i = 0; i < value.length;i++){
                               createTaskReqModel.multipleTestAssignUser?.removeWhere((element) => element.projectId == value[i].projectId);
@@ -173,6 +177,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   setState(() {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
                       return CustomSearchViewPage(
+                        isLoading: getStatusLoading,
                         createTaskEnum: CreateTaskEnum.STATUS,
                         name: "Status",
                         onChange: (value) {
@@ -192,6 +197,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return CustomSearchViewPage(
+                      isLoading: getStatusLoading,
                       createTaskEnum: CreateTaskEnum.PRIORITY,
                       name: "Priority",
                       onChange: (value) {

@@ -22,7 +22,7 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10.sp),
           child: GestureDetector(
-            onTap: widget.multiSelection?.isNotEmpty == true ? null:widget.onTap,
+            onTap: widget.onTap,
             child: Container(
                height: 50.sp,
                alignment: Alignment.centerLeft,
