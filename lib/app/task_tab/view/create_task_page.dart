@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
 import 'package:provider/provider.dart';
 import 'package:osm_flutter/base/base.dart';
 import 'package:osm_flutter/utils/utils.dart';
@@ -29,10 +28,24 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController titleController = TextEditingController();
   List<File>? mediaFileList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async{
+      final taskProvider = context.read<TaskProvider>();
+     await taskProvider.getProjectAndAssignUser(getProjectAndAssignUserRequestModel: GetProjectAndAssignUserRequestModel());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
    final taskProvider = context.watch<TaskProvider>();
    final createTaskLoading = taskProvider.getGetCreateTaskResponse.state == Status.LOADING;
+   final getStatusLoading = taskProvider.getGerStatusAndPriorityResponse.state == Status.LOADING;
+   final getProjectLoading = taskProvider.getProjectAndUserResponse.state == Status.LOADING;
    final createTaskReqModel = taskProvider.createTaskReqModel;
    return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
@@ -40,7 +53,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
         backgroundColor: kSecondaryBackgroundColor,
         title: Text("Create Task", style: CustomTextStyle.boldFont22Style),
       ),
-     body: Padding(
+      // bottomNavigationBar: SizedBox(),
+      body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.sp),
         child: SingleChildScrollView(
           child: Column(
@@ -52,6 +66,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
+                          isLoading: getProjectLoading,
                           onMultipleSelectedChange: (value) {
                             setState(() {
 
@@ -64,7 +79,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               createTaskReqModel.name = value.name;
                               createTaskReqModel.projectID = value.projectId;
                               if(value.name != null){
-                                createTaskReqModel.multipleTestAssignUser = [];
+                                createTaskReqModel.assignInName = null;
                               }
                             });
                             },
@@ -124,19 +139,21 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
               SizedBox(height: 10.sp),
           
               CustomDropDownWidget(
-                multiSelection: createTaskReqModel.multipleTestAssignUser,
+                multiSelection: createTaskReqModel.multipleAssignUser,
                 name: "Assign to",
                 onTap: () async{
                   if(createTaskReqModel.name != null){
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return CustomSearchViewPage(
-                          selectedItems: createTaskReqModel.multipleTestAssignUser,
+                          isLoading: getProjectLoading,
                           onMultipleSelectedChange: (value) {
-                            createTaskReqModel.multipleTestAssignUser = [];
-                            for (var element in value) {
-                              createTaskReqModel.multipleTestAssignUser?.add(element);
+                            for(var i = 0; i < value.length;i++){
+                              createTaskReqModel.multipleTestAssignUser?.removeWhere((element) => element.projectId == value[i].projectId);
+                              createTaskReqModel.multipleAssignUser.add(value[i].name ?? "");
+                              createTaskReqModel.userList?.add(UserListReqModel(userId: value[i].projectId.toString()));
                             }
+                            setState(() {});
                             },
                           projectId: createTaskReqModel.projectID,
                           createTaskEnum: CreateTaskEnum.ASSIGN,
@@ -160,6 +177,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   setState(() {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
                       return CustomSearchViewPage(
+                        isLoading: getStatusLoading,
                         createTaskEnum: CreateTaskEnum.STATUS,
                         name: "Status",
                         onChange: (value) {
@@ -179,6 +197,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return CustomSearchViewPage(
+                      isLoading: getStatusLoading,
                       createTaskEnum: CreateTaskEnum.PRIORITY,
                       name: "Priority",
                       onChange: (value) {
