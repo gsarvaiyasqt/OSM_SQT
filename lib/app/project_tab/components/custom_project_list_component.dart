@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/project_tab/domain/dummy/project_list_model.dart';
 import 'package:osm_flutter/app/project_tab/view_model/project_provider.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:osm_flutter/base/view/base_components/custom_image_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/utils.dart';
+import '../../task_tab/domain/respones/get_user_and_project_response_model.dart';
 
 class CustomProjectListComponent extends StatefulWidget {
 
@@ -22,9 +24,11 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
 
   @override
   Widget build(BuildContext context) {
-    final projectProvider = context.read<ProjectProvider>();
     List<String>? techList = widget.projectData?.technologies?.split(",");
+
     final processValue = (widget.projectData?.closeTaskCount ?? 0) / (widget.projectData?.allTaskCount ?? 0) * 100;
+
+    final userList = widget.projectData?.projectUserList;
 
     return Container(
       margin: EdgeInsets.only(bottom: 10.sp),
@@ -169,20 +173,41 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
 
               Spacer(),
 
-              Stack(
-                children: List.generate( 5, (index) {
-                  return Container(
-                    margin:  EdgeInsets.only(left: 25.sp * index),
-                    height: 35.sp,
-                    width: 35.sp,
-                    decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.1 * index),
-                        shape: BoxShape.circle
-                    ),
-                    child: widget.projectData?.profilePic?.isNotEmpty == true ? Image.network(widget.projectData?.profilePic?[index] ?? "") : const SizedBox.shrink(),
-                  );
-                }),
+
+              Container(
+                height: 35.sp,
+                width: 120.sp,
+                child: Stack(
+                  children: buildImageStack(userList: userList),
+                ),
               )
+              // Stack(
+              //   children: List.generate(userList?.length ?? 0, (index) {
+              //     return Container(
+              //       height: 35.sp,
+              //       width: 35.sp,
+              //       margin:  EdgeInsets.only(left: 25.sp * index),
+              //       decoration: BoxDecoration(
+              //           shape: BoxShape.circle,
+              //           color: Colors.red.withOpacity(0.1 * index),
+              //           border:Border.all(color: Colors.white,width: 2.sp
+              //           )
+              //       ),
+              //       child: userList?.isNotEmpty == true ?
+              //       ClipRRect(
+              //         borderRadius: BorderRadius.circular(100),
+              //           child: CustomImageView(
+              //             uri: userList?[index].profilePic,
+              //             placeholder:  Container(
+              //                 alignment: Alignment.center,
+              //                 color: kBlackColor.withOpacity(0.3),
+              //                 child: ImageUtil.logo.appLogo
+              //             ),
+              //           )) :
+              //       const SizedBox.shrink(),
+              //     );
+              //   }),
+              // )
 
             ],
           ),
@@ -191,4 +216,72 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
       ),
     );
   }
+
+  List<Widget> buildImageStack({List<ProjectUser>? userList}) {
+    List<Widget> stackChildren = [];
+
+    // Display the first 4 images in a circular shape
+    for (int i = 0; i < userList!.length && i < 3; i++) {
+      stackChildren.add(
+        Positioned(
+          left: i * 20.0,
+          child: Container(
+            height: 35.sp,
+            width: 35.sp,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border:Border.all(color: Colors.white,width: 2.sp
+                )
+            ),
+            child: userList.isNotEmpty == true ?
+            ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: CustomImageView(
+                  uri: userList[i].profilePic,
+                  placeholder:  Container(
+                      alignment: Alignment.center,
+                      color: kBlackColor.withOpacity(0.3),
+                      child: ImageUtil.logo.appLogo
+                  ),
+                )) :
+            const SizedBox.shrink(),
+          ),
+        ),
+      );
+    }
+
+    // Display the count of remaining images on the last image
+    if (userList.length > 3) {
+      stackChildren.add(
+        Positioned(
+          left: 3 * 20.0,
+          child: Container(
+            height: 35.sp,
+            width: 35.sp,
+            decoration: BoxDecoration(
+              color: Colors.blueAccent,
+                shape: BoxShape.circle,
+                border:Border.all(color: Colors.white,width: 2.sp
+                )
+            ),
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                        '+${userList.length - 3}',
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+                        ),
+            ),
+        ),
+      )
+      );
+    }
+
+    return stackChildren;
+  }
+
+
 }

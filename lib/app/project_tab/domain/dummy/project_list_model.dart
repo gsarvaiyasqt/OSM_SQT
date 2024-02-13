@@ -1,3 +1,5 @@
+import '../../../task_tab/domain/respones/get_user_and_project_response_model.dart';
+
 class ProjectListModel {
   int? id;
   String? projectImg;
@@ -10,6 +12,7 @@ class ProjectListModel {
   List<String>? profilePic;
   int? allTaskCount;
   int? closeTaskCount;
+  List<ProjectUser>? projectUserList;
 
   ProjectListModel(
       {this.projectImg,
@@ -23,6 +26,7 @@ class ProjectListModel {
       this.profilePic,
       this.allTaskCount,
       this.closeTaskCount,
+        this.projectUserList
       });
 
   static List projectList = [
@@ -36,3 +40,5 @@ class ProjectListModel {
     )
   ];
 }
+
+

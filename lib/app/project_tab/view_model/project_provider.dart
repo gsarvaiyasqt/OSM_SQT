@@ -1,10 +1,10 @@
-import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
+import 'package:collection/collection.dart';
+import 'package:osm_flutter/base/base.dart';
+import 'package:osm_flutter/app/project_tab/repository/project_repository.dart';
 import 'package:osm_flutter/app/project_tab/domain/dummy/project_list_model.dart';
 import 'package:osm_flutter/app/project_tab/domain/request/project_get_list_req_model.dart';
-import 'package:osm_flutter/app/project_tab/repository/project_repository.dart';
 import 'package:osm_flutter/app/task_tab/domain/respones/get_user_and_project_response_model.dart';
-import 'package:osm_flutter/base/base.dart';
 
 abstract class IProjectProvider {
   Future getProjectList(
@@ -20,6 +20,7 @@ class ProjectProvider extends BaseNotifier implements IProjectProvider {
 
   late AppResponse<GetProjectAndAssignUserResponseModel>
       _getProjectListResponse;
+
   AppResponse<GetProjectAndAssignUserResponseModel>
       get getProjectListResponse => _getProjectListResponse;
 
@@ -55,16 +56,9 @@ class ProjectProvider extends BaseNotifier implements IProjectProvider {
 
         final projectList = response?.data?.projectList;
 
-        Map<int?,List<ProjectUser>> recentTaskMapData = groupItemsByCategory(projectUser!);
-
-        recentTaskMapData.forEach((key, value) {
-          final val = value;
-          projectUserList.add(val);
-        });
-
         projectList?.forEach((pLElement) {
 
-          print("${pLElement.projectId} =====  check this projectID");
+          final proUserList = projectUser?.where((e) => e.projectId == pLElement.projectId).toList();
 
           projectListData.add(ProjectListModel(
               projectName: pLElement.projectName,
@@ -76,21 +70,12 @@ class ProjectProvider extends BaseNotifier implements IProjectProvider {
               projectImg: pLElement.projectLogo,
               technologies: pLElement.technologies,
               allTaskCount: pLElement.allTaskCount,
-              closeTaskCount: pLElement.closedTaskCount
+              closeTaskCount: pLElement.closedTaskCount,
+              projectUserList: proUserList
           ));
 
         });
 
-        for (var projectList in projectListData) {
-
-          projectUserList.forEach((element) {
-
-            final userList = element.where((element) => element.projectId == projectList.id).toList();
-
-            print("${userList} ====  check this userlist");
-          });
-
-        }
 
 
         resIsSuccess(_getProjectListResponse, response);
