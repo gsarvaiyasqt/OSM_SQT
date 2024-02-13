@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/task_tab/components/custom_task_component.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/common_utils/custom_appbar.dart';
@@ -40,10 +41,8 @@ class _TaskTabPageState extends State<TaskTabPage> {
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
+    final taskLoader = taskProvider.resentTaskResponse.state == Status.LOADING;
     final listData = taskProvider.listData;
-
-
-
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       // appBar:  CustomAppbar(
@@ -109,9 +108,21 @@ class _TaskTabPageState extends State<TaskTabPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: listData.length,
+                itemCount: taskLoader ? 5 : listData.length,
                 itemBuilder: (context, index) {
+
+                  if(taskLoader){
+                    return  SkeletonView(
+                      isLoading: true,
+                      skeletonBody: Container(
+                        width: 250.sp,
+                        height: 250.sp,
+                      ),
+                    );
+                  }
+
                   final taskData = listData[index];
+
                   return CustomTaskComponent(
                     taskData: taskData,
                   );
