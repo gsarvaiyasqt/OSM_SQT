@@ -1,3 +1,6 @@
+import 'package:osm_flutter/base/base.dart';
+import 'package:osm_flutter/base/view/base_components/loading_view.dart';
+
 import 'custom_search_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,17 +13,20 @@ import 'package:osm_flutter/app/task_tab/domain/request/get_user_and_project_req
 class CustomSearchViewPage extends StatefulWidget {
   final String? name;
   final int? projectId;
-  final bool? isLoading;
   final ValueChanged<SearchModel>? onChange;
+  final List<SearchModel>? selectedItems;
   final ValueChanged<List<SearchModel>>? onMultipleSelectedChange;
   final CreateTaskEnum? createTaskEnum;
-  const CustomSearchViewPage({Key? key, this.name, this.onChange, this.createTaskEnum, this.projectId, this.onMultipleSelectedChange, this.isLoading}) : super(key: key);
+  const CustomSearchViewPage({Key? key, this.name, this.onChange, this.createTaskEnum, this.projectId, this.onMultipleSelectedChange, this.selectedItems}) : super(key: key);
 
   @override
   State<CustomSearchViewPage> createState() => _CustomSearchViewPageState();
 }
 
 class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
+
+
+  List<SearchModel> searchListData = [];
 
   @override
   void initState() {
@@ -31,12 +37,22 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
 
       await searchRefresh(widget.createTaskEnum, context,widget.projectId);
 
+      if(widget.selectedItems?.isNotEmpty == true){
+
+        searchListData = widget.selectedItems ?? [];
+
+      }
+
+
+
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
+    final isLoading = taskProvider.isLoading;
+    final assign = widget.createTaskEnum == CreateTaskEnum.ASSIGN;
     return Scaffold(
         backgroundColor: kSecondaryBackgroundColor,
         appBar: AppBar(
@@ -49,9 +65,8 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
               child: const Icon(Icons.arrow_back)),
           title: Text(widget.name ?? "",style: CustomTextStyle.boldFont22Style),
         ),
-        body: widget.isLoading == true ?
-            Center(child: CircularProgressIndicator()):
-        RefreshIndicator(
+        body: isLoading ? const Center(child: Loading(color: kSecondaryColor),) : RefreshIndicator(
+          color: kSecondaryColor,
           onRefresh: ()async {
              await context.read<TaskProvider>().resetData();
              await searchRefresh(widget.createTaskEnum, context,widget.projectId);
@@ -67,29 +82,92 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
               onTap: () {},
                list: taskProvider.list,
 
-              onMultiSelectionChange: (p0) async{
-                setState(() {
-                  widget.onMultipleSelectedChange!(p0);
-                });
-                await context.read<TaskProvider>().resetData();
-
-              },
+              // onMultiSelectionChange: (p0) async{
+              //   setState(() {
+              //     widget.onMultipleSelectedChange!(p0);
+              //   });
+              //   await context.read<TaskProvider>().resetData();
+              //
+              // },
 
               itemDataBuilder: (context, data, index,isSelected) {
-                return Container(
-                  color: isSelected == true ? kWhiteColor : Colors.transparent,
-                  child: Padding(
-                    padding: EdgeInsets.all(20.sp),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${data.name}" ?? "",style: CustomTextStyle.regularFont18Style),
-                      ],
+
+
+                final selectedItem = searchListData.map((e) => e.name).contains(data.name);
+
+                return GestureDetector(
+                  onLongPress: () {
+                    setState(() {
+                      if(!selectedItem){
+
+                        searchListData.add(data);
+
+                      }else{
+
+                        searchListData.removeWhere((element) => data.name == element.name);
+
+                      }
+                    });
+                  },
+
+                  onTap: () async{
+
+                    if(assign){
+
+
+
+                    if(!selectedItem){
+
+                      searchListData.add(data);
+
+                    }else{
+
+                      searchListData.removeWhere((element) => data.name == element.name);
+
+
+                    }
+
+                    } else{
+
+                      await context.read<TaskProvider>().resetData();
+                      widget.onChange!(data);
+                      Navigator.pop(context);
+
+                    }
+
+                    setState(() {});
+
+                  },
+                  child: Container(
+                    color: selectedItem == true ? kWhiteColor : Colors.transparent,
+                    child: Padding(
+                      padding: EdgeInsets.all(20.sp),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${data.name}" ?? "",style: CustomTextStyle.regularFont18Style),
+                        ],
+                      ),
                     ),
                   ),
                 );
               },
 
+
+              onSubmitTap: () async{
+                if(searchListData.isNotEmpty){
+                  widget.onMultipleSelectedChange!(searchListData);
+                  searchListData = [];
+                  await context.read<TaskProvider>().resetData();
+                  Navigator.of(context).pop();
+                }else{
+                  Toaster.showMessage(context, msg: "Please Select Assign Users");
+
+                }
+
+
+
+              },
               onChange: (p0, value) {
                 if(value.isNotEmpty){
                   return p0.where((element) => ((element.name ?? "").toLowerCase().contains(value.toLowerCase()))).toList();
@@ -97,13 +175,13 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
                   return p0;
                 }
 
-              },
-
-              selectedItem: (p0) async{
-                await context.read<TaskProvider>().resetData();
-                widget.onChange!(p0);
-                Navigator.pop(context);
                 },
+
+              // selectedItem: (p0) async{
+              //   await context.read<TaskProvider>().resetData();
+              //   widget.onChange!(p0);
+              //   Navigator.pop(context);
+              //   },
             ),
           ),
         )

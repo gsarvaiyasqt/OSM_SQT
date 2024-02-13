@@ -172,34 +172,12 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
               response?.data?.projectUser?.where((wElement) => wElement.projectId == getProjectAndAssignUserRequestModel?.projectId).forEach((element) {
 
-                list.add(SearchModel(name: element.displayName,projectId: element.projectId));
+                list.add(SearchModel(name: element.displayName,projectId: element.userId));
 
               });
 
-
-              final listData =  getProjectAndAssignUserRequestModel?.multipleUserList ??= [];
-
-              if(listData != null){
-
-                for (var element in listData) {
-
-                  final isSelected = list.map((e) => e.projectId ?? "").contains(element.projectId) == true;
-
-                }
-
-
-
-
-
-              }
-
-
-              getProjectAndAssignUserRequestModel?.multipleUserList?.forEach((element) {
-
-                print("getProjectAndAssignUserRequestModel data id is ${element.projectId} and name is ${element.name}");
-
-              });
             }
+
 
 
             await isUpdateLoading(isLoading: false);
@@ -358,17 +336,14 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   }
 
-  Future<bool?> isUpdateLoading({bool? isLoading})async{
+  Future isUpdateLoading({bool? isLoading})async{
 
     if (isLoading != null){
 
      this.isLoading = isLoading;
 
     }
-
     notifyListeners();
-
-    return false;
   }
 
   Future resetData()async{
