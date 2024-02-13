@@ -82,18 +82,13 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
               onTap: () {},
                list: taskProvider.list,
 
-              // onMultiSelectionChange: (p0) async{
-              //   setState(() {
-              //     widget.onMultipleSelectedChange!(p0);
-              //   });
-              //   await context.read<TaskProvider>().resetData();
-              //
-              // },
-
               itemDataBuilder: (context, data, index,isSelected) {
 
 
-                final selectedItem = searchListData.map((e) => e.name).contains(data.name);
+                final selectedItem = searchListData.map((e) => e.projectId).contains(data.projectId);
+
+
+                print("selectedItem is ${selectedItem}");
 
                 return GestureDetector(
                   onLongPress: () {
@@ -104,7 +99,7 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
 
                       }else{
 
-                        searchListData.removeWhere((element) => data.name == element.name);
+                        searchListData.removeWhere((element) => data.projectId == element.projectId);
 
                       }
                     });
@@ -122,7 +117,7 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
 
                     }else{
 
-                      searchListData.removeWhere((element) => data.name == element.name);
+                      searchListData.removeWhere((element) => data.projectId == element.projectId);
 
 
                     }
