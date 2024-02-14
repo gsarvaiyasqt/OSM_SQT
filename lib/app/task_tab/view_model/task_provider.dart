@@ -91,14 +91,11 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
           Map<DateTime?,List<TaskList>> recentTaskMapData  =  groupItemsByCategory(list);
 
-
           listData = [];
 
           recentTaskMapData.forEach((key, value) {
 
-
             var isDate = "";
-
 
             if(key?.day == DateTime.now().day){
 
