@@ -504,6 +504,10 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         );
                       },
                     ));
+                  }else{
+
+                    Toaster.showMessage(context, msg: "Please select project then before assign users");
+
                   }
                 },
               ),
@@ -690,4 +694,11 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       ),
     );
   }
+}
+List<DateTime> getDaysInBetween(DateTime startDate, DateTime endDate) {
+  List<DateTime> days = [];
+  for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
+    days.add(startDate.add(Duration(days: i)));
+  }
+  return days;
 }

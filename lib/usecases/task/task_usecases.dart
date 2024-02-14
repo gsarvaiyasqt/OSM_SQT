@@ -100,7 +100,6 @@ class TaskUseCases extends ITaskUseCases{
 
       for(var i = 0; i < userTaskSubPointList.length;i++){
 
-
         if(userTaskSubPointList[i].title?.isNotEmpty == true){
 
           formData.fields.add(MapEntry("lstTaskSubPoint[$i].Title",userTaskSubPointList[i].title ?? ""));

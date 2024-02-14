@@ -87,6 +87,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
         if(list != null){
 
+          list.sort((a, b) => a.dateRang!.compareTo(b.dateRang!));
+
           Map<DateTime?,List<TaskList>> recentTaskMapData  =  groupItemsByCategory(list);
 
 
