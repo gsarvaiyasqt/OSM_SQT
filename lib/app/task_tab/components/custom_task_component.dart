@@ -134,70 +134,76 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                   SizedBox(height: 10.sp,),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
 
-                                    children: [
-                                      Wrap(
-
-                                        direction: Axis.horizontal,
-                                        spacing: 12.sp,
-                                        children: [
-
-                                          Row(
-                                            children: [
-
-                                              SizedBox(
-                                                height: 18.sp,
-                                                width: 18.sp,
-                                                child: ImageUtil.iconImageClass.threeCalenderIcon,
-                                              ),
-
-                                              SizedBox(width: 5.sp,),
-
-                                              Text(DateFormat.yMMMd().format(data?.startDate ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
-                                            ],
-                                          ),
-
-                                          Container(width: 1.sp,height: 20.sp,color: kPrimaryColor.withOpacity(0.80),),
-
-                                          Row(
-                                            children: [
-                                              SizedBox(
-                                                height: 18.sp,
-                                                width: 18.sp,
-                                                child: ImageUtil.iconImageClass.timeQuarterIcon,
-                                              ),
-
-                                              SizedBox(width: 5.sp,),
-
-                                              Text(DateFormat.yMMMd().format(data?.dateRang ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
-                                            ],
-                                          ),
-
-                                          Row(
-                                            children: [
-                                              SizedBox(
-                                                height: 18.sp,
-                                                width: 18.sp,
-                                                child: ImageUtil.iconImageClass.messageIcon,
-                                              ),
-
-                                              SizedBox(width: 5.sp,),
-
-                                              Text(data?.projectId.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
-                                            ],
-                                          )
-
-                                        ],
-                                      ),
-                                    ],
-                                  )
                                 ],
                               ),
                             ),
+
+
                           ],
                         ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 10.sp),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+
+                            children: [
+                              Row(
+                                children: [
+
+                                  SizedBox(
+                                    height: 18.sp,
+                                    width: 18.sp,
+                                    child: ImageUtil.iconImageClass.threeCalenderIcon,
+                                  ),
+
+                                  SizedBox(width: 10.sp,),
+
+                                  Text(DateFormat.yMMMd().format(data?.startDate ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+                                ],
+                              ),
+
+
+                              Container(width: 1.sp,
+                                height: 20.sp,
+                                color: kPrimaryColor.withOpacity(0.80),
+                                margin: EdgeInsets.symmetric(horizontal: 8.sp),
+                              ),
+
+
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    height: 18.sp,
+                                    width: 18.sp,
+                                    child: ImageUtil.iconImageClass.timeQuarterIcon,
+                                  ),
+
+                                  SizedBox(width: 5.sp,),
+
+                                  Text(DateFormat.yMMMd().format(data?.dateRang ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
+                                ],
+                              ),
+
+                              SizedBox(width: 8.sp),
+
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    height: 18.sp,
+                                    width: 18.sp,
+                                    child: ImageUtil.iconImageClass.messageIcon,
+                                  ),
+
+                                  SizedBox(width: 5.sp,),
+
+                                  Text(data?.projectId.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     );
                   },

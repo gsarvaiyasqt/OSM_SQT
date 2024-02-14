@@ -218,7 +218,6 @@ extension GetStatusAndPriorityTypeExt on GetStatusAndPriorityType{
        return "TaskPriority";
     }
 
-
     return "";
 
 }
