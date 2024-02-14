@@ -26,7 +26,10 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
   Widget build(BuildContext context) {
     List<String>? techList = widget.projectData?.technologies?.split(",");
 
-    final processValue = (widget.projectData?.closeTaskCount ?? 0) / (widget.projectData?.allTaskCount ?? 0) * 100;
+
+
+    final processValue = widget.projectData?.closeTaskCount == 0 && widget.projectData?.allTaskCount == 0 ? 0 :
+        (widget.projectData?.closeTaskCount ?? 0) / (widget.projectData?.allTaskCount ?? 0) * 100;
 
     final userList = widget.projectData?.projectUserList;
 
@@ -128,7 +131,7 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
           LinearProgressIndicator(
             borderRadius: BorderRadius.circular(5.sp),
             backgroundColor: kBlackColor.withOpacity(0.15),
-            value: (widget.projectData?.closeTaskCount ?? 0) / (widget.projectData?.allTaskCount ?? 0),
+            value:widget.projectData?.closeTaskCount == 0 && widget.projectData?.allTaskCount == 0 ? 0 : (widget.projectData?.closeTaskCount ?? 0) / (widget.projectData?.allTaskCount ?? 0),
             valueColor: AlwaysStoppedAnimation(kSecondaryColor),
 
           ),

@@ -29,6 +29,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+
       final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
 
       final homeProvider = context.read<HomeProvider>();
@@ -203,7 +204,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                   color: kSecondaryColor,
                                     shape: BoxShape.circle
                                 ),
-                                child: Text("0${homeProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
+                                child: Text("${homeProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
                               ),)),
 
                               SizedBox(
@@ -368,17 +369,106 @@ class _HomeTabPageState extends State<HomeTabPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: resentListData.length,
+                itemCount:  recentLoader ? 5 : resentListData.length,
                 itemBuilder: (context, index) {
+
+                  if(recentLoader){
+                    return homeCardSimmer(recentLoader:recentLoader);
+                  }
+
                   final createTaskData = resentListData[index];
+
                   return CustomRecentTaskComponent(
-                    taskData: createTaskData,
+                     taskData:  createTaskData
                   );
                 },
               )
-
             ],
           ),
+        ),
+      ),
+    );
+  }
+  Widget homeCardSimmer({bool? recentLoader}){
+    return Card(
+      color: Colors.white,
+      shadowColor: kSkyBlueColor.withOpacity(0.5),
+      child: Container(
+        padding: EdgeInsets.all(12.sp),
+        child: Row(
+          children: [
+            SkeletonView(
+              isLoading: recentLoader,
+              borderRadius: BorderRadius.circular(100),
+              skeletonBody: SizedBox(
+                height: 40.sp,
+                width: 40.sp,
+              ),
+            ),
+
+            SizedBox(width: 10.sp),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkeletonView(
+                    isLoading: recentLoader,
+                    borderRadius: BorderRadius.circular(8.sp),
+                    child: SizedBox(
+                      height: 14.sp,
+                      width: 60.sp,
+                    ),
+                  ),
+
+                  SizedBox(height: 5.sp),
+
+                  SkeletonView(
+                    isLoading: recentLoader,
+                    borderRadius: BorderRadius.circular(8.sp),
+                    child:SizedBox(
+                      height: 16.sp,
+                      width: 90.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SkeletonView(
+              isLoading: recentLoader,
+              borderRadius: BorderRadius.circular(5.sp),
+              skeletonBody: SizedBox(
+                height: 16.sp,
+                width: 16.sp,
+              ),
+            ),
+
+            SizedBox(
+              width: 10.sp,
+            ),
+
+            // Time Working
+            SkeletonView(
+              isLoading: recentLoader,
+              borderRadius: BorderRadius.circular(5.sp),
+              skeletonBody: SizedBox(
+                height: 14.sp,
+                width: 70.sp,
+              ),
+            ),
+
+            SizedBox(width: 10.sp),
+
+            SkeletonView(
+              isLoading: recentLoader,
+              borderRadius: BorderRadius.circular(8.sp),
+              skeletonBody: SizedBox(
+                height: 24.sp,
+                width: 24.sp,
+              ),
+            ),
+          ],
         ),
       ),
     );
