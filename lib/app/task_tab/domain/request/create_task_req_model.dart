@@ -25,7 +25,7 @@ class CreateTaskReqModel{
   DateTime? startDate;
   DateTime? endDate;
   int? projectID;
-  List<String> multipleAssignUser = [];
+  List<String>? multipleAssignUser;
   List<SearchModel>? multipleTestAssignUser;
   List<File>? docList;
   List<UserTaskSubPointReqModel>? userTaskSubPointList;
@@ -37,24 +37,9 @@ class CreateTaskReqModel{
     this.userTaskSubPointList,this.name,
     this.multipleTestAssignUser,
     this.assignInName,
-    required this.multipleAssignUser
+    this.multipleAssignUser
   });
 
-  // Map<String,dynamic> toJson(){
-  //   return {
-  //     "TaskID":taskID,
-  //     "Title":title,
-  //     "Details":details,
-  //     "Status":status,
-  //     "Priority":priority,
-  //     "StartDate":startDate?.toIso8601String(),
-  //     "EndDate":endDate?.toIso8601String(),
-  //     "ProjectID":projectID,
-  //     "lstTaskUser":userList == null ? [] : List<UserListReqModel>.from((userList ?? []).map((e) => e.toMap())),
-  //     "lstTaskSubPoint":userTaskSubPointList == null ? [] : List<UserListReqModel>.from((userTaskSubPointList ?? []).map((e) => e.toMap())),
-  //     // "lstDocuments":docList == null ? [] : List<CreateTaskDocumentReqModel>.from((docList ?? []).map((e) => e.toMap()))
-  //   };
-  // }
 
 }
 class CreateTaskDocumentReqModel{

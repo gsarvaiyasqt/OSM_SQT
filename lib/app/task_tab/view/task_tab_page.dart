@@ -112,6 +112,7 @@ class _TaskTabPageState extends State<TaskTabPage> {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: taskLoader ? 10 : listData.length,
+                reverse: true,
                 itemBuilder: (context, index) {
 
                   if(taskLoader){

@@ -215,7 +215,13 @@ class HomeProvider extends BaseNotifier implements IHomeProvider{
 
         final list = response?.data?.taskList;
 
+
+
+
         if(list != null){
+
+
+          list.sort((a, b) => a.dateRang!.compareTo(b.dateRang!));
 
           Map<DateTime?,List<TaskList>> recentTaskMapData  =  groupItemsByCategory(list);
 

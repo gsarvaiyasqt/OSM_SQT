@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
 class CustomDropDownWidget extends StatefulWidget {
   final String? name;
   final String? selectedItem;
   final GestureTapCallback? onTap;
-  final List<String>? multiSelection;
+  final List<SearchModel>? multiSelection;
   const CustomDropDownWidget({Key? key, this.name, this.selectedItem, this.onTap, this.multiSelection}) : super(key: key);
 
   @override
@@ -22,7 +23,7 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10.sp),
           child: GestureDetector(
-            onTap: widget.multiSelection?.isNotEmpty == true ? null:widget.onTap,
+            onTap: widget.onTap,
             child: Container(
                height: 50.sp,
                alignment: Alignment.centerLeft,
@@ -51,7 +52,7 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
                             color: kWhiteColor,
                           borderRadius: BorderRadius.circular(5.sp)
                         ),
-                       child: Text(widget.multiSelection?[index] ?? "")
+                       child: Text(widget.multiSelection?[index].name ?? "")
                        ),
                           Positioned(
                             right: 0,

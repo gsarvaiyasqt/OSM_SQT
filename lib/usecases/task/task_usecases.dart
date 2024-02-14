@@ -79,7 +79,7 @@ class TaskUseCases extends ITaskUseCases{
     
     final formData = FormData.fromMap(map);
     
-    final userList = createTasRequestModel?.userList;
+    final userList = createTasRequestModel?.multipleTestAssignUser;
     final userTaskSubPointList = createTasRequestModel?.userTaskSubPointList;
     final docList = createTasRequestModel?.docList;
 
@@ -87,7 +87,7 @@ class TaskUseCases extends ITaskUseCases{
 
       for(var i = 0; i < userList.length;i++){
 
-        formData.fields.add(MapEntry("lstTaskUser[$i].UserID",userList[i].userId.toString()));
+        formData.fields.add(MapEntry("lstTaskUser[$i].UserID",userList[i].projectId.toString()));
 
       }
 
@@ -99,7 +99,6 @@ class TaskUseCases extends ITaskUseCases{
     if(userTaskSubPointList != null){
 
       for(var i = 0; i < userTaskSubPointList.length;i++){
-
 
         if(userTaskSubPointList[i].title?.isNotEmpty == true){
 

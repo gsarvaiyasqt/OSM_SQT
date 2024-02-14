@@ -369,6 +369,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
+                reverse: true,
                 itemCount:  recentLoader ? 5 : resentListData.length,
                 itemBuilder: (context, index) {
 
