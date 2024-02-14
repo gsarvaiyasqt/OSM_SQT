@@ -504,6 +504,10 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         );
                       },
                     ));
+                  }else{
+
+                    Toaster.showMessage(context, msg: "Please select project then before assign users");
+
                   }
                 },
               ),
