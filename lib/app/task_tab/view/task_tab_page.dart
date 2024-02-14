@@ -43,6 +43,9 @@ class _TaskTabPageState extends State<TaskTabPage> {
     final taskProvider = context.watch<TaskProvider>();
     final taskLoader = taskProvider.resentTaskResponse.state == Status.LOADING;
     final listData = taskProvider.listData;
+
+
+    final sortList = listData.sort((a, b) => a.date.toString().compareTo(b.date.toString()),);
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       // appBar:  CustomAppbar(
@@ -70,7 +73,6 @@ class _TaskTabPageState extends State<TaskTabPage> {
       // ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.sp),
-        // padding: EdgeInsets.symmetric(left: 20.sp,right: 20.sp,top: 20.sp),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -86,7 +88,8 @@ class _TaskTabPageState extends State<TaskTabPage> {
                 children: [
                   Expanded(
                       child: Text("Tasks",
-                          style: CustomTextStyle.boldFont24Style)),
+                          style: CustomTextStyle.boldFont24Style)
+                  ),
                   GestureDetector(
                     onTap: () {
           
@@ -108,17 +111,11 @@ class _TaskTabPageState extends State<TaskTabPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: taskLoader ? 5 : listData.length,
+                itemCount: taskLoader ? 10 : listData.length,
                 itemBuilder: (context, index) {
 
                   if(taskLoader){
-                    return  SkeletonView(
-                      isLoading: true,
-                      skeletonBody: Container(
-                        width: 250.sp,
-                        height: 250.sp,
-                      ),
-                    );
+                    return  taskCardSimmer(recentLoader: taskLoader);
                   }
 
                   final taskData = listData[index];
@@ -130,6 +127,91 @@ class _TaskTabPageState extends State<TaskTabPage> {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget taskCardSimmer({bool? recentLoader}){
+    return Card(
+      color: Colors.white,
+      shadowColor: kSkyBlueColor.withOpacity(0.5),
+      child: Container(
+        padding: EdgeInsets.all(12.sp),
+        child: Row(
+          children: [
+            SkeletonView(
+              isLoading: recentLoader,
+              borderRadius: BorderRadius.circular(100),
+              skeletonBody: SizedBox(
+                height: 40.sp,
+                width: 40.sp,
+              ),
+            ),
+
+            SizedBox(width: 10.sp),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkeletonView(
+                    isLoading: recentLoader,
+                    borderRadius: BorderRadius.circular(8.sp),
+                    child: SizedBox(
+                      height: 14.sp,
+                      width: 60.sp,
+                    ),
+                  ),
+
+                  SizedBox(height: 5.sp),
+
+                  SkeletonView(
+                    isLoading: recentLoader,
+                    borderRadius: BorderRadius.circular(8.sp),
+                    child:SizedBox(
+                      height: 16.sp,
+                      width: 90.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SkeletonView(
+              isLoading: recentLoader,
+              borderRadius: BorderRadius.circular(5.sp),
+              skeletonBody: SizedBox(
+                height: 16.sp,
+                width: 16.sp,
+              ),
+            ),
+
+            SizedBox(
+              width: 10.sp,
+            ),
+
+            // Time Working
+            SkeletonView(
+              isLoading: recentLoader,
+              borderRadius: BorderRadius.circular(5.sp),
+              skeletonBody: SizedBox(
+                height: 14.sp,
+                width: 70.sp,
+              ),
+            ),
+
+            SizedBox(width: 10.sp),
+
+            SkeletonView(
+              isLoading: recentLoader,
+              borderRadius: BorderRadius.circular(8.sp),
+              skeletonBody: SizedBox(
+                height: 24.sp,
+                width: 24.sp,
+              ),
+            ),
+          ],
         ),
       ),
     );

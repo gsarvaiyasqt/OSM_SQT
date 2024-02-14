@@ -17,13 +17,14 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       margin: EdgeInsets.only(bottom: 10.sp),
 
       child: Column(
         mainAxisSize: MainAxisSize.min,
+
         children: [
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -31,6 +32,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
               Text("${widget.taskData?.time} hrs" ?? "",style: CustomTextStyle.semiBoldFont16Style),
             ],
           ),
+
           SizedBox(
             height: 10.sp,
           ),
@@ -41,8 +43,10 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
               color: kWhiteColor,
               borderRadius: BorderRadius.circular(15.sp),
             ),
+
             child: Column(
               children: [
+
                 ListView.separated(
                   separatorBuilder: (context, index) {
                     return Divider(
@@ -75,7 +79,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                             ),
                             
                             SizedBox(
-                              width: 9.sp,
+                              width: 8.sp,
                             ),
 
                             Expanded(
@@ -98,50 +102,65 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                         .semiBoldFont16Style,
                                   ),
 
-                                  SizedBox(height: 15.sp,),
-
-                                  Row(
-                                    children: [
-
-                                      SizedBox(
-                                          height: 24.sp,
-                                          child: ImageUtil.dummy.profileImage
-                                      ),
-
-                                      SizedBox(width: 9.sp,),
-
-                                      Expanded(child: Text(data?.projectName ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)),
-
-
-                                      SizedBox(
-                                        height: 16.sp,
-                                        child: priorityFunc(priority: data?.priority)
-                                      ),
-
-                                      SizedBox(width: 10.sp,),
-
-                                      Text(hourTime == 0 ? "-" :  hourTime,style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
-
-                                      SizedBox(width: 10.sp,),
-
-                                      SizedBox(
-                                        height: 18.sp,
-                                        width: 18.sp,
-                                        child: statusFunc(status: data?.status),
-                                      )
-                                    ],
-                                  ),
-
                                   SizedBox(height: 10.sp,),
-
 
                                 ],
                               ),
                             ),
 
+                            InkWell(
+                              onTap: () {
+                                // startOrStop();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 6.sp,vertical: 6.sp),
+                                decoration: BoxDecoration(
+                                  color: kBlueColor,
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: Icon(true ? Icons.play_arrow : Icons.pause,size: 20.sp,color: Colors.white),
+                              ),
+                            ),
 
                           ],
                         ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left:10.sp),
+                          child: Row(
+                            children: [
+
+                              SizedBox(
+                                  height: 24.sp,
+                                  child: ImageUtil.dummy.profileImage
+                              ),
+
+                              SizedBox(width: 9.sp,),
+
+                              Expanded(child: Text(data?.projectName ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)),
+
+
+                              SizedBox(
+                                  height: 16.sp,
+                                  child: priorityFunc(priority: data?.priority)
+                              ),
+
+                              SizedBox(width: 10.sp,),
+
+                              Text(hourTime == 0 ? "-" :  hourTime,style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+
+                              SizedBox(width: 10.sp,),
+
+                              SizedBox(
+                                height: 18.sp,
+                                width: 18.sp,
+                                child: statusFunc(status: data?.status),
+                              )
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 10.sp,),
 
                         Padding(
                           padding:  EdgeInsets.only(left: 10.sp),
@@ -150,7 +169,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                             children: [
                               Row(
-                                children: [
+                                  children: [
 
                                   SizedBox(
                                     height: 18.sp,
@@ -161,7 +180,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                   SizedBox(width: 10.sp,),
 
                                   Text(DateFormat.yMMMd().format(data?.startDate ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
-                                ],
+                                ]
                               ),
 
 
@@ -208,6 +227,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                     );
                   },
                 ),
+
               ],
             ),
           ),

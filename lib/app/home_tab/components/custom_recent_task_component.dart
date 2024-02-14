@@ -94,7 +94,6 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                                 ),
 
 
-
                                 Text(
                                   data?.title ?? "",
                                   style: CustomTextStyle.semiBoldFont16Style,
@@ -127,6 +126,9 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
                               width: 24.sp,
                               child: statusFunc(status: data?.status)
                           ),
+
+
+
                         ],
                       ),
                     ],
