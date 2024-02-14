@@ -84,11 +84,7 @@ class _CustomSearchViewPageState extends State<CustomSearchViewPage> {
 
               itemDataBuilder: (context, data, index,isSelected) {
 
-
                 final selectedItem = searchListData.map((e) => e.projectId).contains(data.projectId);
-
-
-                print("selectedItem is ${selectedItem}");
 
                 return GestureDetector(
                   onLongPress: () {

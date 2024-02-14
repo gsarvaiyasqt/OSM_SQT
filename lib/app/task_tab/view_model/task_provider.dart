@@ -146,11 +146,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   @override
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel}) async{
 
-
-
-    print("getProjectAndAssignUserRequestModel is ${getProjectAndAssignUserRequestModel?.projectId}");
-
-        resIsLoading(_getProjectAndUserResponse);
+    resIsLoading(_getProjectAndUserResponse);
 
 
        await isUpdateLoading(isLoading: true);
@@ -313,13 +309,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
         throw response?.message ?? "";
 
       }else{
-
-        createTaskReqModel = CreateTaskReqModel(
-          multipleAssignUser: [],
-          docList: [],
-          userTaskSubPointList: [],
-          userList: [],
-        );
+        await resetTaskReqData();
         resIsSuccess(_getGetCreateTaskResponse,response);
 
       }
@@ -350,6 +340,19 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
     list = [];
     notifyListeners();
+
+  }
+
+  Future resetTaskReqData()async{
+    createTaskReqModel = CreateTaskReqModel(
+        multipleAssignUser: [],
+        userList: [],
+        userTaskSubPointList: [],
+        docList: [],
+        multipleTestAssignUser: []
+    );
+    notifyListeners();
+
 
   }
 

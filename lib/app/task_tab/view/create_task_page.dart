@@ -388,7 +388,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
     final createTaskLoading = taskProvider.getGetCreateTaskResponse.state == Status.LOADING;
-    final createTaskReqModel = taskProvider.createTaskReqModel;
+    var createTaskReqModel = taskProvider.createTaskReqModel;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar: AppBar(
@@ -416,9 +416,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         name: "Project Name",
                         onChange: (value) async{
                           setState(() {
-                            createTaskReqModel.name = value.name;
-                            createTaskReqModel.projectID = value.projectId;
                             if(value.name != null){
+                              createTaskReqModel.name = value.name;
+                              createTaskReqModel.projectID = value.projectId;
                               createTaskReqModel.multipleTestAssignUser = [];
                             }
                           });
@@ -448,6 +448,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 children: [
                   Expanded(
                     child: CustomDatePickerWidget(
+                        firstDate: DateTime.now(),
+                      // initialDate: createTaskReqModel.startDate,
+                        lastDate: createTaskReqModel.endDate,
                         onSelectedDateTime: (p0) {
                           setState(() {
                             createTaskReqModel.startDate = p0;
@@ -462,6 +465,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   SizedBox(width: 5.sp),
                   Expanded(
                     child: CustomDatePickerWidget(
+                        initialDate: createTaskReqModel.startDate,
+                        firstDate: createTaskReqModel.startDate ?? DateTime.now(),
                         onSelectedDateTime: (p0) {
                           setState(() {
                             createTaskReqModel.endDate = p0;
@@ -668,7 +673,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       btnText: "Cancel",
                       textStyle: CustomTextStyle.boldFont16Style,
                       btnColor: kWhiteColor,
-                      onTap: () {
+                      onTap: () async{
+                        final taskProvider = context.read<TaskProvider>();
+                        await taskProvider.resetTaskReqData();
                         Navigator.of(context).pop();
                       },
                     ),
