@@ -30,8 +30,6 @@ class _TaskTabPageState extends State<TaskTabPage> {
       final taskProvider = context.read<TaskProvider>();
 
       await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
-        endDate: DateTime.now(),
-        startDate: endDate
       ));
 
     });
@@ -43,9 +41,6 @@ class _TaskTabPageState extends State<TaskTabPage> {
     final taskProvider = context.watch<TaskProvider>();
     final taskLoader = taskProvider.resentTaskResponse.state == Status.LOADING;
     final listData = taskProvider.listData;
-
-
-    final sortList = listData.sort((a, b) => a.date.toString().compareTo(b.date.toString()),);
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       // appBar:  CustomAppbar(

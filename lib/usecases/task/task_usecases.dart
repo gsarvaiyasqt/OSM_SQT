@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/start_stop_task_req_model.dart';
+import 'package:osm_flutter/app/task_tab/domain/respones/base_res_model.dart';
+import 'package:osm_flutter/app/task_tab/domain/respones/get_running_task_res_model.dart';
 import 'package:osm_flutter/server_configs/config.dart';
 import 'package:osm_flutter/services/web_services.dart';
 
@@ -24,6 +27,11 @@ abstract class ITaskUseCases{
    Future<GetProjectAndAssignUserResponseModel?> getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
    Future<GerStatusAndPriorityResponseModel?> getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
    Future<GetCreateTaskResponseModel?> getCreateTaskData({CreateTaskReqModel? createTasRequestModel});
+
+   Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel});
+   Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel});
+   Future<GetRunningTaskDetailsResModel?> getRunningTask();
+
 }
 
 class TaskUseCases extends ITaskUseCases{
@@ -130,6 +138,29 @@ class TaskUseCases extends ITaskUseCases{
     return GetCreateTaskResponseModel.fromJson(response);
 
 
+  }
+
+  @override
+  Future<BaseResModel> startTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.startTask,data: startStopTaskReqModel?.toJson()));
+    return BaseResModel.fromJson(response);
+  }
+
+  @override
+  Future<BaseResModel> stopTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.stopTask,data: startStopTaskReqModel?.toJson()));
+
+    return BaseResModel.fromJson(response);
+  }
+
+  @override
+  Future<GetRunningTaskDetailsResModel?> getRunningTask() async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.getRunningDetails));
+
+    var data =  json.encode(response);
+
+    print("$data ===  check this data get running details");
+    // return GetRunningTaskDetailsResModel.fromJson(response);
   }
 
 

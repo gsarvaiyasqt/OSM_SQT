@@ -123,7 +123,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                     color: kBlueColor,
                                     shape: BoxShape.circle
                                   ),
-                                  child: Text("0${homeProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style),
+                                  child: FittedBox(
+                                      child: Text("0${homeProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style)),
                                 ),
                               ),
                             ),
@@ -204,7 +205,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                   color: kSecondaryColor,
                                     shape: BoxShape.circle
                                 ),
-                                child: Text("${homeProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
+                                child: FittedBox(child: Text("${homeProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp))),
                               ),)),
 
                               SizedBox(
@@ -275,7 +276,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                   color: kYellowColor,
                                   shape: BoxShape.circle
                                 ),
-                                child: Text("0${homeProvider.leave ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
+                                child: Text("0${homeProvider.leave ?? 00}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
                               ))),
 
                               SizedBox(width: 15.sp),
@@ -303,9 +304,11 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                       height: 14.sp,
                                       width: 70.sp,
                                     ),
-                                    child: Text("Request",style: CustomTextStyle.boldFont14Style.copyWith(
-                                        fontSize: 24.sp
-                                    )),
+                                    child: FittedBox(
+                                      child: Text("Request",style: CustomTextStyle.boldFont14Style.copyWith(
+                                          fontSize: 24.sp
+                                      )),
+                                    ),
                                   ),
 
 

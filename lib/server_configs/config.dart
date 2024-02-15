@@ -25,5 +25,8 @@ class ServerConfig{
   static String get forgotpassword => "$baseUrl/user/forgotpassword";
   static String get updatePasswordUrl => "$baseUrl/user/forgotpassword";
   static String get projectGetList => "$baseUrl/project/getlist";
+  static String get startTask => "$baseUrl/task/taskstarttimer";
+  static String get stopTask => "$baseUrl/task/taskstoptimer";
+  static String get getRunningDetails => "$baseUrl/timer/getrunningtaskdetails";
 
 }

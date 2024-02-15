@@ -1,8 +1,14 @@
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../../../utils/utils.dart';
 import 'package:flutter/material.dart';
+import '../../tab/view_model/timer_provider.dart';
+import '../domain/request/get_recent_task_request_model.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:osm_flutter/app/home_tab/view_model/home_provider.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
 import 'package:osm_flutter/base/view/base_components/custom_image_view.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/start_stop_task_req_model.dart';
 
 class CustomTaskComponent extends StatefulWidget {
   final CreateTaskListModel? taskData;
@@ -17,6 +23,16 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
   @override
   Widget build(BuildContext context) {
+    final timerProvider = context.watch<TimeProvider>();
+    final taskProvider = context.watch<TaskProvider>();
+    final getRunningTaskData = taskProvider.getRunningTaskResponse.data?.data;
+    final runningTaskId = getRunningTaskData?[0].taskId;
+    final realTimeStartStop = timerProvider.elapsedTime;
+
+    final startStop = timerProvider.startStop;
+
+
+
     return Container(
       margin: EdgeInsets.only(bottom: 10.sp),
 
@@ -60,6 +76,9 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                     final data = widget.taskData?.testList?[dataIndex];
 
                     final hourTime = formattedTime(timeInSecond: data?.totalTimeInMinites ?? 0);
+
+                    final currentTaskIdMatch = runningTaskId == data?.taskId;
+
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +128,52 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                             ),
 
                             InkWell(
-                              onTap: () {
+                              onTap: () async{
+
+                                print("${data?.title} ==== title ${data?.taskId}");
+
+
+                                final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
+
+                                final timeProvider = context.read<TimeProvider>();
+                                final taskProvider = context.read<TaskProvider>();
+                                final homeProvider = context.read<HomeProvider>();
+
+                                await timeProvider.startOrStop();
+
+                                await taskProvider.getRunningTask();
+
+                                if(startStop){
+
+                                  await taskProvider.startTask(startStopTaskReqModel: StartStopTaskReqModel(
+                                    projectId: data?.projectId,
+                                    taskId: data?.taskId,
+                                  ));
+
+                                  await taskProvider.getRecentTaskListData(
+                                      recentTaskRequestModel: RecentTaskRequestModel()
+                                  );
+
+                                  await homeProvider.getHomeTaskListData(
+                                      recentTaskRequestModel: RecentTaskRequestModel(
+                                      endDate: DateTime.now(),
+                                      startDate: startDate
+                                  ));
+
+                                }else{
+
+                                  await taskProvider.stopTask(startStopTaskReqModel: StartStopTaskReqModel(
+                                    projectId: data?.projectId,
+                                    taskId: data?.taskId,
+                                  ));
+
+                                  await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
+
+                                  await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+                                      endDate: DateTime.now(),
+                                      startDate: startDate
+                                  ));
+                                }
                                 // startOrStop();
                               },
                               child: Container(
@@ -118,7 +182,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                   color: kBlueColor,
                                   borderRadius: BorderRadius.circular(100),
                                 ),
-                                child: Icon(true ? Icons.play_arrow : Icons.pause,size: 20.sp,color: Colors.white),
+                                child: Icon( currentTaskIdMatch ? Icons.pause : Icons.play_arrow ,size: 20.sp,color: Colors.white),
                               ),
                             ),
 
@@ -166,11 +230,9 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                           padding:  EdgeInsets.only(left: 10.sp),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-
                             children: [
                               Row(
                                   children: [
-
                                   SizedBox(
                                     height: 18.sp,
                                     width: 18.sp,

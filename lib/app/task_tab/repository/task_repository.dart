@@ -7,9 +7,12 @@ import '../domain/request/create_task_req_model.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/get_status_count.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
+import '../domain/request/start_stop_task_req_model.dart';
+import '../domain/respones/base_res_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/respones/get_create_task_response.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
+import '../domain/respones/get_running_task_res_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 
@@ -19,6 +22,10 @@ abstract class ITaskRepository{
   Future<GetProjectAndAssignUserResponseModel?> getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
   Future<GerStatusAndPriorityResponseModel?> getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
   Future<GetCreateTaskResponseModel?> getCreateTaskData({CreateTaskReqModel? createTasRequestModel});
+
+  Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel});
+  Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel});
+  Future<GetRunningTaskDetailsResModel?> getRunningTask();
 }
 
 class TaskRepository extends ITaskRepository{
@@ -53,5 +60,18 @@ class TaskRepository extends ITaskRepository{
     return await taskUseCases?.getCreateTaskData(createTasRequestModel: createTasRequestModel);
   }
 
+  @override
+  Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+    return await taskUseCases?.startTask(startStopTaskReqModel: startStopTaskReqModel);
+  }
 
+  @override
+  Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+    return await taskUseCases?.stopTask(startStopTaskReqModel: startStopTaskReqModel);
+  }
+
+  @override
+  Future<GetRunningTaskDetailsResModel?> getRunningTask() async{
+    return await taskUseCases?.getRunningTask();
+  }
 }

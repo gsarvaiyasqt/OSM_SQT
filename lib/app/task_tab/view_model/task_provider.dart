@@ -1,15 +1,17 @@
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:osm_flutter/base/base.dart';
-import '../domain/request/create_task_req_model.dart';
-import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/search_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
+import '../domain/request/create_task_req_model.dart';
+import '../domain/respones/base_res_model.dart';
+import '../domain/request/start_stop_task_req_model.dart';
 import '../domain/respones/get_create_task_response.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
+import '../domain/respones/get_running_task_res_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
@@ -19,6 +21,11 @@ abstract class ITaskProvider {
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
   Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
   Future getCreateTaskData();
+
+
+  Future startTask({StartStopTaskReqModel? startStopTaskReqModel});
+  Future stopTask({StartStopTaskReqModel? startStopTaskReqModel});
+  Future getRunningTask();
 
 }
 
@@ -33,6 +40,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _getProjectAndUserResponse = AppResponse.loading("");
     _getGerStatusAndPriorityResponse = AppResponse.loading("");
     _getGetCreateTaskResponse = AppResponse();
+    _startTaskResponse = AppResponse();
+    _stopTaskResponse = AppResponse();
+    _getRunningTaskResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -51,6 +61,15 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<GetCreateTaskResponseModel> _getGetCreateTaskResponse;
   AppResponse<GetCreateTaskResponseModel> get getGetCreateTaskResponse => _getGetCreateTaskResponse;
+
+  late AppResponse<BaseResModel> _startTaskResponse;
+  AppResponse<BaseResModel> get startTaskResponse => _startTaskResponse;
+
+  late AppResponse<BaseResModel> _stopTaskResponse;
+  AppResponse<BaseResModel> get stopTaskResponse => _stopTaskResponse;
+
+  late AppResponse<GetRunningTaskDetailsResModel> _getRunningTaskResponse;
+  AppResponse<GetRunningTaskDetailsResModel> get getRunningTaskResponse => _getRunningTaskResponse;
 
   List<SearchModel> list = [];
 
@@ -260,12 +279,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
       rethrow;
 
     }
-
-
-
-
-
-
   }
 
   @override
@@ -353,6 +366,91 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     notifyListeners();
 
 
+  }
+
+  @override
+  Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+
+    resIsLoading(_startTaskResponse);
+
+    try {
+
+      final response = await taskRepository?.startTask(startStopTaskReqModel: startStopTaskReqModel);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        final res = BaseResModel(
+            statusCode: response?.statusCode,
+            message: response?.message,
+            data: Data(
+              taskId: startStopTaskReqModel?.taskId,
+              startStop: true
+            )
+        );
+
+        print("${res.data?.toJson()} ==== check this data response");
+
+        resIsSuccess(_startTaskResponse,res);
+      }
+
+    } catch (e) {
+      resIsFailed(_startTaskResponse, e);
+      rethrow;
+
+    }
+  }
+
+  @override
+  Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+    resIsLoading(_stopTaskResponse);
+
+    try {
+
+      final response = await taskRepository?.stopTask(startStopTaskReqModel: startStopTaskReqModel);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+
+        resIsSuccess(_stopTaskResponse,response);
+      }
+
+    } catch (e) {
+      resIsFailed(_stopTaskResponse, e);
+      rethrow;
+
+    }
+  }
+
+  @override
+  Future getRunningTask() async{
+    resIsLoading(_getRunningTaskResponse);
+
+    try {
+
+      final response = await taskRepository?.getRunningTask();
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        resIsSuccess(_getRunningTaskResponse,response);
+      }
+
+    } catch (e) {
+      resIsFailed(_getRunningTaskResponse, e);
+      rethrow;
+
+    }
   }
 
 }
