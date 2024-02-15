@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../base/view/base_components/custom_image_view.dart';
 import '../../../base/view/base_components/skeleton_loading.dart';
 import '../../../utils/utils.dart';
+import '../../task_tab/route/task_route.dart';
 import '../view_model/home_provider.dart';
 
 class CustomRecentTaskComponent extends StatefulWidget {
@@ -63,75 +65,85 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
 
                   final hourTime = formattedTime(timeInSecond: data?.totalTimeInMinites ?? 0);
 
-                  return Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: SizedBox(
-                                height: 40.sp,
-                                width: 40.sp,
-                                child: CustomImageView(
-                                  uri: data?.projectLogo ?? "",fit: BoxFit.cover,
-                                )),
-                          ),
-                          
-                          SizedBox(
-                            width: 9.sp,
-                          ),
+                  return GestureDetector(
+                    onTap: () async{
+                      TaskRoute.goToCreteTaskPage(context,TaskUpdateModel(
+                        id: data?.taskId,
+                        isUpdate: true
+                      ));
+                      // await context.read<TaskProvider>().getTaskDetailsData(id: data?.taskId);
 
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data?.projectName ?? "",
-                                  style: CustomTextStyle.regularFont14Style.copyWith(
-                                      color: kPrimaryColor.withOpacity(0.50)),
-                                ),
-
-
-                                Text(
-                                  data?.title ?? "",
-                                  style: CustomTextStyle.semiBoldFont16Style,
-                                )
-                              ],
+                    },
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: SizedBox(
+                                  height: 40.sp,
+                                  width: 40.sp,
+                                  child: CustomImageView(
+                                    uri: data?.projectLogo ?? "",fit: BoxFit.cover,
+                                  )),
                             ),
-                          ),
 
-                          SizedBox(
-                            width: 3.sp,
-                          ),
+                            SizedBox(
+                              width: 9.sp,
+                            ),
 
-                          SizedBox(
-                              height: 16.sp,
-                              child: priorityFunc(priority: data?.priority)
-                          ),
-
-                          SizedBox(
-                            width: 10.sp,
-                          ),
-
-                          // Time Working
-                          Text("$hourTime hrs",
-                              style: CustomTextStyle.regularFont14Style.copyWith(color: kPrimaryColor)),
-
-                          SizedBox(width: 10.sp),
-
-                          SizedBox(
-                              height: 24.sp,
-                              width: 24.sp,
-                              child: statusFunc(status: data?.status)
-                          ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data?.projectName ?? "",
+                                    style: CustomTextStyle.regularFont14Style.copyWith(
+                                        color: kPrimaryColor.withOpacity(0.50)),
+                                  ),
 
 
+                                  Text(
+                                    data?.title ?? "",
+                                    style: CustomTextStyle.semiBoldFont16Style,
+                                  )
+                                ],
+                              ),
+                            ),
 
-                        ],
-                      ),
-                    ],
+                            SizedBox(
+                              width: 3.sp,
+                            ),
+
+                            SizedBox(
+                                height: 16.sp,
+                                child: priorityFunc(priority: data?.priority)
+                            ),
+
+                            SizedBox(
+                              width: 10.sp,
+                            ),
+
+                            // Time Working
+                            Text("$hourTime hrs",
+                                style: CustomTextStyle.regularFont14Style.copyWith(color: kPrimaryColor)),
+
+                            SizedBox(width: 10.sp),
+
+                            SizedBox(
+                                height: 24.sp,
+                                width: 24.sp,
+                                child: statusFunc(status: data?.status)
+                            ),
+
+
+
+                          ],
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),

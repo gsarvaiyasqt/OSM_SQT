@@ -15,6 +15,8 @@ import '../../app/task_tab/domain/respones/get_count_status_response_model.dart'
 import '../../app/task_tab/domain/respones/get_create_task_response.dart';
 import '../../app/task_tab/domain/respones/get_recent_task_response_model.dart';
 import '../../app/task_tab/domain/respones/get_status_and_priority_res_model.dart';
+import '../../app/task_tab/domain/respones/get_sub_point_check_un_chack_response_model.dart';
+import '../../app/task_tab/domain/respones/get_task_details_response_model.dart';
 import '../../app/task_tab/domain/respones/get_user_and_project_response_model.dart';
 import '../../utils/utils.dart';
 
@@ -24,9 +26,12 @@ abstract class ITaskUseCases{
    Future<GetProjectAndAssignUserResponseModel?> getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
    Future<GerStatusAndPriorityResponseModel?> getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
    Future<GetCreateTaskResponseModel?> getCreateTaskData({CreateTaskReqModel? createTasRequestModel});
+   Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id});
+   Future<GetSubPointCheckUnCheckResponseModel?> getCheckAndUnCheckSubPointData({required int? taskSubPointID,required bool? isDone});
 }
 
 class TaskUseCases extends ITaskUseCases{
+
   @override
   Future<GetStatusCountResponseModel?> getCountStatusCount({GetStatusCountRequestModel? getStatusCountRequestModel}) async{
 
@@ -130,6 +135,23 @@ class TaskUseCases extends ITaskUseCases{
     return GetCreateTaskResponseModel.fromJson(response);
 
 
+  }
+
+  @override
+  Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.taskDetails,data: {
+      "id":id
+    }));
+    return GetTaskDetailsResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<GetSubPointCheckUnCheckResponseModel?> getCheckAndUnCheckSubPointData({required int? taskSubPointID, required bool? isDone}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.subPointCheckUnCheck,data: {
+      "taskSubPointID":taskSubPointID,
+      "isDone":isDone
+    }));
+    return GetSubPointCheckUnCheckResponseModel.fromJson(response);
   }
 
 

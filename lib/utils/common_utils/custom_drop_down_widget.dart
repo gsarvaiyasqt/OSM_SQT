@@ -5,8 +5,10 @@ class CustomDropDownWidget extends StatefulWidget {
   final String? name;
   final String? selectedItem;
   final GestureTapCallback? onTap;
+  final bool? isEditable;
+  final bool? isUpdated;
   final List<SearchModel>? multiSelection;
-  const CustomDropDownWidget({Key? key, this.name, this.selectedItem, this.onTap, this.multiSelection}) : super(key: key);
+  const CustomDropDownWidget({Key? key, this.name, this.selectedItem, this.onTap, this.multiSelection, this.isEditable, this.isUpdated}) : super(key: key);
 
   @override
   State<CustomDropDownWidget> createState() => _CustomDropDownWidgetState();
@@ -58,9 +60,26 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
                             right: 0,
                             child: GestureDetector(
                               onTap: () {
+
                                 setState(() {
-                                  widget.multiSelection?.removeAt(index);
+
+                                  if(widget.isUpdated == true){
+
+                                    if(widget.isEditable == true){
+
+                                      widget.multiSelection?.removeAt(index);
+
+                                    }
+
+                                  }else{
+                                    widget.multiSelection?.removeAt(index);
+                                  }
+
                                 });
+
+
+
+
                               },
                               child: Container(
                                 padding: EdgeInsets.all(2),

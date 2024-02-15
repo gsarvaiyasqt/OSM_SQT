@@ -2,6 +2,8 @@
 import 'dart:io';
 import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
 
+import '../respones/get_task_details_response_model.dart';
+
 
 class CreateTasRequestModel{
   String? projectName;
@@ -28,7 +30,7 @@ class CreateTaskReqModel{
   List<String>? multipleAssignUser;
   List<SearchModel>? multipleTestAssignUser;
   List<File>? docList;
-  List<UserTaskSubPointReqModel>? userTaskSubPointList;
+  List<TaskSubpoint>? userTaskSubPointList;
   List<UserListReqModel>? userList;
 
   CreateTaskReqModel({this.priority,this.status,this.startDate,
@@ -39,6 +41,24 @@ class CreateTaskReqModel{
     this.assignInName,
     this.multipleAssignUser
   });
+
+  factory CreateTaskReqModel.fromTaskDetailsData(TaskDetailsData? taskDetailsData){
+    final task = taskDetailsData?.task;
+    List<SearchModel> multipleAssignUser = [];
+    taskDetailsData?.taskUser?.forEach((element) {
+      multipleAssignUser.add(SearchModel(name: element.displayName,projectId: element.userId));
+    });
+    return CreateTaskReqModel(
+    startDate: task?.startDate,
+    endDate: task?.endDate,
+    name: task?.projectName,
+    status: task?.status,
+    priority: task?.priority,
+    userTaskSubPointList: taskDetailsData?.taskSubpoints,
+    projectID: task?.projectId,
+    multipleTestAssignUser: multipleAssignUser
+  );
+  }
 
 
 }

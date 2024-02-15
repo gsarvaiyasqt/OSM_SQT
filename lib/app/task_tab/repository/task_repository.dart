@@ -11,6 +11,8 @@ import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/respones/get_create_task_response.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
+import '../domain/respones/get_sub_point_check_un_chack_response_model.dart';
+import '../domain/respones/get_task_details_response_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 
 abstract class ITaskRepository{
@@ -19,6 +21,8 @@ abstract class ITaskRepository{
   Future<GetProjectAndAssignUserResponseModel?> getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
   Future<GerStatusAndPriorityResponseModel?> getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
   Future<GetCreateTaskResponseModel?> getCreateTaskData({CreateTaskReqModel? createTasRequestModel});
+  Future<GetSubPointCheckUnCheckResponseModel?> getCheckAndUnCheckSubPointData({required int? taskSubPointID,required bool? isDone});
+  Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id});
 }
 
 class TaskRepository extends ITaskRepository{
@@ -51,6 +55,16 @@ class TaskRepository extends ITaskRepository{
   @override
   Future<GetCreateTaskResponseModel?> getCreateTaskData({CreateTaskReqModel? createTasRequestModel}) async{
     return await taskUseCases?.getCreateTaskData(createTasRequestModel: createTasRequestModel);
+  }
+
+  @override
+  Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id}) async{
+    return await taskUseCases?.getTaskDetailsData(id: id);
+  }
+
+  @override
+  Future<GetSubPointCheckUnCheckResponseModel?> getCheckAndUnCheckSubPointData({required int? taskSubPointID, required bool? isDone}) async{
+    return await taskUseCases?.getCheckAndUnCheckSubPointData(taskSubPointID: taskSubPointID, isDone: isDone);
   }
 
 
