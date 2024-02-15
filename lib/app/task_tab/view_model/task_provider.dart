@@ -11,6 +11,8 @@ import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
+import '../domain/respones/get_sub_point_check_un_chack_response_model.dart';
+import '../domain/respones/get_task_details_response_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 
@@ -19,6 +21,8 @@ abstract class ITaskProvider {
   Future getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
   Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
   Future getCreateTaskData();
+  Future getTaskDetailsData({required int? id});
+  Future getCheckAndUnCheckSubPointData({required int? taskSubPointID,required bool? isDone});
 
 }
 
@@ -33,6 +37,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _getProjectAndUserResponse = AppResponse.loading("");
     _getGerStatusAndPriorityResponse = AppResponse.loading("");
     _getGetCreateTaskResponse = AppResponse();
+    _getTaskDetailsResponse = AppResponse();
+    _getSubPointCheckUnCheckResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -51,6 +57,14 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<GetCreateTaskResponseModel> _getGetCreateTaskResponse;
   AppResponse<GetCreateTaskResponseModel> get getGetCreateTaskResponse => _getGetCreateTaskResponse;
+
+
+  late AppResponse<GetTaskDetailsResponseModel> _getTaskDetailsResponse;
+  AppResponse<GetTaskDetailsResponseModel> get getTaskDetailsResponse => _getTaskDetailsResponse;
+
+
+  late AppResponse<GetSubPointCheckUnCheckResponseModel> _getSubPointCheckUnCheckResponse;
+  AppResponse<GetSubPointCheckUnCheckResponseModel> get getSubPointCheckUnCheckResponse => _getSubPointCheckUnCheckResponse;
 
   List<SearchModel> list = [];
 
@@ -351,6 +365,84 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
         multipleTestAssignUser: []
     );
     notifyListeners();
+
+
+  }
+
+  @override
+  Future getTaskDetailsData({required int? id}) async{
+
+    resIsLoading(_getTaskDetailsResponse);
+
+
+    try {
+
+      final response = await taskRepository?.getTaskDetailsData(id: id);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        resIsSuccess(_getTaskDetailsResponse,response);
+
+      }
+
+    } catch (e) {
+      resIsFailed(_getTaskDetailsResponse,e);
+      rethrow;
+
+    }
+
+
+  }
+
+  @override
+  Future getCheckAndUnCheckSubPointData({required int? taskSubPointID, required bool? isDone}) async{
+
+    resIsLoading(_getSubPointCheckUnCheckResponse);
+
+
+    try {
+
+
+      final response = await taskRepository?.getCheckAndUnCheckSubPointData(taskSubPointID: taskSubPointID, isDone: isDone);
+
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        createTaskReqModel.userTaskSubPointList?.where((element) => element.taskSubPointId == response?.data?.taskSubPointId).forEach((element) {
+
+          if(response?.data?.isDone == false){
+
+            element.isDone = 1;
+
+          }else{
+
+            element.isDone = 0;
+
+          }
+
+
+        });
+
+        resIsSuccess(_getSubPointCheckUnCheckResponse,response);
+
+      }
+
+
+
+    } catch (e) {
+
+      resIsFailed(_getSubPointCheckUnCheckResponse, e);
+      rethrow;
+
+    }
 
 
   }

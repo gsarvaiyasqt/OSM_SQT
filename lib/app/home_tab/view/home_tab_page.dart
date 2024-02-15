@@ -349,7 +349,10 @@ class _HomeTabPageState extends State<HomeTabPage> {
                     ),
                     child:  GestureDetector(
                       onTap: () {
-                        TaskRoute.goToCreteTaskPage(context);
+                        TaskRoute.goToCreteTaskPage(context,TaskUpdateModel(
+                            id: null,
+                            isUpdate: false
+                        ));
                       },
                       child: Container(
                         padding: EdgeInsets.all(10.sp),
