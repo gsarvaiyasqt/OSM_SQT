@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:osm_flutter/app/tab/view_model/timer_provider.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+
 import '../../../utils/common_utils/custom_timer_appbar.dart';
 import '../domain/menu_list.dart';
 import 'package:flutter/material.dart';
@@ -19,54 +22,23 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  Stopwatch watch = Stopwatch();
-  Timer? timer;
-  bool startStop = true;
 
-  String elapsedTime = '';
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+      final taskProvider = context.read<TaskProvider>();
 
-  updateTime(Timer timer) {
-    if (watch.isRunning) {
-      setState(() {
-        elapsedTime = transformMilliSeconds(watch.elapsedMilliseconds);
-      });
-    }
-  }
-
-  startOrStop() {
-    if(startStop) {
-      startWatch();
-    } else {
-      stopWatch();
-    }
-  }
-
-  startWatch() {
-    setState(() {
-      startStop = false;
-      watch.start();
-      timer = Timer.periodic(Duration(milliseconds: 100), updateTime);
-    });
-  }
-
-  stopWatch() {
-    setState(() {
-      startStop = true;
-      watch.stop();
-      setTime();
-    });
-  }
-
-  setTime() {
-    var timeSoFar = watch.elapsedMilliseconds;
-    setState(() {
-      elapsedTime = transformMilliSeconds(timeSoFar);
+      await taskProvider.getRunningTask();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final tabProvider = context.watch<TabBarProvider>();
+    final timerProvider = context.watch<TimeProvider>();
+    final realTimeStartStop = timerProvider.elapsedTime;
+    final startStop = timerProvider.startStop;
     return SafeArea(
       child: Scaffold(
         appBar: CustomTimerAppbar(height: 100.sp,
@@ -77,7 +49,8 @@ class _TabScreenState extends State<TabScreen> {
               children: [
                 InkWell(
                   onTap: () {
-                    startOrStop();
+                    final timerProvider = context.read<TimeProvider>();
+                    timerProvider.startOrStop();
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 9.sp,vertical: 9.sp),
@@ -91,7 +64,7 @@ class _TabScreenState extends State<TabScreen> {
 
                 SizedBox(width: 10.sp),
 
-                Text("$elapsedTime",style: CustomTextStyle.boldFont22Style.copyWith(
+                Text(realTimeStartStop,style: CustomTextStyle.boldFont22Style.copyWith(
                     color: kBackgroundColor
                 ))
 

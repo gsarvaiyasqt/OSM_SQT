@@ -30,7 +30,6 @@ class _TaskTabPageState extends State<TaskTabPage> {
       final taskProvider = context.read<TaskProvider>();
 
       await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
-
       ));
 
     });

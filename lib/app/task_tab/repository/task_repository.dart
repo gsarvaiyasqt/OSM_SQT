@@ -7,9 +7,12 @@ import '../domain/request/create_task_req_model.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/get_status_count.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
+import '../domain/request/start_stop_task_req_model.dart';
+import '../domain/respones/base_res_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/respones/get_create_task_response.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
+import '../domain/respones/get_running_task_res_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_sub_point_check_un_chack_response_model.dart';
 import '../domain/respones/get_task_details_response_model.dart';
@@ -21,6 +24,11 @@ abstract class ITaskRepository{
   Future<GetProjectAndAssignUserResponseModel?> getProjectAndAssignUser({GetProjectAndAssignUserRequestModel? getProjectAndAssignUserRequestModel});
   Future<GerStatusAndPriorityResponseModel?> getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType});
   Future<GetCreateTaskResponseModel?> getCreateTaskData({CreateTaskReqModel? createTasRequestModel});
+
+  Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel});
+  Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel});
+  Future<GetRunningTaskDetailsResModel?> getRunningTask();
+
   Future<GetSubPointCheckUnCheckResponseModel?> getCheckAndUnCheckSubPointData({required int? taskSubPointID,required bool? isDone});
   Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id});
 }
@@ -58,6 +66,16 @@ class TaskRepository extends ITaskRepository{
   }
 
   @override
+
+  Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+    return await taskUseCases?.startTask(startStopTaskReqModel: startStopTaskReqModel);
+  }
+
+  @override
+  Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+    return await taskUseCases?.stopTask(startStopTaskReqModel: startStopTaskReqModel);
+  }
+
   Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id}) async{
     return await taskUseCases?.getTaskDetailsData(id: id);
   }
@@ -68,4 +86,9 @@ class TaskRepository extends ITaskRepository{
   }
 
 
+
+  @override
+  Future<GetRunningTaskDetailsResModel?> getRunningTask() async{
+    return await taskUseCases?.getRunningTask();
+  }
 }
