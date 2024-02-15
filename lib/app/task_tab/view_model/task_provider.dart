@@ -26,6 +26,9 @@ abstract class ITaskProvider {
   Future startTask({StartStopTaskReqModel? startStopTaskReqModel});
   Future stopTask({StartStopTaskReqModel? startStopTaskReqModel});
   Future getRunningTask();
+  
+  Future getTaskDetailsData({required int? id});
+  Future getCheckAndUnCheckSubPointData({required int? taskSubPointID,required bool? isDone});
 
 }
 
@@ -43,6 +46,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _startTaskResponse = AppResponse();
     _stopTaskResponse = AppResponse();
     _getRunningTaskResponse = AppResponse();
+    _getTaskDetailsResponse = AppResponse();
+    _getSubPointCheckUnCheckResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -70,6 +75,13 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<GetRunningTaskDetailsResModel> _getRunningTaskResponse;
   AppResponse<GetRunningTaskDetailsResModel> get getRunningTaskResponse => _getRunningTaskResponse;
+  
+  late AppResponse<GetTaskDetailsResponseModel> _getTaskDetailsResponse;
+  AppResponse<GetTaskDetailsResponseModel> get getTaskDetailsResponse => _getTaskDetailsResponse;
+
+
+  late AppResponse<GetSubPointCheckUnCheckResponseModel> _getSubPointCheckUnCheckResponse;
+  AppResponse<GetSubPointCheckUnCheckResponseModel> get getSubPointCheckUnCheckResponse => _getSubPointCheckUnCheckResponse;
 
   List<SearchModel> list = [];
 
@@ -285,7 +297,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   Future getCreateTaskData() async{
 
 
-
     if(createTaskReqModel.name == null && createTaskReqModel.projectID == null){
 
       throw "Please select project name";
@@ -451,6 +462,84 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
       rethrow;
 
     }
+  }
+  
+  @override
+  Future getTaskDetailsData({required int? id}) async{
+
+    resIsLoading(_getTaskDetailsResponse);
+
+
+    try {
+
+      final response = await taskRepository?.getTaskDetailsData(id: id);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        resIsSuccess(_getTaskDetailsResponse,response);
+
+      }
+
+    } catch (e) {
+      resIsFailed(_getTaskDetailsResponse,e);
+      rethrow;
+
+    }
+
+
+  }
+
+  @override
+  Future getCheckAndUnCheckSubPointData({required int? taskSubPointID, required bool? isDone}) async{
+
+    resIsLoading(_getSubPointCheckUnCheckResponse);
+
+
+    try {
+
+
+      final response = await taskRepository?.getCheckAndUnCheckSubPointData(taskSubPointID: taskSubPointID, isDone: isDone);
+
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        createTaskReqModel.userTaskSubPointList?.where((element) => element.taskSubPointId == response?.data?.taskSubPointId).forEach((element) {
+
+          if(response?.data?.isDone == false){
+
+            element.isDone = 1;
+
+          }else{
+
+            element.isDone = 0;
+
+          }
+
+
+        });
+
+        resIsSuccess(_getSubPointCheckUnCheckResponse,response);
+
+      }
+
+
+
+    } catch (e) {
+
+      resIsFailed(_getSubPointCheckUnCheckResponse, e);
+      rethrow;
+
+    }
+
+
   }
 
 }

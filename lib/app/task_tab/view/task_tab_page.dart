@@ -43,29 +43,6 @@ class _TaskTabPageState extends State<TaskTabPage> {
     final listData = taskProvider.listData;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
-      // appBar:  CustomAppbar(
-      //   height: 100.sp,
-      //   lending: ImageUtil.dummy.profileImage,
-      //   titleText: "Create setting Inner page design",
-      //   action: Center(
-      //     child: Row(
-      //       children: [
-      //         Container(
-      //           padding: EdgeInsets.symmetric(horizontal: 9.sp, vertical: 9.sp),
-      //           decoration: BoxDecoration(
-      //             color: kBackgroundColor,
-      //             borderRadius: BorderRadius.circular(100),
-      //           ),
-      //           child: Icon(Icons.pause, size: 20.sp),
-      //         ),
-      //         SizedBox(width: 10.sp),
-      //         Text("01:34 hr",
-      //             style: CustomTextStyle.boldFont22Style
-      //                 .copyWith(color: kBackgroundColor))
-      //       ],
-      //     ),
-      //   ),
-      // ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.sp),
         child: SingleChildScrollView(

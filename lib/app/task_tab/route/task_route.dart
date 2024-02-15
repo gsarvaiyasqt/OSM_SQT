@@ -15,8 +15,14 @@ class TaskRoute{
     Navigator.of(context).pushNamed(route);
   }
 
-  static goToCreteTaskPage(BuildContext context) {
-    Navigator.of(context).pushNamed(createTaskRoute);
+  static goToCreteTaskPage(BuildContext context,[TaskUpdateModel? taskUpdateModel]) {
+    Navigator.of(context).pushNamed(createTaskRoute,arguments: taskUpdateModel);
   }
+
+}
+class TaskUpdateModel{
+  bool? isUpdate;
+  int? id;
+  TaskUpdateModel({this.isUpdate,this.id});
 
 }

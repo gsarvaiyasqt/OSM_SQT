@@ -14,6 +14,8 @@ import '../domain/respones/get_create_task_response.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/respones/get_running_task_res_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
+import '../domain/respones/get_sub_point_check_un_chack_response_model.dart';
+import '../domain/respones/get_task_details_response_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 
 abstract class ITaskRepository{
@@ -26,6 +28,9 @@ abstract class ITaskRepository{
   Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel});
   Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel});
   Future<GetRunningTaskDetailsResModel?> getRunningTask();
+
+  Future<GetSubPointCheckUnCheckResponseModel?> getCheckAndUnCheckSubPointData({required int? taskSubPointID,required bool? isDone});
+  Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id});
 }
 
 class TaskRepository extends ITaskRepository{
@@ -61,6 +66,7 @@ class TaskRepository extends ITaskRepository{
   }
 
   @override
+
   Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
     return await taskUseCases?.startTask(startStopTaskReqModel: startStopTaskReqModel);
   }
@@ -69,6 +75,17 @@ class TaskRepository extends ITaskRepository{
   Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
     return await taskUseCases?.stopTask(startStopTaskReqModel: startStopTaskReqModel);
   }
+
+  Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id}) async{
+    return await taskUseCases?.getTaskDetailsData(id: id);
+  }
+
+  @override
+  Future<GetSubPointCheckUnCheckResponseModel?> getCheckAndUnCheckSubPointData({required int? taskSubPointID, required bool? isDone}) async{
+    return await taskUseCases?.getCheckAndUnCheckSubPointData(taskSubPointID: taskSubPointID, isDone: isDone);
+  }
+
+
 
   @override
   Future<GetRunningTaskDetailsResModel?> getRunningTask() async{

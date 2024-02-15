@@ -96,7 +96,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                   child: CustomImageView(uri: data?.projectLogo,fit: BoxFit.cover,)
                               ),
                             ),
-                            
+
                             SizedBox(
                               width: 8.sp,
                             ),
@@ -127,6 +127,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                               ),
                             ),
 
+                            if(data?.isAssign != 0)
                             InkWell(
                               onTap: () async{
 
