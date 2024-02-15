@@ -1,0 +1,59 @@
+name: osm_flutter
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.5 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  dio: ^5.4.0
+  intl: ^0.18.1
+  provider: ^6.1.1
+  flutter_svg: ^2.0.9
+  image_picker: ^1.0.4
+  path_provider: ^2.1.1
+  cupertino_icons: ^1.0.2
+  shared_preferences: ^2.2.2
+  cached_network_image: ^3.3.0
+  flutter_secure_storage: ^9.0.0
+  collection: ^1.18.0
+  uuid: ^4.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/icons/
+    - assets/images/logo/
+    - assets/images/bg_img/
+    - assets/images/dummy_images/
+
+  fonts:
+    - family: SourceSansPro
+      fonts:
+        - asset: assets/fonts/SourceSansPro-Black.otf
+          weight: 900
+        - asset: assets/fonts/SourceSansPro-Bold.otf
+          weight: 700
+        - asset: assets/fonts/SourceSansPro-Semibold.otf
+          weight: 500
+        - asset: assets/fonts/SourceSansPro-Regular.otf
+          weight: 400
+        - asset: assets/fonts/SourceSansPro-light.otf
+          weight: 300
