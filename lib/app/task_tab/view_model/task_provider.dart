@@ -1,9 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:osm_flutter/base/base.dart';
+import '../domain/request/save_user_in_deatils_req_model.dart';
 import '../domain/request/search_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import '../domain/request/create_task_req_model.dart';
+import '../domain/request/update_task_status_and_priority_request_model.dart';
 import '../domain/respones/base_res_model.dart';
 import '../domain/request/start_stop_task_req_model.dart';
 import '../domain/respones/get_create_task_response.dart';
@@ -13,8 +15,13 @@ import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/respones/get_running_task_res_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
+import '../domain/respones/get_sub_point_check_un_chack_response_model.dart';
+import '../domain/respones/get_task_details_response_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
+
+import '../domain/respones/save_user_in_details_response_model.dart';
+import '../domain/ui_state/update_task_status_priority_ui_state.dart';
 
 abstract class ITaskProvider {
   Future getRecentTaskListData({RecentTaskRequestModel? recentTaskRequestModel});
@@ -29,6 +36,9 @@ abstract class ITaskProvider {
   
   Future getTaskDetailsData({required int? id});
   Future getCheckAndUnCheckSubPointData({required int? taskSubPointID,required bool? isDone});
+  Future updateTaskStatusAndPriorityData();
+  Future deleteUserInTask({required String? name,required int? id});
+  Future saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode});
 
 }
 
@@ -48,6 +58,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _getRunningTaskResponse = AppResponse();
     _getTaskDetailsResponse = AppResponse();
     _getSubPointCheckUnCheckResponse = AppResponse();
+    _getUpdateStatusAndPriorityResponse = AppResponse();
+    _deleteUserInTaskResponse = AppResponse();
+    _saveUserDetailsResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -82,6 +95,19 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<GetSubPointCheckUnCheckResponseModel> _getSubPointCheckUnCheckResponse;
   AppResponse<GetSubPointCheckUnCheckResponseModel> get getSubPointCheckUnCheckResponse => _getSubPointCheckUnCheckResponse;
+
+
+  late AppResponse<BaseResModel> _getUpdateStatusAndPriorityResponse;
+  AppResponse<BaseResModel> get getUpdateStatusAndPriorityResponse => _getUpdateStatusAndPriorityResponse;
+
+  late AppResponse<BaseResModel> _deleteUserInTaskResponse;
+  AppResponse<BaseResModel> get deleteUserInTaskResponse => _deleteUserInTaskResponse;
+
+
+  late AppResponse<SaveUserDetailsResponseModel> _saveUserDetailsResponse;
+  AppResponse<SaveUserDetailsResponseModel> get saveUserDetailsResponse => _saveUserDetailsResponse;
+
+  UpdateTaskStatusPriorityUiState updateTaskStatusPriorityUiState = UpdateTaskStatusPriorityUiState();
 
   List<SearchModel> list = [];
 
@@ -480,6 +506,18 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
       }else{
 
+        response?.data?.taskUser?.forEach((element) {
+
+          createTaskReqModel.multipleTestAssignUser?.where((e) => e.projectId == element.userId).forEach((mElement) {
+
+           mElement.isAssign = element.isAssign;
+           mElement.projectId = element.userId;
+           mElement.taskUserID = element.taskUserId;
+
+         });
+
+        });
+
         resIsSuccess(_getTaskDetailsResponse,response);
 
       }
@@ -539,6 +577,105 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
     }
 
+
+  }
+
+  @override
+  Future updateTaskStatusAndPriorityData() async{
+
+    resIsLoading(_getUpdateStatusAndPriorityResponse);
+
+
+    try {
+
+      final response = await taskRepository?.updateTaskStatusAndPriorityData(updateTaskStatusAndPriorityRequestModel: UpdateTaskStatusAndPriorityRequestModel(
+        taskId: createTaskReqModel.taskID,
+        projectId: createTaskReqModel.projectID,
+        fieldValue: updateTaskStatusPriorityUiState.fieldValue,
+        fieldName: updateTaskStatusPriorityUiState.fieldName
+      ));
+
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+
+        resIsSuccess(_getUpdateStatusAndPriorityResponse,response);
+
+      }
+    } catch (e) {
+
+      resIsFailed(_getUpdateStatusAndPriorityResponse, e);
+      rethrow;
+
+    }
+
+
+
+
+
+  }
+
+  @override
+  Future deleteUserInTask({required String? name, required int? id}) async{
+
+
+    resIsLoading(_deleteUserInTaskResponse);
+
+
+    try {
+
+      final response = await taskRepository?.deleteUserInTask(name: name,id: id);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+      }else{
+        await getTaskDetailsData(id: createTaskReqModel.taskID);
+        resIsSuccess(_deleteUserInTaskResponse,response);
+
+      }
+
+    } catch (e) {
+      resIsFailed(_deleteUserInTaskResponse,e);
+      rethrow;
+
+    }
+
+  }
+
+  @override
+  Future saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode}) async{
+
+    resIsLoading(_saveUserDetailsResponse);
+
+    try {
+
+      final response = await taskRepository?.saveUserInDetails(saveDataInDetailReqMode: saveDataInDetailReqMode);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+
+      }else{
+
+        await getTaskDetailsData(id: createTaskReqModel.taskID);
+
+        resIsSuccess(_saveUserDetailsResponse,response);
+
+
+      }
+
+    } catch (e) {
+
+      resIsFailed(_saveUserDetailsResponse, e);
+      rethrow;
+
+    }
 
   }
 

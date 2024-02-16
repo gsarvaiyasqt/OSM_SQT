@@ -30,5 +30,8 @@ class ServerConfig{
   static String get stopTask => "$baseUrl/task/taskstoptimer";
   static String get getRunningDetails => "$baseUrl/timer/getrunningtaskdetails";
   static String get subPointCheckUnCheck => "$baseUrl/tasksubpoint/checkuncheck";
+  static String get taskUpdateField => "$baseUrl/task/taskupdatefield";
+  static String get deleteUser => "$baseUrl/taskuser/delete";
+  static String get saveUserInDetail => "$baseUrl/taskuser/save";
 
 }
