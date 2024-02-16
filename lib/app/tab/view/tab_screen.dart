@@ -75,7 +75,7 @@ class _TabScreenState extends State<TabScreen> {
                     onTap: () {
                       final timerProvider = context.read<TimerNotifier>();
                       // timerProvider.startOrStop();
-                      timerProvider.differenceRunningTime(context);
+                      // timerProvider.differenceRunningTime(context);
                       timerProvider.startTimer();
                     },
                     child: Container(
