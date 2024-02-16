@@ -3,6 +3,8 @@ part of utils;
 enum Status { LOADING, COMPLETED, ERROR, UNAUTHORISED }
 // enum OrderItemStatus { completed, not_compelted}
 
+enum TaskUpdateStatus {Status,Priority,StartDate,EndDate,Title}
+
 enum OrderStatus {
   all(value: "All",apiValue: "all"),
   inProgress(value: "In Progress",apiValue: "in_progress"),

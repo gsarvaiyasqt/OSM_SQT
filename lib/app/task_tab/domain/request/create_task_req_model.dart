@@ -46,9 +46,10 @@ class CreateTaskReqModel{
     final task = taskDetailsData?.task;
     List<SearchModel> multipleAssignUser = [];
     taskDetailsData?.taskUser?.forEach((element) {
-      multipleAssignUser.add(SearchModel(name: element.displayName,projectId: element.userId));
+      multipleAssignUser.add(SearchModel(name: element.displayName,projectId: element.userId,taskUserID: element.taskUserId,isAssign: element.isAssign));
     });
     return CreateTaskReqModel(
+      taskID: task?.taskId,
     startDate: task?.startDate,
     endDate: task?.endDate,
     name: task?.projectName,
