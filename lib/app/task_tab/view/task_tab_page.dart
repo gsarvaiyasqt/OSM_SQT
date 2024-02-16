@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/task_tab/components/custom_task_component.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
@@ -18,6 +21,26 @@ class TaskTabPage extends StatefulWidget {
 }
 
 class _TaskTabPageState extends State<TaskTabPage> {
+
+  int randomNote = Random().nextInt(6);
+  int randomType = Random().nextInt(6);
+  Timer? timer;
+  String changeTimer = 'Start Timer';
+
+  void startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      setState(() {
+        randomNote = Random().nextInt(6);
+        randomType = Random().nextInt(6);
+      });
+    });
+  }
+
+  void stopTimer() {
+    timer?.cancel();
+  }
+
+
 
   @override
   void initState() {
@@ -54,6 +77,7 @@ class _TaskTabPageState extends State<TaskTabPage> {
               CustomSearchBar(),
           
               SizedBox(height: 15.sp,),
+
           
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,

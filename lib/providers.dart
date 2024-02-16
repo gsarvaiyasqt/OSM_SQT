@@ -8,6 +8,7 @@ import 'package:osm_flutter/app/project_tab/repository/project_repository.dart';
 import 'package:osm_flutter/app/project_tab/view_model/project_provider.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:osm_flutter/timer/timer_notifier.dart';
 import 'package:osm_flutter/usecases/auth/auth_usecases.dart';
 import 'package:osm_flutter/usecases/home/home_usecases.dart';
 import 'package:osm_flutter/usecases/project/project_usecases.dart';
@@ -34,7 +35,8 @@ class AppProviders{
 
   /// Providers
   static get mainDashboardProvider => ChangeNotifierProvider(create: (context) => TabBarProvider());
-  static get timerProvider => ChangeNotifierProvider(create: (context) => TimeProvider());
+  static get timeProvider => ChangeNotifierProvider(create: (context) => TimeProvider());
+  static get timerProvider => ChangeNotifierProvider(create: (context) => TimerNotifier());
   static get authProvider => ChangeNotifierProvider(create: (context) => AuthProvider(authRepository: authRepo));
   static get homeProvider => ChangeNotifierProvider(create: (context) => HomeProvider(homeRepository: homeRepo ));
   static get taskProvider => ChangeNotifierProvider(create: (context) => TaskProvider(taskRepository: taskRepo));

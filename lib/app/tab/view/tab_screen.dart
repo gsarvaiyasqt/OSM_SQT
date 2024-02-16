@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:osm_flutter/app/tab/view_model/timer_provider.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
 
+import '../../../base/view/base_components/custom_image_view.dart';
+import '../../../timer/timer_notifier.dart';
 import '../../../utils/common_utils/custom_timer_appbar.dart';
 import '../domain/menu_list.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +31,6 @@ class _TabScreenState extends State<TabScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
       final taskProvider = context.read<TaskProvider>();
-
       await taskProvider.getRunningTask();
     });
   }
@@ -37,42 +39,79 @@ class _TabScreenState extends State<TabScreen> {
   Widget build(BuildContext context) {
     final tabProvider = context.watch<TabBarProvider>();
     final timerProvider = context.watch<TimeProvider>();
-    final realTimeStartStop = timerProvider.elapsedTime;
+    final taskProvider = context.watch<TaskProvider>();
+
+    final getTaskDetailsLoader = taskProvider.getRunningTaskResponse.state == Status.LOADING;
+    final getTaskDetailsData = taskProvider.getRunningTaskResponse.data?.data?[0];
+    // final realTimeStartStop = timerProvider.elapsedTime;
+    // final realTimeStartStop = timerProvider.diffTime;
+
     final startStop = timerProvider.startStop;
+    final diffRealTime = timerProvider.diffRealTime;
+
     return SafeArea(
       child: Scaffold(
-        appBar: CustomTimerAppbar(height: 100.sp,
-          lending: ImageUtil.dummy.profileImage,
-          titleText: "Create setting Inner page design",
+        appBar: getTaskDetailsData == null ?
+
+        AppBar(toolbarHeight: 0,) :
+
+        CustomTimerAppbar(
+          loader: getTaskDetailsLoader,
+          height: 100.sp,
+          lending: CustomImageView(uri: getTaskDetailsData.projectLogo,fit: BoxFit.cover,placeholder: Icon(Icons.error_outline_rounded,color: Colors.white,)),
+          titleText: "${getTaskDetailsData.title}",
+          projectText: "${getTaskDetailsData.projectName}",
           action:  Center(
             child: Row(
               children: [
-                InkWell(
-                  onTap: () {
-                    final timerProvider = context.read<TimeProvider>();
-                    timerProvider.startOrStop();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 9.sp,vertical: 9.sp),
-                    decoration: BoxDecoration(
-                      color: kBackgroundColor,
-                      borderRadius: BorderRadius.circular(100),
+                SkeletonView(
+                  isLoading: getTaskDetailsLoader,
+                  borderRadius: BorderRadius.circular(100),
+                  skeletonBody: Container(
+                    height: 40.sp,
+                    width: 40.sp,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      final timerProvider = context.read<TimerNotifier>();
+                      // timerProvider.startOrStop();
+                      timerProvider.differenceRunningTime(context);
+                      timerProvider.startTimer();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 9.sp,vertical: 9.sp),
+                      decoration: BoxDecoration(
+                        color: kBackgroundColor,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Icon(startStop ? Icons.play_arrow : Icons.pause,size: 20.sp),
                     ),
-                    child: Icon(startStop ? Icons.play_arrow : Icons.pause,size: 20.sp),
                   ),
                 ),
 
                 SizedBox(width: 10.sp),
 
-                Text(realTimeStartStop,style: CustomTextStyle.boldFont22Style.copyWith(
-                    color: kBackgroundColor
-                ))
+                SkeletonView(
+                  isLoading: getTaskDetailsLoader,
+                  borderRadius: BorderRadius.circular(8.sp),
+                  skeletonBody: SizedBox(
+                    width: 80.sp,
+                    height: 22.sp,
+                  ),
+                  child: Text(
+                      "$diffRealTime",
 
+                      style: CustomTextStyle.boldFont22Style.copyWith(
+                      color: kBackgroundColor
+                  )),
+                )
               ],
             ),
           ),
         ),
+
         backgroundColor: kWhiteColor,
+
         body: IndexedStack(
           index: tabProvider.currentIndex,
           children: const [

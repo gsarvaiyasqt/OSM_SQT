@@ -3,6 +3,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:provider/provider.dart';
 
 class TimeProvider extends ChangeNotifier{
 
@@ -10,8 +13,27 @@ class TimeProvider extends ChangeNotifier{
   bool startStop = true;
   String elapsedTime = '';
 
+  Duration? diffRealTime;
+
+
   Stopwatch watch = Stopwatch();
 
+  differenceRunningTime(BuildContext context){
+
+    final runningTaskResponse = context.read<TaskProvider>().getRunningTaskResponse;
+
+    final startDate = runningTaskResponse.data?.data?[0].startTime;
+
+    final currentTime = DateTime.now();
+
+    diffRealTime = currentTime.difference(startDate ?? DateTime.now());
+
+    print("${diffRealTime?.inHours.remainder(60).toString().padLeft(2, '0')}:${diffRealTime?.inMinutes.remainder(60).toString().padLeft(2, '0')}:${diffRealTime?.inSeconds.remainder(60)}");
+
+    // print("$differenceTime == check diffrence");
+
+    notifyListeners();
+  }
 
   updateTime(Timer timer) {
     if (watch.isRunning) {

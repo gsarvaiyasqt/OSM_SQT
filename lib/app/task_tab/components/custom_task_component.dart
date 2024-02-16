@@ -21,6 +21,10 @@ class CustomTaskComponent extends StatefulWidget {
 class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
 
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final timerProvider = context.watch<TimeProvider>();
@@ -28,10 +32,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
     final getRunningTaskData = taskProvider.getRunningTaskResponse.data?.data;
     final runningTaskId = getRunningTaskData?[0].taskId;
     final realTimeStartStop = timerProvider.elapsedTime;
-
     final startStop = timerProvider.startStop;
-
-
 
     return Container(
       margin: EdgeInsets.only(bottom: 10.sp),
@@ -133,7 +134,6 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                 print("${data?.title} ==== title ${data?.taskId}");
 
-
                                 final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
 
                                 final timeProvider = context.read<TimeProvider>();
@@ -142,14 +142,14 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                                 await timeProvider.startOrStop();
 
-                                await taskProvider.getRunningTask();
-
                                 if(startStop){
 
                                   await taskProvider.startTask(startStopTaskReqModel: StartStopTaskReqModel(
                                     projectId: data?.projectId,
                                     taskId: data?.taskId,
                                   ));
+
+                                  await taskProvider.getRunningTask();
 
                                   await taskProvider.getRecentTaskListData(
                                       recentTaskRequestModel: RecentTaskRequestModel()
@@ -168,6 +168,8 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                     taskId: data?.taskId,
                                   ));
 
+
+
                                   await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
 
                                   await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
@@ -175,6 +177,8 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                       startDate: startDate
                                   ));
                                 }
+
+                                await taskProvider.getRunningTask();
                                 // startOrStop();
                               },
                               child: Container(

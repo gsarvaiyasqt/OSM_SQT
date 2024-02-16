@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../../utils/utils.dart';
 import 'loading_view.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,7 @@ class CustomImageView extends StatelessWidget {
     final url = Uri.tryParse(uri ?? "");
 
     if(url?.isAbsolute == false) {
-      return placeholder ?? const Icon(Icons.error_outline_rounded);
+      return placeholder ??  ImageUtil.iconImageClass.sqtLogoIcon;
     }
 
     return CachedNetworkImage(
@@ -27,7 +29,7 @@ class CustomImageView extends StatelessWidget {
       imageUrl: uri ?? "",
 
       placeholder: (context, url) => Center(child: Platform.isIOS ? const CupertinoActivityIndicator() : const CircularProgressIndicator(color: kPrimaryColor,strokeWidth: 1,)),
-      errorWidget: (context, url, error) => placeholder ?? const Icon(Icons.error_outline_rounded),
+      errorWidget: (context, url, error) => placeholder ??  ImageUtil.iconImageClass.sqtLogoIcon,
       color: color,
     );
   }

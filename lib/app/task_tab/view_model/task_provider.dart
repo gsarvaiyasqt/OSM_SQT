@@ -13,6 +13,8 @@ import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/respones/get_running_task_res_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
+import '../domain/respones/get_sub_point_check_un_chack_response_model.dart';
+import '../domain/respones/get_task_details_response_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 
@@ -25,6 +27,7 @@ abstract class ITaskProvider {
 
   Future startTask({StartStopTaskReqModel? startStopTaskReqModel});
   Future stopTask({StartStopTaskReqModel? startStopTaskReqModel});
+
   Future getRunningTask();
   
   Future getTaskDetailsData({required int? id});
@@ -62,7 +65,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<GerStatusAndPriorityResponseModel> _getGerStatusAndPriorityResponse;
   AppResponse<GerStatusAndPriorityResponseModel> get getGerStatusAndPriorityResponse => _getGerStatusAndPriorityResponse;
-
 
   late AppResponse<GetCreateTaskResponseModel> _getGetCreateTaskResponse;
   AppResponse<GetCreateTaskResponseModel> get getGetCreateTaskResponse => _getGetCreateTaskResponse;
@@ -204,8 +206,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
             }
 
-
-
             await isUpdateLoading(isLoading: false);
 
 
@@ -256,8 +256,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   @override
   Future getStatusAndPriorityTerm({GetStatusAndPriorityType? getStatusAndPriorityType}) async{
-
-
 
     try {
 
@@ -380,7 +378,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   }
 
   @override
-  Future<BaseResModel?> startTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+  Future startTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
 
     resIsLoading(_startTaskResponse);
 
@@ -416,7 +414,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   }
 
   @override
-  Future<BaseResModel?> stopTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
+  Future stopTask({StartStopTaskReqModel? startStopTaskReqModel}) async{
     resIsLoading(_stopTaskResponse);
 
     try {
@@ -429,14 +427,12 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
       }else{
 
-
         resIsSuccess(_stopTaskResponse,response);
       }
 
     } catch (e) {
       resIsFailed(_stopTaskResponse, e);
       rethrow;
-
     }
   }
 
@@ -453,6 +449,11 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
         throw response?.message ?? "";
 
       }else{
+
+        final runningStartTime = response?.data?[0].startTime;
+
+
+
 
         resIsSuccess(_getRunningTaskResponse,response);
       }
@@ -529,8 +530,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
         resIsSuccess(_getSubPointCheckUnCheckResponse,response);
 
       }
-
-
 
     } catch (e) {
 

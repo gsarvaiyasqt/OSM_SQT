@@ -163,10 +163,7 @@ class TaskUseCases extends ITaskUseCases{
   Future<GetRunningTaskDetailsResModel?> getRunningTask() async{
     final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.getRunningDetails));
 
-    var data =  json.encode(response);
-
-    print("$data ===  check this data get running details");
-    // return GetRunningTaskDetailsResModel.fromJson(response);
+    return GetRunningTaskDetailsResModel.fromJson(response);
   }
   
   @override
