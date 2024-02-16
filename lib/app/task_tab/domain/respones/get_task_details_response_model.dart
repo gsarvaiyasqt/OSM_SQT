@@ -199,6 +199,8 @@ class TaskUser {
   int? projectId;
   int? isActive;
   int? isAssign;
+  int? isTeamLead;
+  int? isManager;
   int? createdBy;
   DateTime? createdOn;
   String? displayName;
@@ -217,6 +219,8 @@ class TaskUser {
     this.displayName,
     this.profilePic,
     this.userName,
+    this.isTeamLead,
+    this.isManager
   });
 
   factory TaskUser.fromRawJson(String str) => TaskUser.fromJson(json.decode(str));
@@ -235,6 +239,8 @@ class TaskUser {
     displayName: json["DisplayName"],
     profilePic: json["ProfilePic"],
     userName: json["UserName"],
+    isManager: json["IsManager"],
+    isTeamLead: json["IsTeamLead"]
   );
 
   Map<String, dynamic> toJson() => {

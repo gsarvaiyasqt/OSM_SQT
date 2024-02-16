@@ -14,6 +14,8 @@ import '../../app/task_tab/domain/request/create_task_req_model.dart';
 import '../../app/task_tab/domain/request/get_recent_task_request_model.dart';
 import '../../app/task_tab/domain/request/get_status_count.dart';
 import '../../app/task_tab/domain/request/get_user_and_project_request_model.dart';
+import '../../app/task_tab/domain/request/save_user_in_deatils_req_model.dart';
+import '../../app/task_tab/domain/request/update_task_status_and_priority_request_model.dart';
 import '../../app/task_tab/domain/respones/get_count_status_response_model.dart';
 import '../../app/task_tab/domain/respones/get_create_task_response.dart';
 import '../../app/task_tab/domain/respones/get_recent_task_response_model.dart';
@@ -21,6 +23,7 @@ import '../../app/task_tab/domain/respones/get_status_and_priority_res_model.dar
 import '../../app/task_tab/domain/respones/get_sub_point_check_un_chack_response_model.dart';
 import '../../app/task_tab/domain/respones/get_task_details_response_model.dart';
 import '../../app/task_tab/domain/respones/get_user_and_project_response_model.dart';
+import '../../app/task_tab/domain/respones/save_user_in_details_response_model.dart';
 import '../../utils/utils.dart';
 
 abstract class ITaskUseCases{
@@ -37,6 +40,9 @@ abstract class ITaskUseCases{
 
    Future<GetTaskDetailsResponseModel?> getTaskDetailsData({required int? id});
    Future<GetSubPointCheckUnCheckResponseModel?> getCheckAndUnCheckSubPointData({required int? taskSubPointID,required bool? isDone});
+   Future<BaseResModel?> updateTaskStatusAndPriorityData({required UpdateTaskStatusAndPriorityRequestModel? updateTaskStatusAndPriorityRequestModel});
+   Future<BaseResModel?> deleteUserInTask({required String? name,required int? id});
+   Future<SaveUserDetailsResponseModel?> saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode});
 }
 
 class TaskUseCases extends ITaskUseCases{
@@ -183,6 +189,62 @@ class TaskUseCases extends ITaskUseCases{
     return GetSubPointCheckUnCheckResponseModel.fromJson(response);
 
   }
+
+  @override
+  Future<BaseResModel?> updateTaskStatusAndPriorityData({required UpdateTaskStatusAndPriorityRequestModel? updateTaskStatusAndPriorityRequestModel}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.taskUpdateField,data: updateTaskStatusAndPriorityRequestModel?.toJson()));
+    return BaseResModel.fromJson(response);
+  }
+
+  @override
+  Future<BaseResModel?> deleteUserInTask({required String? name, required int? id}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.deleteUser,data: {
+      "name":name,
+      "id": id
+    }));
+    return BaseResModel.fromJson(response);
+  }
+
+  @override
+  Future<SaveUserDetailsResponseModel?> saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode}) async{
+
+    final list = saveDataInDetailReqMode.saveUserList;
+
+    List<dynamic> listData = [];
+
+
+
+
+
+
+    if(list != null){
+
+      for (var element in list) {
+
+        listData.add(element.toJson());
+
+
+      }
+
+
+    }
+
+
+
+    var test = jsonEncode(listData);
+
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.saveUserInDetail,data: test));
+    return SaveUserDetailsResponseModel.fromJson(response);
+  }
+
+  // @override
+  // Future<SaveUserDataInDetailsRequestModel?> saveUserInDetails({required SaveUserDetailsResponseModel saveUserDetailsResponseModel}) async{
+  //   final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.deleteUser,data: {
+  //     "name":name,
+  //     "id": id
+  //   }));
+  // }
+
 
 
 }
