@@ -26,19 +26,34 @@ class TabScreen extends StatefulWidget {
 
 class _TabScreenState extends State<TabScreen> {
 
+  Timer? timer;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
       final taskProvider = context.read<TaskProvider>();
+      final timerProvider = context.read<TimerNotifier>();
+      final duration = timerProvider.duration;
+
       await taskProvider.getRunningTask();
+
+      await timerProvider.differenceRunningTime(context);
+
     });
   }
 
+
+  Timer? updateTimer(Duration? duration) {
+    return Timer.periodic(Duration(seconds: 1), (_) {
+      Duration(seconds: duration?.inSeconds ?? 0);
+    }
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final tabProvider = context.watch<TabBarProvider>();
-    final timerProvider = context.watch<TimeProvider>();
+    final timerProvider = context.watch<TimerNotifier>();
     final taskProvider = context.watch<TaskProvider>();
 
     final getTaskDetailsLoader = taskProvider.getRunningTaskResponse.state == Status.LOADING;
@@ -46,8 +61,11 @@ class _TabScreenState extends State<TabScreen> {
     // final realTimeStartStop = timerProvider.elapsedTime;
     // final realTimeStartStop = timerProvider.diffTime;
 
-    final startStop = timerProvider.startStop;
-    final diffRealTime = timerProvider.diffRealTime;
+    final startStop = timerProvider.duration;
+    final timer = timerProvider.timer;
+
+    final diffRealTime = " ${startStop?.inHours.remainder(60).toString().padLeft(2,'0')} : ${startStop?.inMinutes.remainder(60).toString().padLeft(2, '0')}";
+
 
     return SafeArea(
       child: Scaffold(
@@ -75,8 +93,8 @@ class _TabScreenState extends State<TabScreen> {
                     onTap: () {
                       final timerProvider = context.read<TimerNotifier>();
                       // timerProvider.startOrStop();
-                      // timerProvider.differenceRunningTime(context);
-                      timerProvider.startTimer();
+                      timerProvider.differenceRunningTime(context);
+                      // timerProvider.startTimer();
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 9.sp,vertical: 9.sp),
@@ -84,7 +102,7 @@ class _TabScreenState extends State<TabScreen> {
                         color: kBackgroundColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: Icon(startStop ? Icons.play_arrow : Icons.pause,size: 20.sp),
+                      child: Icon(getTaskDetailsData.startTime == null ?  Icons.play_arrow : Icons.pause,size: 20.sp),
                     ),
                   ),
                 ),
@@ -100,7 +118,6 @@ class _TabScreenState extends State<TabScreen> {
                   ),
                   child: Text(
                       "$diffRealTime",
-
                       style: CustomTextStyle.boldFont22Style.copyWith(
                       color: kBackgroundColor
                   )),
