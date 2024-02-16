@@ -475,10 +475,6 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
       }else{
 
         final runningStartTime = response?.data?[0].startTime;
-
-
-
-
         resIsSuccess(_getRunningTaskResponse,response);
       }
 

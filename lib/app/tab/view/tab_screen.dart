@@ -31,8 +31,11 @@ class _TabScreenState extends State<TabScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
       final taskProvider = context.read<TaskProvider>();
+      final timer = context.read<TimerNotifier>();
       await taskProvider.getRunningTask();
-    });
+      timer.startTimer(taskProvider.getRunningTaskResponse.data?.data?[0].duration);
+    }
+    );
   }
 
   @override
@@ -40,7 +43,8 @@ class _TabScreenState extends State<TabScreen> {
     final tabProvider = context.watch<TabBarProvider>();
     final timerProvider = context.watch<TimeProvider>();
     final taskProvider = context.watch<TaskProvider>();
-
+    final timeProvider = context.watch<TimerNotifier>();
+    final duration = timeProvider.time;
     final getTaskDetailsLoader = taskProvider.getRunningTaskResponse.state == Status.LOADING;
     final getTaskDetailsData = taskProvider.getRunningTaskResponse.data?.data?[0];
     // final realTimeStartStop = timerProvider.elapsedTime;
@@ -76,7 +80,7 @@ class _TabScreenState extends State<TabScreen> {
                       final timerProvider = context.read<TimerNotifier>();
                       // timerProvider.startOrStop();
                       timerProvider.differenceRunningTime(context);
-                      timerProvider.startTimer();
+                      // timerProvider.startTimer();
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 9.sp,vertical: 9.sp),
@@ -84,7 +88,7 @@ class _TabScreenState extends State<TabScreen> {
                         color: kBackgroundColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: Icon(startStop ? Icons.play_arrow : Icons.pause,size: 20.sp),
+                      child: Icon(getTaskDetailsData.startTime == null ? Icons.play_arrow : Icons.pause,size: 20.sp),
                     ),
                   ),
                 ),
@@ -99,7 +103,7 @@ class _TabScreenState extends State<TabScreen> {
                     height: 22.sp,
                   ),
                   child: Text(
-                      "$diffRealTime",
+                      "$duration",
 
                       style: CustomTextStyle.boldFont22Style.copyWith(
                       color: kBackgroundColor
