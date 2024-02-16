@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../app/task_tab/view_model/task_provider.dart';
@@ -10,7 +11,20 @@ class TimerNotifier extends ChangeNotifier{
  late Duration _duration;
   Duration get duration => _duration;
 
+ late String _time;
+ String get time => _time;
+
   Timer? timer;
+
+
+ Duration durationTest = Duration.zero;
+
+
+  TimerNotifier(){
+
+    _duration = Duration.zero;
+    _time = "";
+  }
 
 
  differenceRunningTime(BuildContext context){
@@ -37,13 +51,59 @@ class TimerNotifier extends ChangeNotifier{
   }
 
 
-  void startTimer (){
+  void startTimer (Duration? updatedDuration){
 
-   print("${_duration.inHours} : ${_duration.inMinutes} ==== check this duration");
 
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
 
-      _duration = Duration(seconds: timer.tick);
+    var minutes =  updatedDuration?.inMinutes ?? 0;
+    _time = durationToString(minutes);
+
+    timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+
+      if(updatedDuration != null){
+        var test = updatedDuration;
+        var hours =  test.inHours;
+        var seconds =  test.inSeconds;
+        var minutes =  test.inMinutes;
+        minutes += timer.tick;
+        _time = durationToString(minutes);
+        _duration = Duration(hours: hours,minutes: minutes,seconds: seconds);
+
+        notifyListeners();
+
+        print("seconds is ${minutes}");
+
+        // var hours =   int.parse(DateFormat("hh").format(DateTime.now())) - durationTest.inHours;
+        // var seconds =   int.parse(DateFormat("ss").format(DateTime.now())) - durationTest.inSeconds;
+        // var minutes =   int.parse(DateFormat("mm").format(DateTime.now())) - durationTest.inMinutes;
+        //
+        // print("Time is ${hours}:${minutes}:${seconds}");
+
+      }
+
+
+      //
+      // if(durationTest != null){
+      //
+      //
+      //
+      //
+      // }else{
+      //
+      //
+      //
+      //
+      // }
+
+
+
+      // seconds = seconds += 1;
+      //
+      // _duration = Duration(seconds: seconds,minutes: minutes,hours: hours);
+      //
+      // print("seconds is ${seconds}");
+
+      // _duration = Duration(seconds: timer.tick);
 
     });
 
@@ -65,4 +125,16 @@ class TimerNotifier extends ChangeNotifier{
 
 
 
+}
+
+String durationToString(int minutes) {
+  var d = Duration(minutes:minutes);
+  List<String> parts = d.toString().split(':');
+  return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
+}
+
+String getTimeString(int value) {
+  final int hour = value ~/ 60;
+  final int minutes = value % 60;
+  return '${hour.toString().padLeft(2, "0")}:${minutes.toString().padLeft(2, "0")}';
 }

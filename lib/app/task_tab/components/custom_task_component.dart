@@ -80,7 +80,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
                     final currentTaskIdMatch = runningTaskId == data?.taskId;
 
-
+                    print("${currentTaskIdMatch} ===== check this currentTask }");
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -187,7 +187,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                   color: kBlueColor,
                                   borderRadius: BorderRadius.circular(100),
                                 ),
-                                child: Icon( currentTaskIdMatch ? Icons.pause : Icons.play_arrow ,size: 20.sp,color: Colors.white),
+                                child: Icon( !currentTaskIdMatch ? Icons.pause : Icons.play_arrow ,size: 20.sp,color: Colors.white),
                               ),
                             ),
 
