@@ -53,14 +53,13 @@ class TimerNotifier extends ChangeNotifier{
 
   void startTimer (Duration? updatedDuration){
 
+    if(updatedDuration != null){
 
 
-    var minutes =  updatedDuration?.inMinutes ?? 0;
-    _time = durationToString(minutes);
+      var minutes =  updatedDuration.inMinutes ?? 0;
+      _time = durationToString(minutes);
 
-    timer = Timer.periodic(const Duration(minutes: 1), (timer) {
-
-      if(updatedDuration != null){
+      timer = Timer.periodic(const Duration(minutes: 1), (timer) {
         var test = updatedDuration;
         var hours =  test.inHours;
         var seconds =  test.inSeconds;
@@ -68,44 +67,15 @@ class TimerNotifier extends ChangeNotifier{
         minutes += timer.tick;
         _time = durationToString(minutes);
         _duration = Duration(hours: hours,minutes: minutes,seconds: seconds);
-
         notifyListeners();
+      });
 
-        print("seconds is ${minutes}");
-
-        // var hours =   int.parse(DateFormat("hh").format(DateTime.now())) - durationTest.inHours;
-        // var seconds =   int.parse(DateFormat("ss").format(DateTime.now())) - durationTest.inSeconds;
-        // var minutes =   int.parse(DateFormat("mm").format(DateTime.now())) - durationTest.inMinutes;
-        //
-        // print("Time is ${hours}:${minutes}:${seconds}");
-
-      }
-
-
-      //
-      // if(durationTest != null){
-      //
-      //
-      //
-      //
-      // }else{
-      //
-      //
-      //
-      //
-      // }
+    }
 
 
 
-      // seconds = seconds += 1;
-      //
-      // _duration = Duration(seconds: seconds,minutes: minutes,hours: hours);
-      //
-      // print("seconds is ${seconds}");
 
-      // _duration = Duration(seconds: timer.tick);
 
-    });
 
     notifyListeners();
 
