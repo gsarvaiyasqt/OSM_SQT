@@ -358,6 +358,7 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/update_task_status_and_priority_request_model.dart';
 import 'package:osm_flutter/app/task_tab/domain/respones/get_task_details_response_model.dart';
 import 'package:osm_flutter/base/view/base_components/custom_checkbox.dart';
 import 'package:osm_flutter/base/view/base_components/loading_view.dart';
@@ -374,6 +375,7 @@ import 'package:osm_flutter/base/view/base_components/custom_text_form_filed.dar
 import 'package:osm_flutter/app/task_tab/domain/request/get_user_and_project_request_model.dart';
 
 import '../domain/request/create_task_req_model.dart';
+import '../domain/request/save_user_in_deatils_req_model.dart';
 import '../route/task_route.dart';
 
 class CreateTaskPage extends StatefulWidget {
@@ -388,7 +390,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController titleController = TextEditingController();
   List<File>? mediaFileList = [];
-
+  List<SaveUserDataInDetailsData> saveUserList = [];
   bool isEditable = false;
 
   @override
@@ -401,12 +403,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
       final taskUpdateModel = ModalRoute.of(context)?.settings.arguments as TaskUpdateModel?;
       final taskProvider = context.read<TaskProvider>();
-      // final taskWProvider = context.watch<TaskProvider>();
-
-
 
       if(taskUpdateModel?.isUpdate == true){
-
 
         if(taskUpdateModel?.id != null){
 
@@ -433,6 +431,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     final createTaskLoading = taskProvider.getGetCreateTaskResponse.state == Status.LOADING;
     final createTaskDetailLoading = taskProvider.getTaskDetailsResponse.state == Status.LOADING;
     final createTaskReqModel = taskProvider.createTaskReqModel;
+    final updateTaskStatusPriorityUiState = taskProvider.updateTaskStatusPriorityUiState;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar: AppBar(
@@ -513,7 +512,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   name: "Title",
                   hint: "Title",
                   controller: titleController,
-                  suffix: isEditable ? const Icon(Icons.save,color: kBlackColor,) : null,
+                  suffix: isEditable ? GestureDetector(
+                      onTap: () async{
+                        updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Title;
+                        updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.title;
+                        await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                      },
+                      child: const Icon(Icons.save,color: kBlackColor)) : null,
                   onChanged: (value) {
                     setState(() {
                       createTaskReqModel.title = value;
@@ -530,10 +535,15 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           firstDate: DateTime.now(),
                         // initialDate: createTaskReqModel.startDate,
                           lastDate: createTaskReqModel.endDate,
-                          onSelectedDateTime: (p0) {
+                          onSelectedDateTime: (p0) async{
                             setState(() {
                               createTaskReqModel.startDate = p0;
                             });
+                            if(isEditable){
+                              updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.StartDate;
+                              updateTaskStatusPriorityUiState.fieldValue = DateFormat("yyyy-MM-dd").format(p0);
+                              await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                            }
                           },
                           shoDatePicker: taskUpdateModel?.isUpdate == true ? (isEditable ? false : true) : false,
                           radius: 5,
@@ -546,10 +556,16 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       child: CustomDatePickerWidget(
                           initialDate: createTaskReqModel.startDate,
                           firstDate: createTaskReqModel.startDate ?? DateTime.now(),
-                          onSelectedDateTime: (p0) {
+                          onSelectedDateTime: (p0) async{
                             setState(() {
                               createTaskReqModel.endDate = p0;
                             });
+
+                            if(isEditable){
+                              updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.EndDate;
+                              updateTaskStatusPriorityUiState.fieldValue = DateFormat("yyyy-MM-dd").format(p0);
+                              await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                            }
                           },
                           shoDatePicker: taskUpdateModel?.isUpdate == true ? (isEditable ? false : true) : false,
                           radius: 5,
@@ -576,12 +592,22 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           builder: (context) {
                             return CustomSearchViewPage(
                               selectedItems: createTaskReqModel.multipleTestAssignUser,
-                              onMultipleSelectedChange: (value) {
+                              onMultipleSelectedChange: (value) async{
+                                final taskProvider = context.read<TaskProvider>();
                                 createTaskReqModel.multipleTestAssignUser = [];
                                 for (var element in value) {
+                                  var model = SaveUserDataInDetailsData(
+                                    projectId: createTaskReqModel.projectID,
+                                    userId: element.projectId,
+                                    taskUserId: 0,
+                                    name: element.name,
+                                    taskId: createTaskReqModel.taskID
+                                  );
+                                  saveUserList.add(model);
                                   createTaskReqModel.multipleTestAssignUser?.add(element);
                                 }
-                              },
+                                await taskProvider.saveUserInDetails(saveDataInDetailReqMode: SaveDataInDetailReqMode(saveUserList: saveUserList));
+                                },
                               projectId: createTaskReqModel.projectID,
                               createTaskEnum: CreateTaskEnum.ASSIGN,
                               name: "Assign To",
@@ -633,11 +659,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                             return CustomSearchViewPage(
                               createTaskEnum: CreateTaskEnum.STATUS,
                               name: "Status",
-                              onChange: (value) {
-                                setState(() {
-                                  createTaskReqModel.status = value.name;
-                                });
-                              },
+                              onChange: (value) async{
+                                createTaskReqModel.status = value.name;
+                                updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Status;
+                                updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.status;
+                                await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                            },
                             );
                           },));
                         }
@@ -672,10 +699,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           return CustomSearchViewPage(
                             createTaskEnum: CreateTaskEnum.PRIORITY,
                             name: "Priority",
-                            onChange: (value) {
-                              setState(() {
-                                createTaskReqModel.priority = value.name;
-                              });
+                            onChange: (value) async{
+                              createTaskReqModel.priority = value.name;
+                              updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Priority;
+                              updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.priority;
+                              await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                              // setState(() {});
                             },
                           );
                         },));

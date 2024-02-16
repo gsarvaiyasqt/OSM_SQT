@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/utils/utils.dart';
+import 'package:provider/provider.dart';
 class CustomDropDownWidget extends StatefulWidget {
   final String? name;
   final String? selectedItem;
@@ -43,11 +45,12 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: List.generate(widget.multiSelection?.length ?? 0, (index) {
+
+                      final data = widget.multiSelection?[index];
+                      final isAssign = data?.isAssign == 1;
                       return Stack(
                         children: [
-
-
-                       Container(
+                         Container(
                          margin: EdgeInsets.symmetric(horizontal: 8.sp,vertical: 5.sp),
                         padding: EdgeInsets.all(5.sp),
                         decoration: BoxDecoration(
@@ -56,30 +59,50 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
                         ),
                        child: Text(widget.multiSelection?[index].name ?? "")
                        ),
-                          Positioned(
+
+
+                          if(widget.isUpdated == true)
+
+                            if(!isAssign)
+                            const SizedBox.shrink() else
+                            Positioned(
                             right: 0,
                             child: GestureDetector(
-                              onTap: () {
+                              onTap: () async{
+                                if(widget.isUpdated == true){
 
-                                setState(() {
+                                  if(widget.isEditable == true){
 
-                                  if(widget.isUpdated == true){
-
-                                    if(widget.isEditable == true){
-
-                                      widget.multiSelection?.removeAt(index);
-
-                                    }
-
-                                  }else{
+                                    await context.read<TaskProvider>().deleteUserInTask(name: widget.multiSelection?[index].name, id: widget.multiSelection?[index].taskUserID);
                                     widget.multiSelection?.removeAt(index);
+
                                   }
 
-                                });
+                                }else{
+                                  widget.multiSelection?.removeAt(index);
+                                }
 
 
+                                setState(() {});
+                                },
+                              child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                    color: kSecondaryColor,
+                                    borderRadius: BorderRadius.circular(100)
+                                ),
+                                child: Icon(Icons.close,size: 13.sp),
+                              ),
+                            ),
+                          )
+                          else
 
-
+                            Positioned(
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () async{
+                                widget.multiSelection?.removeAt(index);
+                                setState(() {});
                               },
                               child: Container(
                                 padding: EdgeInsets.all(2),
@@ -90,7 +113,8 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
                                 child: Icon(Icons.close,size: 13.sp),
                               ),
                             ),
-                          ),
+                          )
+
                         ],
                       );
                     }),
