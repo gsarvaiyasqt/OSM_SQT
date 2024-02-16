@@ -4,6 +4,9 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 GetRunningTaskDetailsResModel getRunningTaskDetailsResModelFromJson(String str) => GetRunningTaskDetailsResModel.fromJson(json.decode(str));
 
 String getRunningTaskDetailsResModelToJson(GetRunningTaskDetailsResModel data) => json.encode(data.toJson());
@@ -19,11 +22,25 @@ class GetRunningTaskDetailsResModel {
     this.data,
   });
 
-  factory GetRunningTaskDetailsResModel.fromJson(Map<String, dynamic> json) => GetRunningTaskDetailsResModel(
-    statusCode: json["status_code"],
-    message: json["message"],
-    data: json["data"] == null ? [] : List<RunningTaskData>.from(json["data"].map((x) => RunningTaskData.fromJson(x))),
-  );
+  factory GetRunningTaskDetailsResModel.fromJson(Map<String, dynamic> json) {
+    print("${json["data"].runtimeType} ====  check Runtime");
+
+    if(json["data"] is Map){
+
+      return GetRunningTaskDetailsResModel(
+        statusCode: json["status_code"],
+        message: json["message"],
+      );
+
+    }
+
+    return GetRunningTaskDetailsResModel(
+      statusCode: json["status_code"],
+      message: json["message"],
+      data: json["data"] == null ? [] : List<RunningTaskData>.from(json["data"].map((x) => RunningTaskData.fromJson(x))),
+    );
+
+  }
 
   Map<String, dynamic> toJson() => {
     "status_code": statusCode,
@@ -59,6 +76,16 @@ class RunningTaskData {
     this.projectLogo,
   });
 
+  String? get sDate {
+
+    if (startTime == null) {
+      return null;
+    }
+
+    return DateFormat('hh:mm').format(startTime ?? DateTime.now());
+
+  }
+
   factory RunningTaskData.fromJson(Map<String, dynamic> json) => RunningTaskData(
     userTaskTimerId: json["UserTaskTimerID"],
     userId: json["UserID"],
@@ -86,4 +113,8 @@ class RunningTaskData {
     "ProjectName": projectName,
     "ProjectLogo": projectLogo,
   };
+
 }
+
+
+
