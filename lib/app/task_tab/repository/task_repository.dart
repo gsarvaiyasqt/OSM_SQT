@@ -3,6 +3,7 @@ import 'package:osm_flutter/usecases/auth/auth_usecases.dart';
 
 import '../../../usecases/task/task_usecases.dart';
 import '../../../utils/utils.dart';
+import '../domain/request/comment_save_req_data_model.dart';
 import '../domain/request/create_task_req_model.dart';
 import '../domain/request/get_recent_task_request_model.dart';
 import '../domain/request/get_status_count.dart';
@@ -13,12 +14,14 @@ import '../domain/request/update_task_status_and_priority_request_model.dart';
 import '../domain/respones/base_res_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
 import '../domain/respones/get_create_task_response.dart';
+import '../domain/respones/get_list_task_data_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/respones/get_running_task_res_model.dart';
 import '../domain/respones/get_status_and_priority_res_model.dart';
 import '../domain/respones/get_sub_point_check_un_chack_response_model.dart';
 import '../domain/respones/get_task_details_response_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
+import '../domain/respones/save_comment_response_data.dart';
 import '../domain/respones/save_user_in_details_response_model.dart';
 
 abstract class ITaskRepository{
@@ -37,6 +40,8 @@ abstract class ITaskRepository{
   Future<BaseResModel?> updateTaskStatusAndPriorityData({required UpdateTaskStatusAndPriorityRequestModel? updateTaskStatusAndPriorityRequestModel});
   Future<BaseResModel?> deleteUserInTask({required String? name,required int? id});
   Future<SaveUserDetailsResponseModel?> saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode});
+  Future<GetIdListTaskDetails?> getListTaskDetailsData({required int? taskId,required bool? isLog});
+  Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
 }
 
 class TaskRepository extends ITaskRepository{
@@ -112,5 +117,15 @@ class TaskRepository extends ITaskRepository{
   @override
   Future<SaveUserDetailsResponseModel?> saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode}) async{
     return await taskUseCases?.saveUserInDetails(saveDataInDetailReqMode: saveDataInDetailReqMode);
+  }
+
+  @override
+  Future<GetIdListTaskDetails?> getListTaskDetailsData({required int? taskId, required bool? isLog}) async{
+    return await taskUseCases?.getListTaskDetailsData(taskId: taskId, isLog: isLog);
+  }
+
+  @override
+  Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData}) async{
+    return await taskUseCases?.saveCommentReqData(commentSaveReqData: commentSaveReqData);
   }
 }

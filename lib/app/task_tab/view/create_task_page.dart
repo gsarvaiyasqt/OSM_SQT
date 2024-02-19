@@ -360,6 +360,7 @@ import 'package:flutter/material.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/search_model.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/update_task_status_and_priority_request_model.dart';
 import 'package:osm_flutter/app/task_tab/domain/respones/get_task_details_response_model.dart';
+import 'package:osm_flutter/app/task_tab/view/task_deatils.dart';
 import 'package:osm_flutter/base/view/base_components/custom_checkbox.dart';
 import 'package:osm_flutter/base/view/base_components/loading_view.dart';
 import 'package:provider/provider.dart';
@@ -391,42 +392,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   TextEditingController titleController = TextEditingController();
   List<File>? mediaFileList = [];
   List<SaveUserDataInDetailsData> saveUserList = [];
-  bool isEditable = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      final taskUpdateModel = ModalRoute.of(context)?.settings.arguments as TaskUpdateModel?;
-      final taskProvider = context.read<TaskProvider>();
-
-      if(taskUpdateModel?.isUpdate == true){
-
-        if(taskUpdateModel?.id != null){
-
-          await taskProvider.getTaskDetailsData(id: taskUpdateModel?.id);
-
-          final task = taskProvider.getTaskDetailsResponse.data?.data;
-
-          taskProvider.createTaskReqModel = CreateTaskReqModel.fromTaskDetailsData(task);
-
-          titleController.text = task?.task?.title ?? "";
-          descriptionController.text = task?.task?.details ?? "";
-        }
-      }
-    });
-  }
-
 
 
 
   @override
   Widget build(BuildContext context) {
-    final taskUpdateModel = ModalRoute.of(context)?.settings.arguments as TaskUpdateModel?;
+     final taskUpdateModel = ModalRoute.of(context)?.settings.arguments as TaskUpdateModel?;
     final taskProvider = context.watch<TaskProvider>();
     final createTaskLoading = taskProvider.getGetCreateTaskResponse.state == Status.LOADING;
     final createTaskDetailLoading = taskProvider.getTaskDetailsResponse.state == Status.LOADING;
@@ -445,25 +416,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
               },
             child: const Icon(Icons.arrow_back,color: kBlackColor)),
         title: Text("Create Task", style: CustomTextStyle.boldFont22Style),
-        actions: [
-
-          if(taskUpdateModel?.isUpdate == true)
-           Padding(
-             padding: EdgeInsets.symmetric(horizontal: 20.sp),
-             child: GestureDetector(
-                 onTap: () {
-
-                   setState(() {
-                     isEditable =! isEditable;
-                   });
-                 },
-                 child: Icon(!isEditable ? Icons.edit : Icons.close)),
-           )
-        ],
       ),
-      body:createTaskDetailLoading ?
-      const Center(child: Loading(color: kSecondaryColor,)) :
-      Padding(
+      body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.sp),
         child: SingleChildScrollView(
           child: WillPopScope(
@@ -477,48 +431,37 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   selectedItem: createTaskReqModel.name,
                   name: "Project Name",
                   onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return CustomSearchViewPage(
+                          onMultipleSelectedChange: (value) {
+                            setState(() {
 
-                    if(taskUpdateModel?.isUpdate != true){
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return CustomSearchViewPage(
-                            onMultipleSelectedChange: (value) {
-                              setState(() {
-
-                              });
-                            },
-                            createTaskEnum: CreateTaskEnum.PROJECT,
-                            name: "Project Name",
-                            onChange: (value) async{
-                              setState(() {
-                                if(value.name != null){
-                                  createTaskReqModel.name = value.name;
-                                  createTaskReqModel.projectID = value.projectId;
-                                  createTaskReqModel.multipleTestAssignUser = [];
-                                }
-                              });
-                            },
-                          );
-                        },
-                      ));
-                    }
-
+                            });
+                          },
+                          createTaskEnum: CreateTaskEnum.PROJECT,
+                          name: "Project Name",
+                          onChange: (value) async{
+                            setState(() {
+                              if(value.name != null){
+                                createTaskReqModel.name = value.name;
+                                createTaskReqModel.projectID = value.projectId;
+                                createTaskReqModel.multipleTestAssignUser = [];
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ));
                   },
                 ),
                 SizedBox(height: 10.sp),
 
                 CustomTextField(
-                  isEnable: (taskUpdateModel?.isUpdate == true) ? (isEditable ? true : false) : false,
+                  isEnable: false,
                   name: "Title",
                   hint: "Title",
                   controller: titleController,
-                  suffix: isEditable ? GestureDetector(
-                      onTap: () async{
-                        updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Title;
-                        updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.title;
-                        await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                      },
-                      child: const Icon(Icons.save,color: kBlackColor)) : null,
                   onChanged: (value) {
                     setState(() {
                       createTaskReqModel.title = value;
@@ -539,13 +482,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                             setState(() {
                               createTaskReqModel.startDate = p0;
                             });
-                            if(isEditable){
-                              updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.StartDate;
-                              updateTaskStatusPriorityUiState.fieldValue = DateFormat("yyyy-MM-dd").format(p0);
-                              await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                            }
+                            // if(isEditable){
+                            //   updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.StartDate;
+                            //   updateTaskStatusPriorityUiState.fieldValue = DateFormat("yyyy-MM-dd").format(p0);
+                            //   await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                            // }
                           },
-                          shoDatePicker: taskUpdateModel?.isUpdate == true ? (isEditable ? false : true) : false,
+                          shoDatePicker: false,
                           radius: 5,
                           name: createTaskReqModel.startDate != null
                               ? DateFormat("MM/dd/yyyy").format(createTaskReqModel.startDate!)
@@ -561,13 +504,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               createTaskReqModel.endDate = p0;
                             });
 
-                            if(isEditable){
-                              updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.EndDate;
-                              updateTaskStatusPriorityUiState.fieldValue = DateFormat("yyyy-MM-dd").format(p0);
-                              await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                            }
+                            // if(isEditable){
+                            //   updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.EndDate;
+                            //   updateTaskStatusPriorityUiState.fieldValue = DateFormat("yyyy-MM-dd").format(p0);
+                            //   await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                            // }
                           },
-                          shoDatePicker: taskUpdateModel?.isUpdate == true ? (isEditable ? false : true) : false,
+                          shoDatePicker: false,
                           radius: 5,
                           name: createTaskReqModel.endDate != null
                               ? DateFormat("MM/dd/yyyy").format(createTaskReqModel.endDate!)
@@ -579,70 +522,71 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 SizedBox(height: 10.sp),
 
                 CustomDropDownWidget(
-                  isUpdated: taskUpdateModel?.isUpdate,
-                  isEditable: isEditable,
+                  // isUpdated: taskUpdateModel?.isUpdate,
                   multiSelection: createTaskReqModel.multipleTestAssignUser,
                   name: "Assign to",
                   onTap: () async{
-                    if(taskUpdateModel?.isUpdate == true){
+                    // if(taskUpdateModel?.isUpdate == true){
+                    //
+                    //   if(isEditable){
+                    //
+                    //     Navigator.push(context, MaterialPageRoute(
+                    //       builder: (context) {
+                    //         return CustomSearchViewPage(
+                    //           selectedItems: createTaskReqModel.multipleTestAssignUser,
+                    //           onMultipleSelectedChange: (value) async{
+                    //             final taskProvider = context.read<TaskProvider>();
+                    //             createTaskReqModel.multipleTestAssignUser = [];
+                    //             for (var element in value) {
+                    //               var model = SaveUserDataInDetailsData(
+                    //                 projectId: createTaskReqModel.projectID,
+                    //                 userId: element.projectId,
+                    //                 taskUserId: 0,
+                    //                 name: element.name,
+                    //                 taskId: createTaskReqModel.taskID
+                    //               );
+                    //               saveUserList.add(model);
+                    //               createTaskReqModel.multipleTestAssignUser?.add(element);
+                    //             }
+                    //             await taskProvider.saveUserInDetails(saveDataInDetailReqMode: SaveDataInDetailReqMode(saveUserList: saveUserList));
+                    //             },
+                    //           projectId: createTaskReqModel.projectID,
+                    //           createTaskEnum: CreateTaskEnum.ASSIGN,
+                    //           name: "Assign To",
+                    //         );
+                    //       },
+                    //     ));
+                    //
+                    //   }
+                    //
+                    // }else{
+                    //
+                    //   if(createTaskReqModel.name != null){
+                    //
+                    //   }else{
+                    //
+                    //     Toaster.showMessage(context, msg: "Please select project then before assign users");
+                    //
+                    //   }
+                    //
+                    // }
 
-                      if(isEditable){
-
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return CustomSearchViewPage(
-                              selectedItems: createTaskReqModel.multipleTestAssignUser,
-                              onMultipleSelectedChange: (value) async{
-                                final taskProvider = context.read<TaskProvider>();
-                                createTaskReqModel.multipleTestAssignUser = [];
-                                for (var element in value) {
-                                  var model = SaveUserDataInDetailsData(
-                                    projectId: createTaskReqModel.projectID,
-                                    userId: element.projectId,
-                                    taskUserId: 0,
-                                    name: element.name,
-                                    taskId: createTaskReqModel.taskID
-                                  );
-                                  saveUserList.add(model);
-                                  createTaskReqModel.multipleTestAssignUser?.add(element);
-                                }
-                                await taskProvider.saveUserInDetails(saveDataInDetailReqMode: SaveDataInDetailReqMode(saveUserList: saveUserList));
-                                },
-                              projectId: createTaskReqModel.projectID,
-                              createTaskEnum: CreateTaskEnum.ASSIGN,
-                              name: "Assign To",
-                            );
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return CustomSearchViewPage(
+                          selectedItems: createTaskReqModel.multipleTestAssignUser,
+                          onMultipleSelectedChange: (value) {
+                            createTaskReqModel.multipleTestAssignUser = [];
+                            for (var element in value) {
+                              createTaskReqModel.multipleTestAssignUser?.add(element);
+                            }
                           },
-                        ));
-
-                      }
-
-                    }else{
-
-                      if(createTaskReqModel.name != null){
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return CustomSearchViewPage(
-                              selectedItems: createTaskReqModel.multipleTestAssignUser,
-                              onMultipleSelectedChange: (value) {
-                                createTaskReqModel.multipleTestAssignUser = [];
-                                for (var element in value) {
-                                  createTaskReqModel.multipleTestAssignUser?.add(element);
-                                }
-                              },
-                              projectId: createTaskReqModel.projectID,
-                              createTaskEnum: CreateTaskEnum.ASSIGN,
-                              name: "Assign To",
-                            );
-                          },
-                        ));
-                      }else{
-
-                        Toaster.showMessage(context, msg: "Please select project then before assign users");
-
-                      }
-
-                    }
+                          projectId: createTaskReqModel.projectID,
+                          createTaskEnum: CreateTaskEnum.ASSIGN,
+                          name: "Assign To",
+                        );
+                      },
+                    ));
 
 
                   },
@@ -653,34 +597,45 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   selectedItem: createTaskReqModel.status,
                   onTap: () async{
                     setState(() {
-                      if(taskUpdateModel?.isUpdate == true){
-                        if(isEditable){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return CustomSearchViewPage(
-                              createTaskEnum: CreateTaskEnum.STATUS,
-                              name: "Status",
-                              onChange: (value) async{
-                                createTaskReqModel.status = value.name;
-                                updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Status;
-                                updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.status;
-                                await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                            },
-                            );
-                          },));
-                        }
-                      }else{
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return CustomSearchViewPage(
-                            createTaskEnum: CreateTaskEnum.STATUS,
-                            name: "Status",
-                            onChange: (value) {
-                              setState(() {
-                                createTaskReqModel.status = value.name;
-                              });
-                            },
-                          );
-                        },));
-                      }
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return CustomSearchViewPage(
+                          createTaskEnum: CreateTaskEnum.STATUS,
+                          name: "Status",
+                          onChange: (value) {
+                            setState(() {
+                              createTaskReqModel.status = value.name;
+                            });
+                          },
+                        );
+                      },));
+                      // if(taskUpdateModel?.isUpdate == true){
+                      //   if(isEditable){
+                      //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      //       return CustomSearchViewPage(
+                      //         createTaskEnum: CreateTaskEnum.STATUS,
+                      //         name: "Status",
+                      //         onChange: (value) async{
+                      //           createTaskReqModel.status = value.name;
+                      //           updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Status;
+                      //           updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.status;
+                      //           await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                      //       },
+                      //       );
+                      //     },));
+                      //   }
+                      // }else{
+                      //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      //     return CustomSearchViewPage(
+                      //       createTaskEnum: CreateTaskEnum.STATUS,
+                      //       name: "Status",
+                      //       onChange: (value) {
+                      //         setState(() {
+                      //           createTaskReqModel.status = value.name;
+                      //         });
+                      //       },
+                      //     );
+                      //   },));
+                      // }
 
 
 
@@ -693,35 +648,47 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   selectedItem: createTaskReqModel.priority,
                   name: "Priority",
                   onTap: () {
-                    if(taskUpdateModel?.isUpdate == true){
-                      if(isEditable){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return CustomSearchViewPage(
-                            createTaskEnum: CreateTaskEnum.PRIORITY,
-                            name: "Priority",
-                            onChange: (value) async{
-                              createTaskReqModel.priority = value.name;
-                              updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Priority;
-                              updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.priority;
-                              await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                              // setState(() {});
-                            },
-                          );
-                        },));
-                      }
-                    }else{
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return CustomSearchViewPage(
-                          createTaskEnum: CreateTaskEnum.PRIORITY,
-                          name: "Priority",
-                          onChange: (value) {
-                            setState(() {
-                              createTaskReqModel.priority = value.name;
-                            });
-                          },
-                        );
-                      },));
-                    }
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return CustomSearchViewPage(
+                        createTaskEnum: CreateTaskEnum.PRIORITY,
+                        name: "Priority",
+                        onChange: (value) {
+                          setState(() {
+                            createTaskReqModel.priority = value.name;
+                          });
+                        },
+                      );
+                    },));
+                    // if(taskUpdateModel?.isUpdate == true){
+                    //   if(isEditable){
+                    //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    //       return CustomSearchViewPage(
+                    //         createTaskEnum: CreateTaskEnum.PRIORITY,
+                    //         name: "Priority",
+                    //         onChange: (value) async{
+                    //           createTaskReqModel.priority = value.name;
+                    //           updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Priority;
+                    //           updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.priority;
+                    //           await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
+                    //           // setState(() {});
+                    //         },
+                    //       );
+                    //     },));
+                    //   }
+                    // }else{
+                    //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    //     return CustomSearchViewPage(
+                    //       createTaskEnum: CreateTaskEnum.PRIORITY,
+                    //       name: "Priority",
+                    //       onChange: (value) {
+                    //         setState(() {
+                    //           createTaskReqModel.priority = value.name;
+                    //         });
+                    //       },
+                    //     );
+                    //   },));
+                    // }
 
 
                   },
@@ -730,7 +697,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 SizedBox(height: 10.sp,),
 
                 CustomDescriptionField(
-                  isEnable: taskUpdateModel?.isUpdate == true ? false : true,
+                  // isEnable: taskUpdateModel?.isUpdate == true ? false : true,
                   controller: descriptionController,
                   hint: "Details",
                   maxLine: 5,
@@ -742,9 +709,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 ),
 
 
-                if(taskUpdateModel?.isUpdate != true)
+                // if(taskUpdateModel?.isUpdate != true)
                 SizedBox(height: 20.sp),
-                if(taskUpdateModel?.isUpdate != true)
+                // if(taskUpdateModel?.isUpdate != true)
                 Row(
                   children: [
                     Expanded(
@@ -761,86 +728,56 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     Expanded(child: SizedBox.shrink())
                   ],
                 ),
-                if(taskUpdateModel?.isUpdate != true)
+                // if(taskUpdateModel?.isUpdate != true)
                 SizedBox(height: 20.sp),
                 ListView.builder(
                   shrinkWrap: true,
                   itemCount: createTaskReqModel.userTaskSubPointList?.length ?? 0,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    if(taskUpdateModel?.isUpdate != true){
-                      return Stack(
-                        children: [
+                    return Stack(
+                      children: [
 
-                          Padding(
-                            padding:  EdgeInsets.all(10.sp),
-                            child: CustomTextField(
-                              hint: "Add SubPoint",
-                              onChanged: (value) {
+                        Padding(
+                          padding:  EdgeInsets.all(10.sp),
+                          child: CustomTextField(
+                            hint: "Add SubPoint",
+                            onChanged: (value) {
+                              setState(() {
+
+                                createTaskReqModel.userTaskSubPointList?[index].title = value;
+
+                              });
+                            },
+                          ),
+                        ),
+                        Positioned(
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () {
                                 setState(() {
-
-                                  createTaskReqModel.userTaskSubPointList?[index].title = value;
-
+                                  createTaskReqModel.userTaskSubPointList?.remove(createTaskReqModel.userTaskSubPointList?[index]);
                                 });
                               },
-                            ),
-                          ),
-                          Positioned(
-                              right: 0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    createTaskReqModel.userTaskSubPointList?.remove(createTaskReqModel.userTaskSubPointList?[index]);
-                                  });
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: kBlackColor,
-                                        ),
-                                        borderRadius: BorderRadius.circular(100)
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: Icon(Icons.delete,color: kBlackColor,size: 25.sp),
-                                    )),
-                              )),
-                        ],
-                      );
-                    }else{
-                      final subPoint = createTaskReqModel.userTaskSubPointList?[index];
-                      final isDone = subPoint?.isDone == 1;
-                      return GestureDetector(
-                        onTap: isEditable ?  () async{
-                          await context.read<TaskProvider>().getCheckAndUnCheckSubPointData(taskSubPointID: subPoint?.taskSubPointId,isDone: !isDone);
-                        } : null,
-                        child: Row(
-                          children: [
-                            AnimatedContainer(
-                              margin: EdgeInsets.all(5.sp),
-                              padding: EdgeInsets.all(5.sp),
-                              duration: const Duration(milliseconds: 100),
-                              decoration: BoxDecoration(
-                                border: !isDone ?  Border.all(
-                                  color: kBlackColor
-                                ) : null,
-                                color: isDone ? kSecondaryColor : null,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: isDone ? SizedBox(width: 20.sp,height: 20.sp,child: Icon(Icons.done,color: kWhiteColor,size: 20.sp),) : SizedBox(width: 18.sp,height: 18.sp),
-
-                            ),
-                            SizedBox(width: 5.sp),
-                            Text(subPoint?.title ?? "",style: CustomTextStyle.semiBoldFont18Style),
-                          ],
-                        ),
-                      );
-                    }
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: kBlackColor,
+                                      ),
+                                      borderRadius: BorderRadius.circular(100)
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child: Icon(Icons.delete,color: kBlackColor,size: 25.sp),
+                                  )),
+                            )),
+                      ],
+                    );
 
                   },),
-                if(taskUpdateModel?.isUpdate != true)
+                // if(taskUpdateModel?.isUpdate != true)
                 SizedBox(height: 20.sp),
-                if(taskUpdateModel?.isUpdate != true)
+                // if(taskUpdateModel?.isUpdate != true)
                 MultiSelectionImage(
                   // apiImgList: imageList,
                   imageFileList: mediaFileList,
@@ -859,9 +796,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   },
                   headerText: "Attachment",
                 ),
-                if(taskUpdateModel?.isUpdate != true)
+                // if(taskUpdateModel?.isUpdate != true)
                 SizedBox(height: 20.sp),
-                if(taskUpdateModel?.isUpdate != true)
+                // if(taskUpdateModel?.isUpdate != true)
                 Row(
                   children: [
                     Expanded(

@@ -67,10 +67,7 @@ class _CustomRecentTaskComponentState extends State<CustomRecentTaskComponent> {
 
                   return GestureDetector(
                     onTap: () async{
-                      TaskRoute.goToCreteTaskPage(context,TaskUpdateModel(
-                        id: data?.taskId,
-                        isUpdate: true
-                      ));
+                      TaskRoute.goToUpdateTaskPage(context,data?.taskId);
                       // await context.read<TaskProvider>().getTaskDetailsData(id: data?.taskId);
 
                     },

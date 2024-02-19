@@ -11,6 +11,8 @@ import 'package:osm_flutter/app/auth/domain/dummy/create_task_response.dart';
 import 'package:osm_flutter/base/view/base_components/custom_image_view.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/start_stop_task_req_model.dart';
 
+import '../route/task_route.dart';
+
 class CustomTaskComponent extends StatefulWidget {
   final CreateTaskListModel? taskData;
   const CustomTaskComponent({super.key, this.taskData});
@@ -75,65 +77,75 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                     final hourTime = formattedTime(timeInSecond: data?.totalTimeInMinites ?? 0);
 
                     final currentTaskIdMatch = runningTaskId == data?.taskId;
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
 
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(100.sp),
-                              child: SizedBox(
-                                  height: 40.sp,
-                                  width: 40.sp,
-                                  child: CustomImageView(uri: data?.projectLogo,fit: BoxFit.cover,)
+                    return GestureDetector(
+                      onTap: () {
+                        TaskRoute.goToUpdateTaskPage(context,data?.taskId);
+                        // TaskRoute.goToCreteTaskPage(context,TaskUpdateModel(
+                        //     id: data?.taskId,
+                        //     isUpdate: true
+                        // ));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100.sp),
+                                child: SizedBox(
+                                    height: 40.sp,
+                                    width: 40.sp,
+                                    child: CustomImageView(uri: data?.projectLogo,fit: BoxFit.cover,)
+                                ),
+
                               ),
-                            ),
 
-                            SizedBox(
-                              width: 8.sp,
-                            ),
-
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-
-                                  Text(
-                                    data?.projectName ?? "",
-                                    style: CustomTextStyle
-                                        .regularFont14Style
-                                        .copyWith(
-                                        color: kPrimaryColor
-                                            .withOpacity(0.50)),
-                                  ),
-
-                                  Text(
-                                    data?.title ?? "",
-                                    style: CustomTextStyle
-                                        .semiBoldFont16Style,
-                                  ),
-
-                                  SizedBox(height: 10.sp,),
-
-                                ],
+                              SizedBox(
+                                width: 8.sp,
                               ),
-                            ),
+
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    Text(
+                                      data?.projectName ?? "",
+                                      style: CustomTextStyle
+                                          .regularFont14Style
+                                          .copyWith(
+                                          color: kPrimaryColor
+                                              .withOpacity(0.50)),
+                                    ),
+
+                                    Text(
+                                      data?.title ?? "",
+                                      style: CustomTextStyle
+                                          .semiBoldFont16Style,
+                                    ),
+
+                                    SizedBox(height: 10.sp,),
+
+                                  ],
+                                ),
+                              ),
+
 
                             // if(data?.isAssign != 0 && (getRunningTaskData?[0].taskId != data?.taskId && (timerDate == data?.dateRang)))
-
 
                             if(data?.isAssign != 0 && getRunningTaskData?[0].taskId != data?.taskId || timerDate == data?.dateRang)
                             InkWell(
                               onTap: () async{
+                                  print("${data?.title} ==== title ${data?.taskId}");
 
-                                print("${data?.title} ==== title ${data?.taskId}");
+                                  final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
 
-                                final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
 
-                                final timeProvider = context.read<TimerNotifier>();
+                                 final timeProvider = context.read<TimerNotifier>();
                                 final taskProvider = context.read<TaskProvider>();
                                 final homeProvider = context.read<HomeProvider>();
 
@@ -143,10 +155,9 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                     taskId: data?.taskId,
                                   ));
 
-
-                                  await taskProvider.getRecentTaskListData(
-                                      recentTaskRequestModel: RecentTaskRequestModel()
-                                  );
+                                    await taskProvider.getRecentTaskListData(
+                                        recentTaskRequestModel: RecentTaskRequestModel()
+                                    );
 
                                   await homeProvider.getHomeTaskListData(
                                       recentTaskRequestModel: RecentTaskRequestModel(
@@ -154,12 +165,13 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                           startDate: startDate
                                       ));
 
-                                }else{
 
-                                  await taskProvider.stopTask(startStopTaskReqModel: StartStopTaskReqModel(
-                                    projectId: data?.projectId,
-                                    taskId: data?.taskId,
-                                  ));
+                                  }else{
+
+                                    await taskProvider.stopTask(startStopTaskReqModel: StartStopTaskReqModel(
+                                      projectId: data?.projectId,
+                                      taskId: data?.taskId,
+                                    ));
 
                                   await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
 
@@ -190,109 +202,110 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                   borderRadius: BorderRadius.circular(100),
                                 ),
                                 child: Icon( currentTaskIdMatch ? Icons.pause : Icons.play_arrow ,size: 20.sp,color: Colors.white),
+
                               ),
+
+                            ],
+                          ),
+
+                          Padding(
+                            padding:  EdgeInsets.only(left:10.sp),
+                            child: Row(
+                              children: [
+
+                                SizedBox(
+                                    height: 24.sp,
+                                    child: ImageUtil.dummy.profileImage
+                                ),
+
+                                SizedBox(width: 9.sp,),
+
+                                Expanded(child: Text(data?.projectName ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)),
+
+
+                                SizedBox(
+                                    height: 16.sp,
+                                    child: priorityFunc(priority: data?.priority)
+                                ),
+
+                                SizedBox(width: 10.sp,),
+
+                                Text(hourTime == 0 ? "-" :  hourTime,style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+
+                                SizedBox(width: 10.sp,),
+
+                                SizedBox(
+                                  height: 18.sp,
+                                  width: 18.sp,
+                                  child: statusFunc(status: data?.status),
+                                )
+                              ],
                             ),
-
-                          ],
-                        ),
-
-                        Padding(
-                          padding:  EdgeInsets.only(left:10.sp),
-                          child: Row(
-                            children: [
-
-                              SizedBox(
-                                  height: 24.sp,
-                                  child: ImageUtil.dummy.profileImage
-                              ),
-
-                              SizedBox(width: 9.sp,),
-
-                              Expanded(child: Text(data?.projectName ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)),
-
-
-                              SizedBox(
-                                  height: 16.sp,
-                                  child: priorityFunc(priority: data?.priority)
-                              ),
-
-                              SizedBox(width: 10.sp,),
-
-                              Text(hourTime == 0 ? "-" :  hourTime,style: CustomTextStyle.semiBoldFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
-
-                              SizedBox(width: 10.sp,),
-
-                              SizedBox(
-                                height: 18.sp,
-                                width: 18.sp,
-                                child: statusFunc(status: data?.status),
-                              )
-                            ],
                           ),
-                        ),
 
-                        SizedBox(height: 10.sp,),
+                          SizedBox(height: 10.sp,),
 
-                        Padding(
-                          padding:  EdgeInsets.only(left: 10.sp),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Row(
+                          Padding(
+                            padding:  EdgeInsets.only(left: 10.sp),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Row(
+                                    children: [
+                                    SizedBox(
+                                      height: 18.sp,
+                                      width: 18.sp,
+                                      child: ImageUtil.iconImageClass.threeCalenderIcon,
+                                    ),
+
+                                    SizedBox(width: 10.sp,),
+
+                                    Text(DateFormat.yMMMd().format(data?.startDate ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
+                                  ]
+                                ),
+
+
+                                Container(width: 1.sp,
+                                  height: 20.sp,
+                                  color: kPrimaryColor.withOpacity(0.80),
+                                  margin: EdgeInsets.symmetric(horizontal: 8.sp),
+                                ),
+
+
+                                Row(
                                   children: [
-                                  SizedBox(
-                                    height: 18.sp,
-                                    width: 18.sp,
-                                    child: ImageUtil.iconImageClass.threeCalenderIcon,
-                                  ),
+                                    SizedBox(
+                                      height: 18.sp,
+                                      width: 18.sp,
+                                      child: ImageUtil.iconImageClass.timeQuarterIcon,
+                                    ),
 
-                                  SizedBox(width: 10.sp,),
+                                    SizedBox(width: 5.sp,),
 
-                                  Text(DateFormat.yMMMd().format(data?.startDate ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),),
-                                ]
-                              ),
+                                    Text(DateFormat.yMMMd().format(data?.dateRang ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
+                                  ],
+                                ),
 
+                                SizedBox(width: 8.sp),
 
-                              Container(width: 1.sp,
-                                height: 20.sp,
-                                color: kPrimaryColor.withOpacity(0.80),
-                                margin: EdgeInsets.symmetric(horizontal: 8.sp),
-                              ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 18.sp,
+                                      width: 18.sp,
+                                      child: ImageUtil.iconImageClass.messageIcon,
+                                    ),
 
+                                    SizedBox(width: 5.sp,),
 
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    height: 18.sp,
-                                    width: 18.sp,
-                                    child: ImageUtil.iconImageClass.timeQuarterIcon,
-                                  ),
-
-                                  SizedBox(width: 5.sp,),
-
-                                  Text(DateFormat.yMMMd().format(data?.dateRang ?? DateTime.now()) ,style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80))),
-                                ],
-                              ),
-
-                              SizedBox(width: 8.sp),
-
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    height: 18.sp,
-                                    width: 18.sp,
-                                    child: ImageUtil.iconImageClass.messageIcon,
-                                  ),
-
-                                  SizedBox(width: 5.sp,),
-
-                                  Text(data?.projectId.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                                    Text(data?.projectId.toString() ?? "",style: CustomTextStyle.regularFont16Style.copyWith(color: kPrimaryColor.withOpacity(0.80)),)
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     );
                   },
                 ),
