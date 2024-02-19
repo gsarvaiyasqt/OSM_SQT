@@ -36,5 +36,4 @@ class ServerConfig{
   static String get taskUpdateField => "$baseUrl/task/taskupdatefield";
   static String get deleteUser => "$baseUrl/taskuser/delete";
   static String get saveUserInDetail => "$baseUrl/taskuser/save";
-
 }

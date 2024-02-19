@@ -86,6 +86,22 @@ class RunningTaskData {
 
   }
 
+
+  Duration? get duration {
+
+    if (startTime == null) {
+      return null;
+    }
+
+    final isTEst = DateTime.now().difference(startTime!);
+    // var hours = DateFormat('hh').format(isTEst!);
+    // var minutes = DateFormat('mm').format(startTime!);
+    // var seconds = DateFormat('ss').format(startTime!);
+    return isTEst;
+    // return Duration(seconds: durationTest.second,minutes: durationTest.minute,hours: durationTest.day);
+
+  }
+
   factory RunningTaskData.fromJson(Map<String, dynamic> json) => RunningTaskData(
     userTaskTimerId: json["UserTaskTimerID"],
     userId: json["UserID"],

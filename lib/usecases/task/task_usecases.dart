@@ -168,7 +168,6 @@ class TaskUseCases extends ITaskUseCases{
   @override
   Future<GetRunningTaskDetailsResModel?> getRunningTask() async{
     final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.getRunningDetails));
-
     return GetRunningTaskDetailsResModel.fromJson(response);
   }
   
