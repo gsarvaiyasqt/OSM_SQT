@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:osm_flutter/base/base.dart';
+import '../domain/request/comment_save_req_data_model.dart';
 import '../domain/request/save_user_in_deatils_req_model.dart';
 import '../domain/request/search_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
@@ -11,6 +12,7 @@ import '../domain/request/start_stop_task_req_model.dart';
 import '../domain/respones/get_create_task_response.dart';
 import '../../auth/domain/dummy/create_task_response.dart';
 import '../domain/request/get_recent_task_request_model.dart';
+import '../domain/respones/get_list_task_data_model.dart';
 import '../domain/respones/get_recent_task_response_model.dart';
 import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/respones/get_running_task_res_model.dart';
@@ -20,6 +22,7 @@ import '../domain/respones/get_task_details_response_model.dart';
 import '../domain/respones/get_user_and_project_response_model.dart';
 import 'package:osm_flutter/app/task_tab/repository/task_repository.dart';
 
+import '../domain/respones/save_comment_response_data.dart';
 import '../domain/respones/save_user_in_details_response_model.dart';
 import '../domain/ui_state/update_task_status_priority_ui_state.dart';
 
@@ -40,7 +43,8 @@ abstract class ITaskProvider {
   Future updateTaskStatusAndPriorityData();
   Future deleteUserInTask({required String? name,required int? id});
   Future saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode});
-
+  Future getListTaskDetailsData({required int? taskId,required bool? isLog});
+ Future saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
 }
 
 class TaskProvider extends BaseNotifier implements ITaskProvider{
@@ -62,6 +66,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _getUpdateStatusAndPriorityResponse = AppResponse();
     _deleteUserInTaskResponse = AppResponse();
     _saveUserDetailsResponse = AppResponse();
+    _getIdListTaskDetailsResponse = AppResponse();
+    _saveCommentDataResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -106,6 +112,14 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<SaveUserDetailsResponseModel> _saveUserDetailsResponse;
   AppResponse<SaveUserDetailsResponseModel> get saveUserDetailsResponse => _saveUserDetailsResponse;
+
+
+  late AppResponse<GetIdListTaskDetails> _getIdListTaskDetailsResponse;
+  AppResponse<GetIdListTaskDetails> get getIdListTaskDetailsResponse => _getIdListTaskDetailsResponse;
+
+
+  late AppResponse<SaveCommentDataResponseModel> _saveCommentDataResponse;
+  AppResponse<SaveCommentDataResponseModel> get saveCommentDataResponse => _saveCommentDataResponse;
 
   UpdateTaskStatusPriorityUiState updateTaskStatusPriorityUiState = UpdateTaskStatusPriorityUiState();
 
@@ -666,6 +680,68 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     } catch (e) {
 
       resIsFailed(_saveUserDetailsResponse, e);
+      rethrow;
+
+    }
+
+  }
+
+  @override
+  Future getListTaskDetailsData({required int? taskId, required bool? isLog}) async{
+    resIsLoading(_getIdListTaskDetailsResponse);
+
+    try {
+
+      final response = await taskRepository?.getListTaskDetailsData(taskId: taskId,isLog: isLog);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+
+      }else{
+
+        response?.data?.taskDetails?.forEach((element) {
+
+          element.documents = response.data?.documents?.where((wElement) => wElement.associationId == element.taskLogDetailId).toList();
+
+        });
+        
+        resIsSuccess(_getIdListTaskDetailsResponse,response);
+
+
+      }
+
+    } catch (e) {
+
+      resIsFailed(_getIdListTaskDetailsResponse, e);
+      rethrow;
+
+    } }
+
+  @override
+  Future saveCommentReqData({required CommentSaveReqData? commentSaveReqData}) async{
+    resIsLoading(_saveCommentDataResponse);
+
+    try {
+
+      final response = await taskRepository?.saveCommentReqData(commentSaveReqData: commentSaveReqData);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+
+      }else{
+
+        resIsSuccess(_saveCommentDataResponse,response);
+
+
+      }
+
+    } catch (e) {
+
+      resIsFailed(_saveCommentDataResponse, e);
       rethrow;
 
     }

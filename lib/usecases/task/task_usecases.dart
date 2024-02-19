@@ -10,6 +10,7 @@ import 'package:osm_flutter/app/task_tab/domain/respones/get_running_task_res_mo
 import 'package:osm_flutter/server_configs/config.dart';
 import 'package:osm_flutter/services/web_services.dart';
 
+import '../../app/task_tab/domain/request/comment_save_req_data_model.dart';
 import '../../app/task_tab/domain/request/create_task_req_model.dart';
 import '../../app/task_tab/domain/request/get_recent_task_request_model.dart';
 import '../../app/task_tab/domain/request/get_status_count.dart';
@@ -18,11 +19,13 @@ import '../../app/task_tab/domain/request/save_user_in_deatils_req_model.dart';
 import '../../app/task_tab/domain/request/update_task_status_and_priority_request_model.dart';
 import '../../app/task_tab/domain/respones/get_count_status_response_model.dart';
 import '../../app/task_tab/domain/respones/get_create_task_response.dart';
+import '../../app/task_tab/domain/respones/get_list_task_data_model.dart';
 import '../../app/task_tab/domain/respones/get_recent_task_response_model.dart';
 import '../../app/task_tab/domain/respones/get_status_and_priority_res_model.dart';
 import '../../app/task_tab/domain/respones/get_sub_point_check_un_chack_response_model.dart';
 import '../../app/task_tab/domain/respones/get_task_details_response_model.dart';
 import '../../app/task_tab/domain/respones/get_user_and_project_response_model.dart';
+import '../../app/task_tab/domain/respones/save_comment_response_data.dart';
 import '../../app/task_tab/domain/respones/save_user_in_details_response_model.dart';
 import '../../utils/utils.dart';
 
@@ -43,6 +46,8 @@ abstract class ITaskUseCases{
    Future<BaseResModel?> updateTaskStatusAndPriorityData({required UpdateTaskStatusAndPriorityRequestModel? updateTaskStatusAndPriorityRequestModel});
    Future<BaseResModel?> deleteUserInTask({required String? name,required int? id});
    Future<SaveUserDetailsResponseModel?> saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode});
+   Future<GetIdListTaskDetails?> getListTaskDetailsData({required int? taskId,required bool? isLog});
+   Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
 }
 
 class TaskUseCases extends ITaskUseCases{
@@ -236,13 +241,39 @@ class TaskUseCases extends ITaskUseCases{
     return SaveUserDetailsResponseModel.fromJson(response);
   }
 
-  // @override
-  // Future<SaveUserDataInDetailsRequestModel?> saveUserInDetails({required SaveUserDetailsResponseModel saveUserDetailsResponseModel}) async{
-  //   final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.deleteUser,data: {
-  //     "name":name,
-  //     "id": id
-  //   }));
-  // }
+  @override
+  Future<GetIdListTaskDetails?> getListTaskDetailsData({required int? taskId, required bool? isLog}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.getListByTaskId,data: {
+      "taskID":taskId,
+      "isLog":isLog
+    }));
+
+    return GetIdListTaskDetails.fromJson(response);
+
+  }
+
+  @override
+  Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData}) async{
+
+    final fromData = FormData.fromMap(commentSaveReqData!.toJson());
+    var index = 0;
+
+    if(commentSaveReqData.list != null){
+
+      fromData.files.add(MapEntry("lstDocuments[$index]",await MultipartFile.fromFile("${commentSaveReqData.list?[index].file?.path}",filename: commentSaveReqData.list?[index].file?.path.split("/").last)));
+
+      index++;
+
+    }
+
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.taskLogDetailsSave,data: fromData));
+
+
+    return SaveCommentDataResponseModel.fromJson(response);
+
+  }
+
+
 
 
 

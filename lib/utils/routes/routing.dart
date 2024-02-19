@@ -14,6 +14,7 @@ class Routes {
     SettingRoute.route : (context) => SettingRoute.child,
     TaskRoute.route : (context) => TaskRoute.child,
     ProjectRoute.route : (context) => ProjectRoute.child,
+    TaskRoute.updateTaskRoute : (context) => TaskRoute.updateTaskChild,
 
   };
 }
