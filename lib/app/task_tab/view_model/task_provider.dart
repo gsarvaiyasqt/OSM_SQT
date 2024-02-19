@@ -416,18 +416,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
       }else{
 
-        final res = BaseResModel(
-            statusCode: response?.statusCode,
-            message: response?.message,
-            data: Data(
-              taskId: startStopTaskReqModel?.taskId,
-              startStop: true
-            )
-        );
-
-        print("${res.data?.toJson()} ==== check this data response");
-
-        resIsSuccess(_startTaskResponse,res);
+        resIsSuccess(_startTaskResponse,response);
       }
 
     } catch (e) {
@@ -468,6 +457,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
       final response = await taskRepository?.getRunningTask();
 
+      final diff = DateTime.now().difference(response?.data?.first.startTime ?? DateTime.now());
+
+
       if(response?.statusCode != 1){
 
         throw response?.message ?? "";
@@ -475,6 +467,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
       }else{
 
         final runningStartTime = response?.data?[0].startTime;
+
         resIsSuccess(_getRunningTaskResponse,response);
       }
 
