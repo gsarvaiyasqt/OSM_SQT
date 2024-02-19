@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:osm_flutter/timer/timer_notifier.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -25,17 +26,12 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
 
 
 
-
-
   @override
   Widget build(BuildContext context) {
-    final timerProvider = context.watch<TimeProvider>();
     final taskProvider = context.watch<TaskProvider>();
     final getRunningTaskData = taskProvider.getRunningTaskResponse.data?.data;
     final runningTaskId = getRunningTaskData?[0].taskId;
-    final realTimeStartStop = timerProvider.elapsedTime;
-    final startStop = timerProvider.startStop;
-
+    final timerDate = getRunningTaskData?[0].timerDate;
     return Container(
       margin: EdgeInsets.only(bottom: 10.sp),
 
@@ -81,6 +77,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                     final hourTime = formattedTime(timeInSecond: data?.totalTimeInMinites ?? 0);
 
                     final currentTaskIdMatch = runningTaskId == data?.taskId;
+
                     return GestureDetector(
                       onTap: () {
                         TaskRoute.goToUpdateTaskPage(context,data?.taskId);
@@ -104,6 +101,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                     width: 40.sp,
                                     child: CustomImageView(uri: data?.projectLogo,fit: BoxFit.cover,)
                                 ),
+
                               ),
 
                               SizedBox(
@@ -136,38 +134,37 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                 ),
                               ),
 
-                              if(data?.isAssign != 0)
-                              InkWell(
-                                onTap: () async{
 
+                            // if(data?.isAssign != 0 && (getRunningTaskData?[0].taskId != data?.taskId && (timerDate == data?.dateRang)))
+
+                            if(data?.isAssign != 0 && getRunningTaskData?[0].taskId != data?.taskId || timerDate == data?.dateRang)
+                            InkWell(
+                              onTap: () async{
                                   print("${data?.title} ==== title ${data?.taskId}");
 
                                   final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
 
-                                  final timeProvider = context.read<TimeProvider>();
-                                  final taskProvider = context.read<TaskProvider>();
-                                  final homeProvider = context.read<HomeProvider>();
 
-                                  await timeProvider.startOrStop();
+                                 final timeProvider = context.read<TimerNotifier>();
+                                final taskProvider = context.read<TaskProvider>();
+                                final homeProvider = context.read<HomeProvider>();
 
-                                  if(startStop){
-
-                                    await taskProvider.startTask(startStopTaskReqModel: StartStopTaskReqModel(
-                                      projectId: data?.projectId,
-                                      taskId: data?.taskId,
-                                    ));
-
-                                    await taskProvider.getRunningTask();
+                                if(getRunningTaskData?[0].taskId == null){
+                                  await taskProvider.startTask(startStopTaskReqModel: StartStopTaskReqModel(
+                                    projectId: data?.projectId,
+                                    taskId: data?.taskId,
+                                  ));
 
                                     await taskProvider.getRecentTaskListData(
                                         recentTaskRequestModel: RecentTaskRequestModel()
                                     );
 
-                                    await homeProvider.getHomeTaskListData(
-                                        recentTaskRequestModel: RecentTaskRequestModel(
-                                        endDate: DateTime.now(),
-                                        startDate: startDate
-                                    ));
+                                  await homeProvider.getHomeTaskListData(
+                                      recentTaskRequestModel: RecentTaskRequestModel(
+                                          endDate: DateTime.now(),
+                                          startDate: startDate
+                                      ));
+
 
                                   }else{
 
@@ -176,27 +173,36 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                       taskId: data?.taskId,
                                     ));
 
+                                  await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
+
+                                  await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+                                      endDate: DateTime.now(),
+                                      startDate: startDate
+                                  ));
+
+                                  timeProvider.stopTimer();
+
+                                }
+
+                                await taskProvider.getRunningTask();
+
+                                final date = taskProvider.getRunningTaskResponse.data?.data?.first.startTime;
+
+                                timeProvider.differenceRunningTime(startDate: date);
 
 
-                                    await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
 
-                                    await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
-                                        endDate: DateTime.now(),
-                                        startDate: startDate
-                                    ));
-                                  }
 
-                                  await taskProvider.getRunningTask();
-                                  // startOrStop();
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 6.sp,vertical: 6.sp),
-                                  decoration: BoxDecoration(
-                                    color: kBlueColor,
-                                    borderRadius: BorderRadius.circular(100),
-                                  ),
-                                  child: Icon(currentTaskIdMatch ? Icons.pause : Icons.play_arrow ,size: 20.sp,color: Colors.white),
+                                // startOrStop();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 6.sp,vertical: 6.sp),
+                                decoration: BoxDecoration(
+                                  color: kBlueColor,
+                                  borderRadius: BorderRadius.circular(100),
                                 ),
+                                child: Icon( currentTaskIdMatch ? Icons.pause : Icons.play_arrow ,size: 20.sp,color: Colors.white),
+
                               ),
 
                             ],

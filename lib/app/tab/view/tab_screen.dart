@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:osm_flutter/app/home_tab/view_model/home_provider.dart';
 import 'package:osm_flutter/app/tab/view_model/timer_provider.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
@@ -7,6 +8,8 @@ import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
 import '../../../base/view/base_components/custom_image_view.dart';
 import '../../../timer/timer_notifier.dart';
 import '../../../utils/common_utils/custom_timer_appbar.dart';
+import '../../task_tab/domain/request/get_recent_task_request_model.dart';
+import '../../task_tab/domain/request/start_stop_task_req_model.dart';
 import '../domain/menu_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,27 +34,26 @@ class _TabScreenState extends State<TabScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
       final taskProvider = context.read<TaskProvider>();
-      final timer = context.read<TimerNotifier>();
+      final timeProvider = context.read<TimerNotifier>();
       await taskProvider.getRunningTask();
-      timer.startTimer(taskProvider.getRunningTaskResponse.data?.data?[0].duration);
-    }
-    );
+
+      final date = taskProvider.getRunningTaskResponse.data?.data?.first.startTime;
+      await timeProvider.differenceRunningTime(startDate: date);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final tabProvider = context.watch<TabBarProvider>();
     final timerProvider = context.watch<TimeProvider>();
-    final taskProvider = context.watch<TaskProvider>();
     final timeProvider = context.watch<TimerNotifier>();
-    final duration = timeProvider.time;
+    final taskProvider = context.watch<TaskProvider>();
+
     final getTaskDetailsLoader = taskProvider.getRunningTaskResponse.state == Status.LOADING;
     final getTaskDetailsData = taskProvider.getRunningTaskResponse.data?.data?[0];
-    // final realTimeStartStop = timerProvider.elapsedTime;
-    // final realTimeStartStop = timerProvider.diffTime;
 
-    final startStop = timerProvider.startStop;
-    final diffRealTime = timerProvider.diffRealTime;
+    final duration = timeProvider.duration;
+    final fTime = "${duration?.inHours.remainder(60).toString().padLeft(2, '0')}:${duration?.inMinutes.remainder(60).toString().padLeft(2, '0')}";
 
     return SafeArea(
       child: Scaffold(
@@ -76,19 +78,40 @@ class _TabScreenState extends State<TabScreen> {
                     width: 40.sp,
                   ),
                   child: InkWell(
-                    onTap: () {
+                    onTap: () async{
+                      final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
                       final timerProvider = context.read<TimerNotifier>();
-                      // timerProvider.startOrStop();
-                      timerProvider.differenceRunningTime(context);
-                      // timerProvider.startTimer();
+                      final taskProvider = context.read<TaskProvider>();
+                      final homeProvider = context.read<HomeProvider>();
+
+                      await taskProvider.stopTask(startStopTaskReqModel: StartStopTaskReqModel(
+                        projectId: getTaskDetailsData.projectId,
+                        taskId: getTaskDetailsData.taskId,
+                      ));
+
+                      await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
+
+                      await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+                          endDate: DateTime.now(),
+                          startDate: startDate
+                      ));
+
+                      timeProvider.stopTimer();
+
+                      await taskProvider.getRunningTask();
+
+                      final date = taskProvider.getRunningTaskResponse.data?.data?.first.startTime;
+
+                      timeProvider.differenceRunningTime(startDate: date);
+
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 9.sp,vertical: 9.sp),
+                      padding: EdgeInsets.symmetric (horizontal: 9.sp,vertical: 9.sp),
                       decoration: BoxDecoration(
                         color: kBackgroundColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: Icon(getTaskDetailsData.startTime == null ? Icons.play_arrow : Icons.pause,size: 20.sp),
+                      child: Icon(getTaskDetailsData.taskId == null ? Icons.play_arrow : Icons.pause,size: 20.sp),
                     ),
                   ),
                 ),
@@ -103,11 +126,10 @@ class _TabScreenState extends State<TabScreen> {
                     height: 22.sp,
                   ),
                   child: Text(
-                      "$duration",
-
+                      fTime,
                       style: CustomTextStyle.boldFont22Style.copyWith(
-                      color: kBackgroundColor
-                  )),
+                          color: kBackgroundColor
+                      )),
                 )
               ],
             ),
@@ -128,11 +150,11 @@ class _TabScreenState extends State<TabScreen> {
         bottomNavigationBar: Container(
           padding: EdgeInsets.symmetric(vertical: 15.sp),
           decoration: BoxDecoration(
-            color: kPrimaryColor,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20.sp),
-              topLeft: Radius.circular(20.sp)
-            )
+              color: kPrimaryColor,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20.sp),
+                  topLeft: Radius.circular(20.sp)
+              )
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -144,12 +166,12 @@ class _TabScreenState extends State<TabScreen> {
                   context.read<TabBarProvider>().tabChangeIndex(index: index);
                 },
                 child: AnimatedContainer(
-                  curve: Curves.easeInCirc,
-                  duration: const Duration(milliseconds: 100),
-                  padding: EdgeInsets.symmetric(horizontal: 14.sp,vertical: 9.sp),
+                    curve: Curves.easeInCirc,
+                    duration: const Duration(milliseconds: 100),
+                    padding: EdgeInsets.symmetric(horizontal: 14.sp,vertical: 9.sp),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: currentItem ?  kBackgroundColor : Colors.transparent
+                        borderRadius: BorderRadius.circular(100),
+                        color: currentItem ?  kBackgroundColor : Colors.transparent
                     ),
                     child: Row(
                       children: [
@@ -159,7 +181,7 @@ class _TabScreenState extends State<TabScreen> {
                             child: CustomSvgPictures.asset(menu.icon ?? "",fit: BoxFit.contain,colorFilter: ColorFilter.mode(currentItem ? kBlackColor : kWhiteColor.withOpacity(0.50), BlendMode.srcIn),)),
                         SizedBox(width: 10.sp),
                         if(currentItem)
-                        Text(menu.name ?? "",style: CustomTextStyle.mediumFont14Style),
+                          Text(menu.name ?? "",style: CustomTextStyle.mediumFont14Style),
                       ],
                     )),
               );

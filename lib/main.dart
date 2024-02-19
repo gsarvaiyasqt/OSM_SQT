@@ -3,7 +3,6 @@ import 'package:osm_flutter/app.dart';
 
 
 void main() {
-  runApp(const OmsApp());
+  runApp( const OmsApp());
 }
-
 

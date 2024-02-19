@@ -13,7 +13,7 @@ class TimeProvider extends ChangeNotifier{
   bool startStop = true;
   String elapsedTime = '';
 
-  Duration? diffRealTime;
+  Duration? diffRealTimeDuration;
 
 
   Stopwatch watch = Stopwatch();
@@ -26,9 +26,9 @@ class TimeProvider extends ChangeNotifier{
 
     final currentTime = DateTime.now();
 
-    diffRealTime = currentTime.difference(startDate ?? DateTime.now());
+    diffRealTimeDuration = currentTime.difference(startDate ?? DateTime.now());
 
-    print("${diffRealTime?.inHours.remainder(60).toString().padLeft(2, '0')}:${diffRealTime?.inMinutes.remainder(60).toString().padLeft(2, '0')}:${diffRealTime?.inSeconds.remainder(60)}");
+    print("${diffRealTimeDuration?.inHours.remainder(60).toString().padLeft(2, '0')}:${diffRealTimeDuration?.inMinutes.remainder(60).toString().padLeft(2, '0')}:${diffRealTimeDuration?.inSeconds.remainder(60)}");
 
     // print("$differenceTime == check diffrence");
 
