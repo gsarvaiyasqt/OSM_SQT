@@ -49,7 +49,9 @@ class _HomeTabPageState extends State<HomeTabPage> {
   @override
   Widget build(BuildContext context) {
     final homeProvider = context.watch<HomeProvider>();
+    final taskProvider = context.watch<TaskProvider>();
     final recentLoader = homeProvider.resentTaskResponse.state == Status.LOADING;
+    final taskLoader = taskProvider.getRunningTaskResponse.state == Status.LOADING;
     final isLoading = homeProvider.getStatusCountResponse.state == Status.LOADING;
     final resentListData =  homeProvider.listData;
 
@@ -105,7 +107,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: SkeletonView(
-                              isLoading: isLoading,
+                              isLoading: isLoading || taskLoader,
                               borderRadius: BorderRadius.circular(100),
                               skeletonBody: ClipRRect(
                                   child: Container(
@@ -139,7 +141,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                               children: [
                                 SkeletonView(
                                   borderRadius: BorderRadius.circular(8.sp),
-                                  isLoading: isLoading,
+                                  isLoading: isLoading || taskLoader,
                                   skeletonBody: SizedBox(
                                     height: 14.sp,
                                     width: 70.sp,
@@ -151,7 +153,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
                                 SkeletonView(
                                   borderRadius: BorderRadius.circular(8.sp),
-                                  isLoading: isLoading,
+                                  isLoading: isLoading || taskLoader,
                                   skeletonBody: SizedBox(
                                     height: 24.sp,
                                     width: 70.sp,
@@ -189,7 +191,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: SkeletonView(
-                                  isLoading: isLoading,
+                                  isLoading: isLoading || taskLoader,
                                   borderRadius: BorderRadius.circular(100),
                                   skeletonBody: ClipRRect(
                                       child: Container(
@@ -217,7 +219,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                 children: [
                                   SkeletonView(
                                     borderRadius: BorderRadius.circular(8.sp),
-                                    isLoading: isLoading,
+                                    isLoading: isLoading || taskLoader,
                                     skeletonBody: SizedBox(
                                       height: 14.sp,
                                       width: 70.sp,
@@ -229,7 +231,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
                                   SkeletonView(
                                     borderRadius: BorderRadius.circular(8.sp),
-                                    isLoading: isLoading,
+                                    isLoading: isLoading || taskLoader,
                                     skeletonBody: SizedBox(
                                       height: 14.sp,
                                       width: 70.sp,
@@ -260,7 +262,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: SkeletonView(
-                                  isLoading: isLoading,
+                                  isLoading: isLoading || taskLoader,
                                   borderRadius: BorderRadius.circular(100),
                                   skeletonBody:    ClipRRect(
                                       child: Container(
@@ -287,7 +289,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
                                   SkeletonView(
                                     borderRadius: BorderRadius.circular(8.sp),
-                                    isLoading: isLoading,
+                                    isLoading: isLoading || taskLoader,
                                     skeletonBody: SizedBox(
                                       height: 14.sp,
                                       width: 70.sp,
@@ -299,7 +301,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
                                   SkeletonView(
                                     borderRadius: BorderRadius.circular(8.sp),
-                                    isLoading: isLoading,
+                                    isLoading: isLoading || taskLoader,
                                     skeletonBody: SizedBox(
                                       height: 14.sp,
                                       width: 70.sp,
@@ -331,7 +333,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
                   SkeletonView(
                     borderRadius: BorderRadius.circular(8.sp),
-                    isLoading: recentLoader,
+                    isLoading: recentLoader || taskLoader,
                     skeletonBody: SizedBox(
                       height: 24.sp,
                       width: 70.sp,
@@ -345,7 +347,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
                   SkeletonView(
                     borderRadius: BorderRadius.circular(100.sp),
-                    isLoading: recentLoader,
+                    isLoading: recentLoader || taskLoader,
                     skeletonBody: SizedBox(
                       height: 50.sp,
                       width: 50.sp,
@@ -376,11 +378,11 @@ class _HomeTabPageState extends State<HomeTabPage> {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 reverse: true,
-                itemCount:  recentLoader ? 5 : resentListData.length,
+                itemCount:  recentLoader || taskLoader ? 5 : resentListData.length,
                 itemBuilder: (context, index) {
 
-                  if(recentLoader){
-                    return homeCardSimmer(recentLoader:recentLoader);
+                  if(recentLoader || taskLoader){
+                    return homeCardSimmer(recentLoader:recentLoader || taskLoader);
                   }
 
                   final createTaskData = resentListData[index];

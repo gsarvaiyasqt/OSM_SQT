@@ -22,33 +22,11 @@ class TaskTabPage extends StatefulWidget {
 
 class _TaskTabPageState extends State<TaskTabPage> {
 
-  int randomNote = Random().nextInt(6);
-  int randomType = Random().nextInt(6);
-  Timer? timer;
-  String changeTimer = 'Start Timer';
-
-  void startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      setState(() {
-        randomNote = Random().nextInt(6);
-        randomType = Random().nextInt(6);
-      });
-    });
-  }
-
-  void stopTimer() {
-    timer?.cancel();
-  }
-
-
-
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
-      final endDate = DateTime(DateTime.now().year - 3,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
 
       final taskProvider = context.read<TaskProvider>();
 
@@ -63,6 +41,7 @@ class _TaskTabPageState extends State<TaskTabPage> {
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
     final taskLoader = taskProvider.resentTaskResponse.state == Status.LOADING;
+    final getRunningLoader = taskProvider.getRunningTaskResponse.state == Status.LOADING;
     final listData = taskProvider.listData;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
@@ -107,12 +86,12 @@ class _TaskTabPageState extends State<TaskTabPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: taskLoader ? 10 : listData.length,
+                itemCount: taskLoader || getRunningLoader ? 10 : listData.length,
                 reverse: true,
                 itemBuilder: (context, index) {
 
-                  if(taskLoader){
-                    return  taskCardSimmer(recentLoader: taskLoader);
+                  if(taskLoader || getRunningLoader){
+                    return  taskCardSimmer(recentLoader: taskLoader || getRunningLoader);
                   }
 
                   final taskData = listData[index];
