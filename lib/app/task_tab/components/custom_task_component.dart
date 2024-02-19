@@ -204,7 +204,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                 child: Icon( currentTaskIdMatch ? Icons.pause : Icons.play_arrow ,size: 20.sp,color: Colors.white),
 
                               ),
-
+                            )
                             ],
                           ),
 
