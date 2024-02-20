@@ -20,7 +20,7 @@ class _FilePageState extends State<FilePage> {
     final taskProvider = context.read<TaskProvider>();
     final taskDetailData = taskProvider.getTaskDetailsResponse.data?.data?.documents;
     return Scaffold(
-      backgroundColor: kBackgroundColor,
+      backgroundColor: kSecondaryBackgroundColor,
       body:  Wrap(
         crossAxisAlignment: WrapCrossAlignment.end,
         children: List.generate(taskDetailData?.length ?? 0, (index) => Stack(

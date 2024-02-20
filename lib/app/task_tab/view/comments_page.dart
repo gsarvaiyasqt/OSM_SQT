@@ -8,6 +8,7 @@ import 'package:osm_flutter/app/document/view_model/document_provider.dart';
 import 'package:osm_flutter/app/task_tab/domain/respones/save_comment_response_data.dart';
 import 'package:osm_flutter/base/base.dart';
 import 'package:osm_flutter/base/view/base_components/custom_text_form_filed.dart';
+import 'package:osm_flutter/base/view/base_components/loading_view.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -65,12 +66,14 @@ class _CommentPageState extends State<CommentPage> {
   Widget build(BuildContext context) {
     final taskId = ModalRoute.of(context)?.settings.arguments as int;
     final taskProvider = context.watch<TaskProvider>();
+    final loading = taskProvider.getIdListTaskDetailsResponse.state == Status.LOADING;
     final data = taskProvider.getIdListTaskDetailsResponse.data?.data;
     final projectId = taskProvider.getTaskDetailsResponse.data?.data?.task?.projectId;
     final taskDetails = data?.taskDetails;
     final documents = data?.documents;
     return Scaffold(
-      body: Column(
+      backgroundColor: kSecondaryBackgroundColor,
+      body: !loading ? Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
@@ -107,18 +110,28 @@ class _CommentPageState extends State<CommentPage> {
                   SizedBox(width: 10.sp),
                   GestureDetector(
                       onTap: () async{
-                        try {
-                          await context.read<TaskProvider>().saveCommentReqData(commentSaveReqData: CommentSaveReqData(
-                                                    taskId: taskId,
-                                                    projectId: projectId,
-                                                      details: commentCon.text,
-                                                     taskLogDetailId: 0,
-                                                    list: commentListOfFile));
-                          commentListOfFile = [];
-                          commentCon.clear();
-                        } catch (e) {
-                          Toaster.showMessage(context, msg: e.toString());
+
+                        if(commentCon.text.isNotEmpty){
+                          try {
+
+                            await context.read<TaskProvider>().saveCommentReqData(commentSaveReqData: CommentSaveReqData(
+                                taskId: taskId,
+                                projectId: projectId,
+                                details: commentCon.text,
+                                taskLogDetailId: 0,
+                                list: commentListOfFile));
+                            commentListOfFile = [];
+                            commentCon.clear();
+                          } catch (e) {
+                            Toaster.showMessage(context, msg: e.toString());
+                          }
+                        }else{
+
+                          Toaster.showMessage(context, msg: "Please Enter Comment");
+
                         }
+
+
                       },
                       child: const Icon(Icons.send)),
                 ],
@@ -203,7 +216,7 @@ class _CommentPageState extends State<CommentPage> {
                               onTap: () async{
                                 await context.read<TaskProvider>().deleteTaskCommentDetails(id: taskDetailsData?.taskLogDetailId);
                               },
-                              child: Icon(Icons.delete,color: kBlackColor)),
+                              child: const Icon(Icons.delete,color: kBlackColor)),
                         ],
                       ),
                       Text(taskDetailsData?.createdOn != null ? taskDetailsData!.createdOn!.formatCommonDate() : "",style: CustomTextStyle.semiBoldFont18Style,),
@@ -274,7 +287,7 @@ class _CommentPageState extends State<CommentPage> {
               );
           },))
         ],
-      ),
+      ) : const Center(child: Loading(color: kSecondaryColor),)
     );
   }
 }
