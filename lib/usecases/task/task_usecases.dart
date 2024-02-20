@@ -48,6 +48,7 @@ abstract class ITaskUseCases{
    Future<SaveUserDetailsResponseModel?> saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode});
    Future<GetIdListTaskDetails?> getListTaskDetailsData({required int? taskId,required bool? isLog});
    Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
+   Future<BaseResModel?> deleteTaskCommentDetails({required int? id});
 }
 
 class TaskUseCases extends ITaskUseCases{
@@ -256,21 +257,31 @@ class TaskUseCases extends ITaskUseCases{
   Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData}) async{
 
     final fromData = FormData.fromMap(commentSaveReqData!.toJson());
-    var index = 0;
+   
+    
+    
+    final list = commentSaveReqData.list;
+    if(list != null){
+      
+      
+      for(int i = 0; i < list.length;i++){
 
-    if(commentSaveReqData.list != null){
-
-      fromData.files.add(MapEntry("lstDocuments[$index]",await MultipartFile.fromFile("${commentSaveReqData.list?[index].file?.path}",filename: commentSaveReqData.list?[index].file?.path.split("/").last)));
-
-      index++;
-
+        fromData.files.add(MapEntry("lstDocuments[$i].file",await MultipartFile.fromFile("${commentSaveReqData.list?[i].path}",filename: commentSaveReqData.list?[i].path.split("/").last)));
+        fromData.fields.add(MapEntry("lstDocuments[$i].docName",list[i].path.split("/").last));
+      }
+      
     }
-
     final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.taskLogDetailsSave,data: fromData));
-
-
     return SaveCommentDataResponseModel.fromJson(response);
 
+  }
+
+  @override
+  Future<BaseResModel?> deleteTaskCommentDetails({required int? id}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.deleteCommentDetail,data: {
+      "id":id
+    }));
+    return BaseResModel.fromJson(response);
   }
 
 

@@ -43,33 +43,10 @@ class _UpdateTaskAndDetailsState extends State<UpdateTaskAndDetails> {
     "Task details","Comments","File","Logs"
   ];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      final taskId = ModalRoute.of(context)?.settings.arguments as int;
-      final taskProvider = context.read<TaskProvider>();
 
-      await taskProvider.getTaskDetailsData(id: taskId);
-
-      final task = taskProvider.getTaskDetailsResponse.data?.data;
-
-      taskProvider.createTaskReqModel = CreateTaskReqModel.fromTaskDetailsData(task);
-
-      titleController.text = task?.task?.title ?? "";
-      descriptionController.text = task?.task?.details ?? "";
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final taskUpdateModel = ModalRoute.of(context)?.settings.arguments as int;
-    final taskProvider = context.watch<TaskProvider>();
-    final createTaskLoading = taskProvider.getGetCreateTaskResponse.state == Status.LOADING;
-    final createTaskDetailLoading = taskProvider.getTaskDetailsResponse.state == Status.LOADING;
-    final createTaskReqModel = taskProvider.createTaskReqModel;
-    final updateTaskStatusPriorityUiState = taskProvider.updateTaskStatusPriorityUiState;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       appBar: AppBar(
@@ -101,7 +78,7 @@ class _UpdateTaskAndDetailsState extends State<UpdateTaskAndDetails> {
         child: Column(
           children: [
             Container(
-              width: double.infinity,
+              // width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(5.sp),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -110,6 +87,7 @@ class _UpdateTaskAndDetailsState extends State<UpdateTaskAndDetails> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(taskTabList.length, (index) => GestureDetector(
                     onTap: () {
                       selectedIndex = index;

@@ -42,6 +42,7 @@ abstract class ITaskRepository{
   Future<SaveUserDetailsResponseModel?> saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode});
   Future<GetIdListTaskDetails?> getListTaskDetailsData({required int? taskId,required bool? isLog});
   Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
+  Future<BaseResModel?> deleteTaskCommentDetails({required int? id});
 }
 
 class TaskRepository extends ITaskRepository{
@@ -127,5 +128,10 @@ class TaskRepository extends ITaskRepository{
   @override
   Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData}) async{
     return await taskUseCases?.saveCommentReqData(commentSaveReqData: commentSaveReqData);
+  }
+
+  @override
+  Future<BaseResModel?> deleteTaskCommentDetails({required int? id}) async{
+    return await taskUseCases?.deleteTaskCommentDetails(id: id);
   }
 }
