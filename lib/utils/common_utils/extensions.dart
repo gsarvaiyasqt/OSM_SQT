@@ -21,7 +21,7 @@ extension DateOnlyCompare on DateTime {
 extension DateTimeFormatterExt on DateTime {
 
   String formatCommonDate() {
-    return DateFormat("dd/MM/yyyy").format(this);
+    return DateFormat("dd-MM-yyyy hh:mm").format(this);
   }
 
   String formatFor({required String format}) {
