@@ -27,26 +27,11 @@ class TimerNotifier extends ChangeNotifier{
     notifyListeners();
   }
 
-  void startTimer (){
-
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-
-      _duration = Duration(seconds: timer.tick);
-
-    });
-
-    notifyListeners();
-
-  }
 
   void stopTimer(){
     _duration = const Duration(seconds: 0);
     timer?.cancel();
     notifyListeners();
   }
-
-
-
-
 
 }
