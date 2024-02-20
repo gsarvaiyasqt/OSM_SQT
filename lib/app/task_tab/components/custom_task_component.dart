@@ -149,49 +149,89 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                                 final taskProvider = context.read<TaskProvider>();
                                 final homeProvider = context.read<HomeProvider>();
 
-                                if(getRunningTaskData?[0].taskId == null){
-                                  await taskProvider.startTask(startStopTaskReqModel: StartStopTaskReqModel(
-                                    projectId: data?.projectId,
-                                    taskId: data?.taskId,
-                                  ));
+                                try{
+
+                                  if(getRunningTaskData?[0].taskId != null){
+
+                                    if(getRunningTaskData?[0].taskId != null && (getRunningTaskData?[0].taskId != data?.taskId)){
+
+                                      print("start task");
+
+                                      timeProvider.stopTimer();
+
+                                      await taskProvider.startTask(startStopTaskReqModel: StartStopTaskReqModel(
+                                        projectId: data?.projectId,
+                                        taskId: data?.taskId,
+                                      ));
+
+
+                                      await taskProvider.getRecentTaskListData(
+                                          recentTaskRequestModel: RecentTaskRequestModel()
+                                      );
+
+                                      await homeProvider.getHomeTaskListData(
+                                          recentTaskRequestModel: RecentTaskRequestModel(
+                                              endDate: DateTime.now(),
+                                              startDate: startDate
+                                          ));
+
+                                    }else{
+
+                                      print("stop task");
+
+                                      await taskProvider.stopTask(startStopTaskReqModel: StartStopTaskReqModel(
+                                        projectId: data?.projectId,
+                                        taskId: data?.taskId,
+                                      ));
+
+                                      await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
+
+                                      await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+                                          endDate: DateTime.now(),
+                                          startDate: startDate
+                                      ));
+
+                                      timeProvider.stopTimer();
+
+                                    }
+
+                                    await taskProvider.getRunningTask();
+
+                                    final date = taskProvider.getRunningTaskResponse.data?.data?.first.startTime;
+
+                                    timeProvider.differenceRunningTime(startDate: date);
+
+                                  }else{
+
+                                    await taskProvider.startTask(startStopTaskReqModel: StartStopTaskReqModel(
+                                      projectId: data?.projectId,
+                                      taskId: data?.taskId,
+                                    ));
+
 
                                     await taskProvider.getRecentTaskListData(
                                         recentTaskRequestModel: RecentTaskRequestModel()
                                     );
 
-                                  await homeProvider.getHomeTaskListData(
-                                      recentTaskRequestModel: RecentTaskRequestModel(
-                                          endDate: DateTime.now(),
-                                          startDate: startDate
-                                      ));
+                                    await homeProvider.getHomeTaskListData(
+                                        recentTaskRequestModel: RecentTaskRequestModel(
+                                            endDate: DateTime.now(),
+                                            startDate: startDate
+                                        ));
 
+                                    await taskProvider.getRunningTask();
 
-                                  }else{
+                                    final date = taskProvider.getRunningTaskResponse.data?.data?.first.startTime;
 
-                                    await taskProvider.stopTask(startStopTaskReqModel: StartStopTaskReqModel(
-                                      projectId: data?.projectId,
-                                      taskId: data?.taskId,
-                                    ));
+                                    timeProvider.differenceRunningTime(startDate: date);
 
-                                  await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
+                                  }
 
-                                  await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
-                                      endDate: DateTime.now(),
-                                      startDate: startDate
-                                  ));
+                                }catch(e){
 
-                                  timeProvider.stopTimer();
+                                  print(e);
 
                                 }
-
-                                await taskProvider.getRunningTask();
-
-                                final date = taskProvider.getRunningTaskResponse.data?.data?.first.startTime;
-
-                                timeProvider.differenceRunningTime(startDate: date);
-
-
-
 
                                 // startOrStop();
                               },

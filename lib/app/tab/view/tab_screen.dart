@@ -45,7 +45,6 @@ class _TabScreenState extends State<TabScreen> {
   @override
   Widget build(BuildContext context) {
     final tabProvider = context.watch<TabBarProvider>();
-    final timerProvider = context.watch<TimeProvider>();
     final timeProvider = context.watch<TimerNotifier>();
     final taskProvider = context.watch<TaskProvider>();
 
@@ -53,7 +52,12 @@ class _TabScreenState extends State<TabScreen> {
     final getTaskDetailsData = taskProvider.getRunningTaskResponse.data?.data?[0];
 
     final duration = timeProvider.duration;
+
+    // print("${duration?.inSeconds.remainder(60)} -=====  duration?.inSeconds");
+
     final fTime = "${duration?.inHours.remainder(60).toString().padLeft(2, '0')}:${duration?.inMinutes.remainder(60).toString().padLeft(2, '0')}";
+
+    // print("${fTime} -=====  finalTime check");
 
     return SafeArea(
       child: Scaffold(
