@@ -140,12 +140,12 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                             if(data?.isAssign != 0 && getRunningTaskData?[0].taskId != data?.taskId || timerDate == data?.dateRang)
                             InkWell(
                               onTap: () async{
-                                  print("${data?.title} ==== title ${data?.taskId}");
+                                print("${data?.title} ==== title ${data?.taskId}");
 
-                                  final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
+                                final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
 
 
-                                 final timeProvider = context.read<TimerNotifier>();
+                                final timeProvider = context.read<TimerNotifier>();
                                 final taskProvider = context.read<TaskProvider>();
                                 final homeProvider = context.read<HomeProvider>();
 
