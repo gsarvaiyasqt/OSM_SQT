@@ -458,7 +458,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 SizedBox(height: 10.sp),
 
                 CustomTextField(
-                  isEnable: false,
                   name: "Title",
                   hint: "Title",
                   controller: titleController,
@@ -476,18 +475,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     Expanded(
                       child: CustomDatePickerWidget(
                           firstDate: DateTime.now(),
-                        // initialDate: createTaskReqModel.startDate,
                           lastDate: createTaskReqModel.endDate,
                           onSelectedDateTime: (p0) async{
                             setState(() {
                               createTaskReqModel.startDate = p0;
                             });
-                            // if(isEditable){
-                            //   updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.StartDate;
-                            //   updateTaskStatusPriorityUiState.fieldValue = DateFormat("yyyy-MM-dd").format(p0);
-                            //   await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                            // }
-                          },
+                            },
                           shoDatePicker: false,
                           radius: 5,
                           name: createTaskReqModel.startDate != null
@@ -503,13 +496,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                             setState(() {
                               createTaskReqModel.endDate = p0;
                             });
-
-                            // if(isEditable){
-                            //   updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.EndDate;
-                            //   updateTaskStatusPriorityUiState.fieldValue = DateFormat("yyyy-MM-dd").format(p0);
-                            //   await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                            // }
-                          },
+                            },
                           shoDatePicker: false,
                           radius: 5,
                           name: createTaskReqModel.endDate != null
@@ -526,67 +513,25 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   multiSelection: createTaskReqModel.multipleTestAssignUser,
                   name: "Assign to",
                   onTap: () async{
-                    // if(taskUpdateModel?.isUpdate == true){
-                    //
-                    //   if(isEditable){
-                    //
-                    //     Navigator.push(context, MaterialPageRoute(
-                    //       builder: (context) {
-                    //         return CustomSearchViewPage(
-                    //           selectedItems: createTaskReqModel.multipleTestAssignUser,
-                    //           onMultipleSelectedChange: (value) async{
-                    //             final taskProvider = context.read<TaskProvider>();
-                    //             createTaskReqModel.multipleTestAssignUser = [];
-                    //             for (var element in value) {
-                    //               var model = SaveUserDataInDetailsData(
-                    //                 projectId: createTaskReqModel.projectID,
-                    //                 userId: element.projectId,
-                    //                 taskUserId: 0,
-                    //                 name: element.name,
-                    //                 taskId: createTaskReqModel.taskID
-                    //               );
-                    //               saveUserList.add(model);
-                    //               createTaskReqModel.multipleTestAssignUser?.add(element);
-                    //             }
-                    //             await taskProvider.saveUserInDetails(saveDataInDetailReqMode: SaveDataInDetailReqMode(saveUserList: saveUserList));
-                    //             },
-                    //           projectId: createTaskReqModel.projectID,
-                    //           createTaskEnum: CreateTaskEnum.ASSIGN,
-                    //           name: "Assign To",
-                    //         );
-                    //       },
-                    //     ));
-                    //
-                    //   }
-                    //
-                    // }else{
-                    //
-                    //   if(createTaskReqModel.name != null){
-                    //
-                    //   }else{
-                    //
-                    //     Toaster.showMessage(context, msg: "Please select project then before assign users");
-                    //
-                    //   }
-                    //
-                    // }
+                    if(createTaskReqModel.name != null){
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return CustomSearchViewPage(
+                            selectedItems: createTaskReqModel.multipleTestAssignUser,
+                            onMultipleSelectedChange: (value) {
+                              createTaskReqModel.multipleTestAssignUser = [];
+                              for (var element in value) {
+                                createTaskReqModel.multipleTestAssignUser?.add(element);
+                              }
+                            },
+                            projectId: createTaskReqModel.projectID,
+                            createTaskEnum: CreateTaskEnum.ASSIGN,
+                            name: "Assign To",
+                          );
+                        },
+                      ));
+                    }
 
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return CustomSearchViewPage(
-                          selectedItems: createTaskReqModel.multipleTestAssignUser,
-                          onMultipleSelectedChange: (value) {
-                            createTaskReqModel.multipleTestAssignUser = [];
-                            for (var element in value) {
-                              createTaskReqModel.multipleTestAssignUser?.add(element);
-                            }
-                          },
-                          projectId: createTaskReqModel.projectID,
-                          createTaskEnum: CreateTaskEnum.ASSIGN,
-                          name: "Assign To",
-                        );
-                      },
-                    ));
 
 
                   },
@@ -608,38 +553,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           },
                         );
                       },));
-                      // if(taskUpdateModel?.isUpdate == true){
-                      //   if(isEditable){
-                      //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      //       return CustomSearchViewPage(
-                      //         createTaskEnum: CreateTaskEnum.STATUS,
-                      //         name: "Status",
-                      //         onChange: (value) async{
-                      //           createTaskReqModel.status = value.name;
-                      //           updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Status;
-                      //           updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.status;
-                      //           await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                      //       },
-                      //       );
-                      //     },));
-                      //   }
-                      // }else{
-                      //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      //     return CustomSearchViewPage(
-                      //       createTaskEnum: CreateTaskEnum.STATUS,
-                      //       name: "Status",
-                      //       onChange: (value) {
-                      //         setState(() {
-                      //           createTaskReqModel.status = value.name;
-                      //         });
-                      //       },
-                      //     );
-                      //   },));
-                      // }
-
-
-
-
                     });
                   },
                 ),
@@ -660,38 +573,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         },
                       );
                     },));
-                    // if(taskUpdateModel?.isUpdate == true){
-                    //   if(isEditable){
-                    //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //       return CustomSearchViewPage(
-                    //         createTaskEnum: CreateTaskEnum.PRIORITY,
-                    //         name: "Priority",
-                    //         onChange: (value) async{
-                    //           createTaskReqModel.priority = value.name;
-                    //           updateTaskStatusPriorityUiState.fieldName = TaskUpdateStatus.Priority;
-                    //           updateTaskStatusPriorityUiState.fieldValue = createTaskReqModel.priority;
-                    //           await context.read<TaskProvider>().updateTaskStatusAndPriorityData();
-                    //           // setState(() {});
-                    //         },
-                    //       );
-                    //     },));
-                    //   }
-                    // }else{
-                    //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //     return CustomSearchViewPage(
-                    //       createTaskEnum: CreateTaskEnum.PRIORITY,
-                    //       name: "Priority",
-                    //       onChange: (value) {
-                    //         setState(() {
-                    //           createTaskReqModel.priority = value.name;
-                    //         });
-                    //       },
-                    //     );
-                    //   },));
-                    // }
-
-
-                  },
+                    },
                 ),
 
                 SizedBox(height: 10.sp,),
