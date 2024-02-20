@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:osm_flutter/app/home_tab/view_model/home_provider.dart';
 import 'package:osm_flutter/app/task_tab/components/custom_task_component.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
@@ -40,7 +41,11 @@ class _TaskTabPageState extends State<TaskTabPage> {
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
+    final homeProvider = context.watch<HomeProvider>();
     final taskLoader = taskProvider.resentTaskResponse.state == Status.LOADING;
+    final startLoader = taskProvider.startTaskResponse.state == Status.LOADING;
+    final stopLoader = taskProvider.stopTaskResponse.state == Status.LOADING;
+    final homeTaskLoader = homeProvider.resentTaskResponse.state == Status.LOADING;
     final getRunningLoader = taskProvider.getRunningTaskResponse.state == Status.LOADING;
     final listData = taskProvider.listData;
     return Scaffold(
@@ -86,12 +91,12 @@ class _TaskTabPageState extends State<TaskTabPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: taskLoader || getRunningLoader ? 10 : listData.length,
+                itemCount: taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader ? 10 : listData.length,
                 reverse: true,
                 itemBuilder: (context, index) {
 
-                  if(taskLoader || getRunningLoader){
-                    return  taskCardSimmer(recentLoader: taskLoader || getRunningLoader);
+                  if(taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader){
+                    return  taskCardSimmer(recentLoader: taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader);
                   }
 
                   final taskData = listData[index];

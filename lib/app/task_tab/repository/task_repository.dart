@@ -98,8 +98,6 @@ class TaskRepository extends ITaskRepository{
     return await taskUseCases?.getCheckAndUnCheckSubPointData(taskSubPointID: taskSubPointID, isDone: isDone);
   }
 
-
-
   @override
   Future<GetRunningTaskDetailsResModel?> getRunningTask() async{
     return await taskUseCases?.getRunningTask();
