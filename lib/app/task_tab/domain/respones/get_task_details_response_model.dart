@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:osm_flutter/app/task_tab/domain/respones/get_list_task_data_model.dart';
+
 class GetTaskDetailsResponseModel {
   int? statusCode;
   String? message;
@@ -32,7 +34,7 @@ class TaskDetailsData {
   Task? task;
   List<TaskSubpoint>? taskSubpoints;
   List<TaskUser>? taskUser;
-  List<dynamic>? documents;
+  List<Document>? documents;
 
   TaskDetailsData({
     this.task,
@@ -49,7 +51,7 @@ class TaskDetailsData {
     task: json["task"] == null ? null : Task.fromJson(json["task"]),
     taskSubpoints: json["taskSubpoints"] == null ? [] : List<TaskSubpoint>.from(json["taskSubpoints"]!.map((x) => TaskSubpoint.fromJson(x))),
     taskUser: json["taskUser"] == null ? [] : List<TaskUser>.from(json["taskUser"]!.map((x) => TaskUser.fromJson(x))),
-    documents: json["documents"] == null ? [] : List<dynamic>.from(json["documents"]!.map((x) => x)),
+    documents: json["documents"] == null ? [] : List<Document>.from(json["documents"]!.map((x) => Document.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {

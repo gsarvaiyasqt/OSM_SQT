@@ -45,6 +45,8 @@ abstract class ITaskProvider {
   Future saveUserInDetails({required SaveDataInDetailReqMode saveDataInDetailReqMode});
   Future getListTaskDetailsData({required int? taskId,required bool? isLog});
  Future saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
+  Future deleteTaskCommentDetails({required int? id});
+  Future getListTaskDetailsLogData({required int? taskId,required bool? isLog});
 }
 
 class TaskProvider extends BaseNotifier implements ITaskProvider{
@@ -68,6 +70,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _saveUserDetailsResponse = AppResponse();
     _getIdListTaskDetailsResponse = AppResponse();
     _saveCommentDataResponse = AppResponse();
+    _deleteTaskDetailsCommentResponse = AppResponse();
+    _getIdListLogTaskDetailsResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -110,12 +114,20 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   AppResponse<BaseResModel> get deleteUserInTaskResponse => _deleteUserInTaskResponse;
 
 
+  late AppResponse<BaseResModel> _deleteTaskDetailsCommentResponse;
+  AppResponse<BaseResModel> get deleteTaskDetailsCommentResponse => _deleteTaskDetailsCommentResponse;
+
+
   late AppResponse<SaveUserDetailsResponseModel> _saveUserDetailsResponse;
   AppResponse<SaveUserDetailsResponseModel> get saveUserDetailsResponse => _saveUserDetailsResponse;
 
 
   late AppResponse<GetIdListTaskDetails> _getIdListTaskDetailsResponse;
   AppResponse<GetIdListTaskDetails> get getIdListTaskDetailsResponse => _getIdListTaskDetailsResponse;
+
+
+  late AppResponse<GetIdListTaskDetails> _getIdListLogTaskDetailsResponse;
+  AppResponse<GetIdListTaskDetails> get getIdListLogTaskDetailsResponse => _getIdListLogTaskDetailsResponse;
 
 
   late AppResponse<SaveCommentDataResponseModel> _saveCommentDataResponse;
@@ -519,7 +531,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
          });
 
         });
-
+        print("_getTaskDetailsResponse is ${_getTaskDetailsResponse.data?.data?.documents?.toList()}");
+        print("response is ${response?.data?.documents.toString()}");
         resIsSuccess(_getTaskDetailsResponse,response);
 
       }
@@ -710,7 +723,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
       resIsFailed(_getIdListTaskDetailsResponse, e);
       rethrow;
 
-    } }
+    }
+  }
 
   @override
   Future saveCommentReqData({required CommentSaveReqData? commentSaveReqData}) async{
@@ -727,6 +741,8 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
       }else{
 
+        await getListTaskDetailsData(taskId: response?.data?.taskId, isLog: false);
+
         resIsSuccess(_saveCommentDataResponse,response);
 
 
@@ -739,6 +755,65 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
     }
 
+  }
+
+  @override
+  Future deleteTaskCommentDetails({required int? id}) async{
+    resIsLoading(_deleteTaskDetailsCommentResponse);
+
+    try {
+
+      final response = await taskRepository?.deleteTaskCommentDetails(id: id);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+
+      }else{
+
+        _getIdListTaskDetailsResponse.data?.data?.taskDetails?.removeWhere((element) => element.taskLogDetailId == id);
+
+        resIsSuccess(_deleteTaskDetailsCommentResponse,response);
+
+
+      }
+
+    } catch (e) {
+
+      resIsFailed(_deleteTaskDetailsCommentResponse, e);
+      rethrow;
+
+    }
+  }
+
+  @override
+  Future getListTaskDetailsLogData({required int? taskId, required bool? isLog}) async{
+
+    resIsLoading(_getIdListLogTaskDetailsResponse);
+
+    try {
+
+      final response = await taskRepository?.getListTaskDetailsData(taskId: taskId,isLog: isLog);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+
+      }else{
+
+        resIsSuccess(_getIdListLogTaskDetailsResponse,response);
+
+
+      }
+
+    } catch (e) {
+
+      resIsFailed(_getIdListLogTaskDetailsResponse, e);
+      rethrow;
+
+    }
   }
 
 }
