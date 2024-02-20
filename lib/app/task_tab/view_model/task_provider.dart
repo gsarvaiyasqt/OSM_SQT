@@ -143,7 +143,11 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   CreateTaskReqModel createTaskReqModel = CreateTaskReqModel(
     multipleAssignUser: [],
+    startDate: DateTime.now(),
+    endDate: DateTime.now(),
     userList: [],
+    priority: "Normal",
+    status: "In Process",
     userTaskSubPointList: [],
     docList: [],
     multipleTestAssignUser: []
