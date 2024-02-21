@@ -1,11 +1,12 @@
+import '../../../base/base.dart';
 import 'package:flutter/material.dart';
-import 'package:osm_flutter/app/auth/route/auth_route.dart';
-import 'package:osm_flutter/app/auth/view/otp_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:osm_flutter/utils/utils.dart';
 import 'package:osm_flutter/app/auth/view_model/auth_provider.dart';
 import 'package:osm_flutter/base/view/base_components/custom_button.dart';
 import 'package:osm_flutter/base/view/base_components/custom_text_form_filed.dart';
-import 'package:osm_flutter/utils/utils.dart';
-import 'package:provider/provider.dart';
+
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -84,17 +85,32 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   CustomButton(
                     btnText: "Send",
                     isLoading: authProvider.sendOtpWithoutAuthResponse.state == Status.LOADING,
-                    onTap: () {
-                      AuthRoute.goToOtpPage(context);
-                    },
-                    /*
                     onTap: () async{
-                      // if(formKey.currentState?.validate() == true){
-                      //   await context.read<AuthProvider>().sendOtpWithoutAuth(email: emailController.text);
-                      //
-                      }
+                      FocusManager.instance.primaryFocus?.unfocus();
 
-                    },*/
+                      HapticFeedback.heavyImpact();
+
+                      final isFormValid = formKey.currentState?.validate();
+                      final navigation = Navigator.of(context);
+
+                      if(isFormValid == false) return;
+
+                      try {
+
+                        final authProvider = context.read<AuthProvider>();
+
+                        await authProvider.forgotPassword(email: emailController.text);
+
+                        navigation.pop();
+
+                        Toaster.showMessage(context, msg: "Your Mail Sent Successfully",isError: false);
+
+                      } catch (e) {
+
+                        Toaster.showMessage(context, msg: e.toString(),isError: true);
+
+                      }
+                    },
                   )
                 ],
               ),

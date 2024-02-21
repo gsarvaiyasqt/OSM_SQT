@@ -13,7 +13,7 @@ class ServerConfig{
   static String qa = "https://ishatiqa.softcube.co.in/api/v1";
   static String prod = "https://ishatiprod.softcube.co.in/api/v1";
 
-  // static String mainUrl = "http://146.0.249.62:8282/api/v1";
+  static String qaMainUrl = "http://146.0.249.62:8282/api/v1";
   static String mainUrl = "http://146.0.249.62:8484/api/v1";
 
 
