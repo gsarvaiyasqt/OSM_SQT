@@ -7,8 +7,8 @@ import 'package:osm_flutter/base/base.dart';
 abstract class IAuthProvider{
 
   Future login({required String userName,required String password});
-  Future sendOtpWithoutAuth({required String email});
   Future updatePassword({required String password,required String verifyPassword});
+  Future forgotPassword({required String email});
 }
 
 class AuthProvider extends BaseNotifier implements IAuthProvider{
@@ -18,15 +18,16 @@ class AuthProvider extends BaseNotifier implements IAuthProvider{
   AuthProvider({this.authRepository}){
 
     _loginResponse = AppResponse();
-    _sendOtpWithoutAuthResponse = AppResponse();
+    _forgotPasswordResponse = AppResponse();
+    _updatePasswordResponse = AppResponse();
     _updatePasswordResponse = AppResponse();
   }
 
   late AppResponse<LoginResponseModel> _loginResponse;
   AppResponse<LoginResponseModel> get loginResponse => _loginResponse;
 
-  late AppResponse<SendOtpResModel> _sendOtpWithoutAuthResponse;
-  AppResponse<SendOtpResModel> get sendOtpWithoutAuthResponse => _sendOtpWithoutAuthResponse;
+  late AppResponse<SendOtpResModel> _forgotPasswordResponse;
+  AppResponse<SendOtpResModel> get sendOtpWithoutAuthResponse => _forgotPasswordResponse;
 
   late AppResponse<SendOtpResModel> _updatePasswordResponse;
   AppResponse<SendOtpResModel> get updatePasswordResponse => _updatePasswordResponse;
@@ -51,19 +52,19 @@ class AuthProvider extends BaseNotifier implements IAuthProvider{
   }
 
   @override
-  Future sendOtpWithoutAuth({required String email}) async {
-    resIsLoading(_sendOtpWithoutAuthResponse);
+  Future forgotPassword({required String email}) async {
+    resIsLoading(_forgotPasswordResponse);
 
-    final res = await authRepository?.sendOtpWithoutAuth(email: email);
+    final res = await authRepository?.forgotPassword(email: email);
 
     try {
       if(res?.statusCode != 1){
             throw res?.message ?? "";
           }else{
-            resIsSuccess(_sendOtpWithoutAuthResponse, res);
+            resIsSuccess(_forgotPasswordResponse, res);
           }
     } catch (e) {
-      resIsFailed(_sendOtpWithoutAuthResponse, e);
+      resIsFailed(_forgotPasswordResponse, e);
       rethrow;
     }
   }

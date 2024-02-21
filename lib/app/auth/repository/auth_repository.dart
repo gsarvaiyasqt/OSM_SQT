@@ -4,7 +4,7 @@ import 'package:osm_flutter/usecases/auth/auth_usecases.dart';
 
 abstract class IAuthRepository{
   Future<LoginResponseModel?> login({required String userName,required String password});
-  Future<SendOtpResModel> sendOtpWithoutAuth({required String email});
+  Future<SendOtpResModel> forgotPassword({required String email});
   Future<SendOtpResModel> updatePassword({required String password,required String verifyPassword});
 }
 
@@ -21,7 +21,7 @@ class AuthRepository extends IAuthRepository{
   }
 
   @override
-  Future<SendOtpResModel> sendOtpWithoutAuth({required String email}) async {
+  Future<SendOtpResModel> forgotPassword({required String email}) async {
 
     return await authUSeCases?.forgotpassword(email: email);
   }
