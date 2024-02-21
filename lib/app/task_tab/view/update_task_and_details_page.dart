@@ -7,6 +7,7 @@ import 'package:osm_flutter/app/task_tab/view/file_page.dart';
 import 'package:osm_flutter/app/task_tab/view/logs_page.dart';
 import 'package:osm_flutter/app/task_tab/view/task_deatils.dart';
 import 'package:osm_flutter/app/task_tab/view/task_detailes_page.dart';
+import 'package:osm_flutter/app/task_tab/view/time_details_page.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/utils.dart';
 import '../domain/request/save_user_in_deatils_req_model.dart';
@@ -28,7 +29,7 @@ class _UpdateTaskAndDetailsState extends State<UpdateTaskAndDetails> {
   int selectedIndex = 0;
 
   List<String> taskTabList = [
-    "Task details","Comments","File","Logs"
+    "Task details","Comments","File","Logs","Time Details"
   ];
 
 
@@ -68,7 +69,7 @@ class _UpdateTaskAndDetailsState extends State<UpdateTaskAndDetails> {
                     onTap: () async{
                       final taskId = ModalRoute.of(context)?.settings.arguments as int;
                       final taskProvider = context.read<TaskProvider>();
-
+                      final projectId = taskProvider.getTaskDetailsResponse.data?.data?.task?.projectId;
 
                       setState(() {
                         selectedIndex = index;
@@ -83,6 +84,9 @@ class _UpdateTaskAndDetailsState extends State<UpdateTaskAndDetails> {
 
                         case 3:
                         await taskProvider.getListTaskDetailsLogData(taskId: taskId, isLog: true);
+
+                        case 4:
+                        await taskProvider.getTaskDateWiseTimeResponseModel(projectId: projectId,taskId: taskId);
 
 
                       }
@@ -109,7 +113,8 @@ class _UpdateTaskAndDetailsState extends State<UpdateTaskAndDetails> {
                 TaskDetailsPage(),
                 CommentPage(),
                 FilePage(),
-                LogsPage()
+                LogsPage(),
+                TimeDetailsPage()
               ],
             ))
           ],

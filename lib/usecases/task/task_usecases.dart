@@ -17,6 +17,7 @@ import '../../app/task_tab/domain/request/get_status_count.dart';
 import '../../app/task_tab/domain/request/get_user_and_project_request_model.dart';
 import '../../app/task_tab/domain/request/save_user_in_deatils_req_model.dart';
 import '../../app/task_tab/domain/request/update_task_status_and_priority_request_model.dart';
+import '../../app/task_tab/domain/respones/GetListTaskDateWiseTimerAndUserTaskModel.dart';
 import '../../app/task_tab/domain/respones/get_count_status_response_model.dart';
 import '../../app/task_tab/domain/respones/get_create_task_response.dart';
 import '../../app/task_tab/domain/respones/get_list_task_data_model.dart';
@@ -49,6 +50,7 @@ abstract class ITaskUseCases{
    Future<GetIdListTaskDetails?> getListTaskDetailsData({required int? taskId,required bool? isLog});
    Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
    Future<BaseResModel?> deleteTaskCommentDetails({required int? id});
+   Future<GetTaskDateWiseTimeResponseModel?> getTaskDateWiseTimeResponseModel({required int? projectId,required int? taskId});
 }
 
 class TaskUseCases extends ITaskUseCases{
@@ -282,6 +284,15 @@ class TaskUseCases extends ITaskUseCases{
       "id":id
     }));
     return BaseResModel.fromJson(response);
+  }
+
+  @override
+  Future<GetTaskDateWiseTimeResponseModel?> getTaskDateWiseTimeResponseModel({required int? projectId, required int? taskId}) async{
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.getListTaskDateWiseTimeAndUserTaskTimer,data: {
+      "projectID":projectId,
+      "taskID":taskId
+    }));
+    return GetTaskDateWiseTimeResponseModel.fromJson(response);
   }
 
 
