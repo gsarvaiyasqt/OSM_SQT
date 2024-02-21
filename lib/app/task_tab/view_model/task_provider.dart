@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
+import 'package:osm_flutter/app/task_tab/domain/respones/GetListTaskDateWiseTimerAndUserTaskModel.dart';
 import 'package:osm_flutter/base/base.dart';
 import '../domain/request/comment_save_req_data_model.dart';
 import '../domain/request/save_user_in_deatils_req_model.dart';
@@ -47,6 +48,7 @@ abstract class ITaskProvider {
  Future saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
   Future deleteTaskCommentDetails({required int? id});
   Future getListTaskDetailsLogData({required int? taskId,required bool? isLog});
+  Future getTaskDateWiseTimeResponseModel({required int? projectId,required int? taskId});
 }
 
 class TaskProvider extends BaseNotifier implements ITaskProvider{
@@ -72,6 +74,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _saveCommentDataResponse = AppResponse();
     _deleteTaskDetailsCommentResponse = AppResponse();
     _getIdListLogTaskDetailsResponse = AppResponse();
+    _getTaskDateWiseTimeResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -133,9 +136,15 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
   late AppResponse<SaveCommentDataResponseModel> _saveCommentDataResponse;
   AppResponse<SaveCommentDataResponseModel> get saveCommentDataResponse => _saveCommentDataResponse;
 
+
+  late AppResponse<GetTaskDateWiseTimeResponseModel> _getTaskDateWiseTimeResponse;
+  AppResponse<GetTaskDateWiseTimeResponseModel> get getTaskDateWiseTimeResponse => _getTaskDateWiseTimeResponse;
+
   UpdateTaskStatusPriorityUiState updateTaskStatusPriorityUiState = UpdateTaskStatusPriorityUiState();
 
   List<SearchModel> list = [];
+
+  List<TimeDetailsData> timeList = [];
 
   int? todayCount,comp,leave;
 
@@ -818,6 +827,62 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
       rethrow;
 
     }
+  }
+
+  @override
+  Future getTaskDateWiseTimeResponseModel({required int? projectId, required int? taskId}) async{
+
+    resIsLoading(_getTaskDateWiseTimeResponse);
+
+    try {
+
+      final response = await taskRepository?.getTaskDateWiseTimeResponseModel(taskId: taskId,projectId: projectId);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+
+      }else{
+        final  userTaskTimer = response?.data?.userTaskTimer;
+
+        if(userTaskTimer != null){
+
+          final  mapData = groupBy(userTaskTimer, (item) => DateFormat("yyyy-MM-dd").format(item.startTime!));
+
+
+          mapData.forEach((key, value) {
+
+
+            timeList.add(TimeDetailsData(startDate: key,userList: value));
+
+
+          });
+          
+
+          
+
+
+
+        }
+
+
+
+
+
+        resIsSuccess(_getTaskDateWiseTimeResponse,response);
+
+
+      }
+
+    } catch (e) {
+
+      resIsFailed(_getTaskDateWiseTimeResponse, e);
+      rethrow;
+
+    }
+
+
   }
 
 }
