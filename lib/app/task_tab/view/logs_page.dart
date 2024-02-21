@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osm_flutter/base/base.dart';
+import 'package:osm_flutter/base/view/base_components/loading_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../base/view/base_components/custom_image_view.dart';
@@ -36,10 +37,14 @@ class _LogsPageState extends State<LogsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final taskProvider = context.read<TaskProvider>();
-    final taskDetailList = taskProvider.getIdListLogTaskDetailsResponse.data?.data?.taskDetails;
+    final taskProvider = context.watch<TaskProvider>();
+    final getIdListLogTaskDetailsResponse = taskProvider.getIdListLogTaskDetailsResponse;
+    final taskDetailList = getIdListLogTaskDetailsResponse.data?.data?.taskDetails;
+    final loading = getIdListLogTaskDetailsResponse.state == Status.LOADING;
     return Scaffold(
-      body: ListView.separated(itemBuilder: (context, index) {
+      backgroundColor: kSecondaryBackgroundColor,
+      body: !loading ? ListView.separated(
+          itemBuilder: (context, index) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -71,11 +76,12 @@ class _LogsPageState extends State<LogsPage> {
              )
            ],
          )
-            // Text(taskDetailList?[index].createdOn != null ?  taskDetailList![index].createdOn?.formatCommonDate() : "",style: CustomTextStyle.semiBoldFont18Style,),
-            // Text(taskDetailsData?.details ?? "",style: CustomTextStyle.regularFont18Style,),
           ],
         );
-      }, separatorBuilder: (context, index) => Divider(), itemCount: taskDetailList?.length ?? 0),
+      },
+          separatorBuilder: (context, index) => Divider(),
+          itemCount: taskDetailList?.length ?? 0
+      ) : Center(child: Loading(color: kSecondaryColor),)
     );
   }
 }

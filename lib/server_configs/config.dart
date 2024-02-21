@@ -16,6 +16,7 @@ class ServerConfig{
   static String qaMainUrl = "http://146.0.249.62:8282/api/v1";
   static String mainUrl = "http://146.0.249.62:8484/api/v1";
 
+
   static String baseUrl = mainUrl;
 
   /// API_URL
@@ -40,4 +41,5 @@ class ServerConfig{
   static String get taskLogDetailsSave => "$baseUrl/tasklogdetails/save";
   static String get deleteDocument => "$baseUrl/documents/delete";
   static String get deleteCommentDetail => "$baseUrl/tasklogdetails/delete";
+  static String get getListTaskDateWiseTimeAndUserTaskTimer => "$baseUrl/task/getlisttaskdatewisetimeandusertasktimer";
 }
