@@ -86,141 +86,76 @@ class _HomeTabPageState extends State<HomeTabPage> {
       // ),
       body: /*isCountStatusLoader ?
       const Center(child: CircularProgressIndicator(),) :*/
-      Padding(
-        padding: EdgeInsets.only(left: 20.sp,right: 20.sp,top: 20.sp),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CustomSearchBar(),
+      RefreshIndicator(
+        onRefresh: () async{
+          final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
 
-              SizedBox(height: 15.sp),
+          final homeProvider = context.read<HomeProvider>();
 
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(14.sp),
-                      decoration: BoxDecoration(
-                        color: kBlueColor.withOpacity(0.10),
-                        borderRadius: BorderRadius.circular(5),
+          await homeProvider.getTaskCount(getStatusCountRequestModel: GetStatusCountRequestModel());
 
-                      ),
-                      child: Column(
-                        children: [
+          await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+              endDate: DateTime.now(),
+              startDate: startDate
+          ));
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 20.sp,right: 20.sp,top: 20.sp),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                CustomSearchBar(),
 
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: SkeletonView(
-                              isLoading: isCountStatusLoader || getRunningTaskLoader,
-                              borderRadius: BorderRadius.circular(100),
-                              skeletonBody: ClipRRect(
+                SizedBox(height: 15.sp),
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(14.sp),
+                        decoration: BoxDecoration(
+                          color: kBlueColor.withOpacity(0.10),
+                          borderRadius: BorderRadius.circular(5),
+
+                        ),
+                        child: Column(
+                          children: [
+
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SkeletonView(
+                                isLoading: isCountStatusLoader || getRunningTaskLoader,
+                                borderRadius: BorderRadius.circular(100),
+                                skeletonBody: ClipRRect(
+                                    child: Container(
+                                      height: 70.sp,
+                                      width: 70.sp,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle
+                                      ),
+                                    )),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
                                   child: Container(
-                                    height: 70.sp,
-                                    width: 70.sp,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle
+                                    padding: EdgeInsets.symmetric(vertical: 15.sp,horizontal: 18.sp),
+                                    decoration: const BoxDecoration(
+                                      color: kBlueColor,
+                                      shape: BoxShape.circle
                                     ),
-                                  )),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.sp,horizontal: 18.sp),
-                                  decoration: const BoxDecoration(
-                                    color: kBlueColor,
-                                    shape: BoxShape.circle
+                                    child: FittedBox(
+                                        child: Text("0${homeProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style)),
                                   ),
-                                  child: FittedBox(
-                                      child: Text("0${homeProvider.todayCount}" ?? "",style: CustomTextStyle.whiteBoldFont32Style)),
                                 ),
                               ),
                             ),
-                          ),
 
-                          SizedBox(height: 54.sp),
+                            SizedBox(height: 54.sp),
 
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SkeletonView(
-                                  borderRadius: BorderRadius.circular(8.sp),
-                                  isLoading: isCountStatusLoader || getRunningTaskLoader,
-                                  skeletonBody: SizedBox(
-                                    height: 14.sp,
-                                    width: 70.sp,
-                                  ),
-                                  child: Text("Today’s",style: CustomTextStyle.mediumFont14Style),
-                                ),
-
-                                isCountStatusLoader ? SizedBox(height: 10,) : SizedBox.shrink(),
-
-                                SkeletonView(
-                                  borderRadius: BorderRadius.circular(8.sp),
-                                  isLoading: isCountStatusLoader || getRunningTaskLoader,
-                                  skeletonBody: SizedBox(
-                                    height: 24.sp,
-                                    width: 70.sp,
-                                  ),
-                                  child: Text("Task",style: CustomTextStyle.boldFont14Style.copyWith(
-                                      fontSize: 24.sp
-                                  )),
-
-                                ),
-
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 10.sp),
-
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 14.sp,vertical: 22.5.sp),
-                          decoration: BoxDecoration(
-                            color: kSecondaryColor.withOpacity(0.10),
-                            borderRadius: BorderRadius.circular(5),
-
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: SkeletonView(
-                                  isLoading: isCountStatusLoader || getRunningTaskLoader,
-                                  borderRadius: BorderRadius.circular(100),
-                                  skeletonBody: ClipRRect(
-                                      child: Container(
-                                        height: 50.sp,
-                                        width: 50.sp,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle
-                                        ),
-                                      )),
-                                  child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 9.sp,horizontal: 11.sp),
-                                decoration: BoxDecoration(
-                                  color: kSecondaryColor,
-                                    shape: BoxShape.circle
-                                ),
-                                child: FittedBox(child: Text("${homeProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp))),
-                              ),)),
-
-                              SizedBox(
-                                width: 15.sp,
-                              ),
-
-                              Expanded(child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   SkeletonView(
                                     borderRadius: BorderRadius.circular(8.sp),
@@ -229,172 +164,251 @@ class _HomeTabPageState extends State<HomeTabPage> {
                                       height: 14.sp,
                                       width: 70.sp,
                                     ),
-                                    child: Text("Completed",style: CustomTextStyle.mediumFont14Style),
+                                    child: Text("Today’s",style: CustomTextStyle.mediumFont14Style),
                                   ),
 
-                                  isCountStatusLoader ? SizedBox(height: 10.sp,) : SizedBox.shrink(),
+                                  isCountStatusLoader ? SizedBox(height: 10,) : SizedBox.shrink(),
 
                                   SkeletonView(
                                     borderRadius: BorderRadius.circular(8.sp),
                                     isLoading: isCountStatusLoader || getRunningTaskLoader,
                                     skeletonBody: SizedBox(
-                                      height: 14.sp,
+                                      height: 24.sp,
                                       width: 70.sp,
                                     ),
                                     child: Text("Task",style: CustomTextStyle.boldFont14Style.copyWith(
                                         fontSize: 24.sp
                                     )),
+
                                   ),
 
                                 ],
-                              ))
-                            ],
-                          ),
+                              ),
+                            )
+                          ],
                         ),
+                      ),
+                    ),
 
-                        SizedBox(height: 10.sp),
+                    SizedBox(width: 10.sp),
 
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 14.sp,vertical: 22.5.sp),
-                          decoration: BoxDecoration(
-                            color: kYellowColor.withOpacity(0.10),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 14.sp,vertical: 22.5.sp),
+                            decoration: BoxDecoration(
+                              color: kSecondaryColor.withOpacity(0.10),
+                              borderRadius: BorderRadius.circular(5),
 
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: SkeletonView(
-                                  isLoading: isCountStatusLoader || getRunningTaskLoader,
-                                  borderRadius: BorderRadius.circular(100),
-                                  skeletonBody:    ClipRRect(
-                                      child: Container(
-                                        height: 50.sp,
-                                        width: 50.sp,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle
-                                        ),
-                                      )),
-                                  child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 9.sp,horizontal: 11.sp),
-                                decoration: BoxDecoration(
-                                  color: kYellowColor,
-                                  shape: BoxShape.circle
-                                ),
-                                child: Text("0${homeProvider.leave ?? 00}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
-                              ))),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
 
-                              SizedBox(width: 15.sp),
-
-                              Expanded(child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-
-                                  SkeletonView(
-                                    borderRadius: BorderRadius.circular(8.sp),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SkeletonView(
                                     isLoading: isCountStatusLoader || getRunningTaskLoader,
-                                    skeletonBody: SizedBox(
-                                      height: 14.sp,
-                                      width: 70.sp,
-                                    ),
-                                    child: Text("Leave",style: CustomTextStyle.mediumFont14Style),
+                                    borderRadius: BorderRadius.circular(100),
+                                    skeletonBody: ClipRRect(
+                                        child: Container(
+                                          height: 50.sp,
+                                          width: 50.sp,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle
+                                          ),
+                                        )),
+                                    child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 9.sp,horizontal: 11.sp),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryColor,
+                                      shape: BoxShape.circle
                                   ),
+                                  child: FittedBox(child: Text("${homeProvider.comp ?? 0}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp))),
+                                ),)),
 
-                                  isCountStatusLoader ? SizedBox(height: 10.sp,) : SizedBox.shrink(),
+                                SizedBox(
+                                  width: 15.sp,
+                                ),
 
-                                  SkeletonView(
-                                    borderRadius: BorderRadius.circular(8.sp),
-                                    isLoading: isCountStatusLoader || getRunningTaskLoader,
-                                    skeletonBody: SizedBox(
-                                      height: 14.sp,
-                                      width: 70.sp,
+                                Expanded(child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SkeletonView(
+                                      borderRadius: BorderRadius.circular(8.sp),
+                                      isLoading: isCountStatusLoader || getRunningTaskLoader,
+                                      skeletonBody: SizedBox(
+                                        height: 14.sp,
+                                        width: 70.sp,
+                                      ),
+                                      child: Text("Completed",style: CustomTextStyle.mediumFont14Style),
                                     ),
-                                    child: FittedBox(
-                                      child: Text("Request",style: CustomTextStyle.boldFont14Style.copyWith(
+
+                                    isCountStatusLoader ? SizedBox(height: 10.sp,) : SizedBox.shrink(),
+
+                                    SkeletonView(
+                                      borderRadius: BorderRadius.circular(8.sp),
+                                      isLoading: isCountStatusLoader || getRunningTaskLoader,
+                                      skeletonBody: SizedBox(
+                                        height: 14.sp,
+                                        width: 70.sp,
+                                      ),
+                                      child: Text("Task",style: CustomTextStyle.boldFont14Style.copyWith(
                                           fontSize: 24.sp
                                       )),
                                     ),
-                                  ),
 
-
-                                ],
-                              ))
-                            ],
+                                  ],
+                                ))
+                              ],
+                            ),
                           ),
+
+                          SizedBox(height: 10.sp),
+
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 14.sp,vertical: 22.5.sp),
+                            decoration: BoxDecoration(
+                              color: kYellowColor.withOpacity(0.10),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SkeletonView(
+                                    isLoading: isCountStatusLoader || getRunningTaskLoader,
+                                    borderRadius: BorderRadius.circular(100),
+                                    skeletonBody:    ClipRRect(
+                                        child: Container(
+                                          height: 50.sp,
+                                          width: 50.sp,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle
+                                          ),
+                                        )),
+                                    child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 9.sp,horizontal: 11.sp),
+                                  decoration: BoxDecoration(
+                                    color: kYellowColor,
+                                    shape: BoxShape.circle
+                                  ),
+                                  child: Text("0${homeProvider.leave ?? 00}",style: CustomTextStyle.whiteBoldFont32Style.copyWith(fontSize: 25.sp)),
+                                ))),
+
+                                SizedBox(width: 15.sp),
+
+                                Expanded(child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    SkeletonView(
+                                      borderRadius: BorderRadius.circular(8.sp),
+                                      isLoading: isCountStatusLoader || getRunningTaskLoader,
+                                      skeletonBody: SizedBox(
+                                        height: 14.sp,
+                                        width: 70.sp,
+                                      ),
+                                      child: Text("Leave",style: CustomTextStyle.mediumFont14Style),
+                                    ),
+
+                                    isCountStatusLoader ? SizedBox(height: 10.sp,) : SizedBox.shrink(),
+
+                                    SkeletonView(
+                                      borderRadius: BorderRadius.circular(8.sp),
+                                      isLoading: isCountStatusLoader || getRunningTaskLoader,
+                                      skeletonBody: SizedBox(
+                                        height: 14.sp,
+                                        width: 70.sp,
+                                      ),
+                                      child: FittedBox(
+                                        child: Text("Request",style: CustomTextStyle.boldFont14Style.copyWith(
+                                            fontSize: 24.sp
+                                        )),
+                                      ),
+                                    ),
+
+
+                                  ],
+                                ))
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+
+                SizedBox(height: 10.sp),
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+
+                    SkeletonView(
+                      borderRadius: BorderRadius.circular(8.sp),
+                      isLoading: homeLoader || getRunningTaskLoader,
+                      skeletonBody: SizedBox(
+                        height: 24.sp,
+                        width: 70.sp,
+                      ),
+                      child: Expanded(
+                          child: Text("Recent Tasks",
+                              style: CustomTextStyle.boldFont24Style)),
+                    ),
+
+                    Spacer(),
+
+                    SkeletonView(
+                      borderRadius: BorderRadius.circular(100.sp),
+                      isLoading: homeLoader || getRunningTaskLoader,
+                      skeletonBody: SizedBox(
+                        height: 50.sp,
+                        width: 50.sp,
+                      ),
+                      child:  GestureDetector(
+                        onTap: () {
+                          TaskRoute.goToCreteTaskPage(context);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10.sp),
+                          decoration: BoxDecoration(
+                            color: kBlueColor,
+                            borderRadius: BorderRadius.circular(100.sp),
+                          ),
+                          child: Icon(Icons.add, color: kWhiteColor, size: 24.sp),
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-
-              SizedBox(height: 10.sp),
-
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-
-                  SkeletonView(
-                    borderRadius: BorderRadius.circular(8.sp),
-                    isLoading: homeLoader || getRunningTaskLoader,
-                    skeletonBody: SizedBox(
-                      height: 24.sp,
-                      width: 70.sp,
-                    ),
-                    child: Expanded(
-                        child: Text("Recent Tasks",
-                            style: CustomTextStyle.boldFont24Style)),
-                  ),
-
-                  Spacer(),
-
-                  SkeletonView(
-                    borderRadius: BorderRadius.circular(100.sp),
-                    isLoading: homeLoader || getRunningTaskLoader,
-                    skeletonBody: SizedBox(
-                      height: 50.sp,
-                      width: 50.sp,
-                    ),
-                    child:  GestureDetector(
-                      onTap: () {
-                        TaskRoute.goToCreteTaskPage(context);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(10.sp),
-                        decoration: BoxDecoration(
-                          color: kBlueColor,
-                          borderRadius: BorderRadius.circular(100.sp),
-                        ),
-                        child: Icon(Icons.add, color: kWhiteColor, size: 24.sp),
                       ),
                     ),
-                  ),
 
-                ],
-              ),
-              SizedBox(height: 10.sp),
+                  ],
+                ),
+                SizedBox(height: 10.sp),
 
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                reverse: true,
-                itemCount:  homeLoader || getRunningTaskLoader || startLoader || stopLoader || taskLoader ? 10 : resentListData.length,
-                itemBuilder: (context, index) {
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  reverse: true,
+                  itemCount:  homeLoader || getRunningTaskLoader || startLoader || stopLoader || taskLoader ? 10 : resentListData.length,
+                  itemBuilder: (context, index) {
 
-                  if(homeLoader || getRunningTaskLoader || startLoader || stopLoader || taskLoader){
-                    return homeCardSimmer(recentLoader:homeLoader || getRunningTaskLoader || startLoader || stopLoader || taskLoader);
-                  }
+                    if(homeLoader || getRunningTaskLoader || startLoader || stopLoader || taskLoader){
+                      return homeCardSimmer(recentLoader:homeLoader || getRunningTaskLoader || startLoader || stopLoader || taskLoader);
+                    }
 
-                  final createTaskData = resentListData[index];
+                    final createTaskData = resentListData[index];
 
-                  return CustomRecentTaskComponent(
-                     taskData:  createTaskData
-                  );
-                },
-              )
-            ],
+                    return CustomRecentTaskComponent(
+                       taskData:  createTaskData
+                    );
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),

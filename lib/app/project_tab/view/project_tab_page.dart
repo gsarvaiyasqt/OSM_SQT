@@ -7,6 +7,7 @@ import 'package:osm_flutter/utils/common_utils/custom_search_bar.dart';
 import 'package:osm_flutter/app/project_tab/view_model/project_provider.dart';
 import 'package:osm_flutter/app/project_tab/components/custom_project_list_component.dart';
 
+import '../domain/dummy/project_list_model.dart';
 import '../domain/request/project_get_list_req_model.dart';
 
 class ProjectTabPage extends StatefulWidget {
@@ -35,6 +36,8 @@ class _ProjectTabPageState extends State<ProjectTabPage> {
     final projectLoader = projectProvider.getProjectListResponse.state == Status.LOADING;
     final projectListData = projectProvider.projectListData;
 
+    print("$projectLoader ====  check this  project loader");
+
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
 
@@ -61,57 +64,201 @@ class _ProjectTabPageState extends State<ProjectTabPage> {
       //   ),
       // ),
 
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.sp),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          final projectProvider = context.read<ProjectProvider>();
+          await projectProvider.getProjectList(projectGetListRequestModel: ProjectGetListRequestModel());
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.sp),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
 
-              SizedBox(height: 20.sp,),
+                SizedBox(height: 20.sp,),
 
-              CustomSearchBar(),
+                CustomSearchBar(),
 
-              SizedBox(height: 15.sp,),
-          
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: Text("Projects",
-                          style: CustomTextStyle.boldFont24Style)),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      padding: EdgeInsets.all(10.sp),
-                      decoration: BoxDecoration(
-                        color: kBlueColor,
-                        borderRadius: BorderRadius.circular(100.sp),
+                SizedBox(height: 15.sp,),
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: Text("Projects",
+                            style: CustomTextStyle.boldFont24Style)),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        padding: EdgeInsets.all(10.sp),
+                        decoration: BoxDecoration(
+                          color: kBlueColor,
+                          borderRadius: BorderRadius.circular(100.sp),
+                        ),
+                        child: Icon(Icons.add, color: kWhiteColor, size: 24.sp),
                       ),
-                      child: Icon(Icons.add, color: kWhiteColor, size: 24.sp),
-                    ),
-                  )
-                ],
-              ),
-          
-              SizedBox(height: 15.sp,),
-              
-              Skeleton(
-                isLoading: projectLoader,
-                child: ListView.builder(
+                    )
+                  ],
+                ),
+
+                SizedBox(height: 15.sp,),
+
+                ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: projectListData.length,
+                  itemCount: projectLoader ? 8 : projectListData.length,
                   itemBuilder: (context, index) {
-                    print("LENGTH=======${projectListData.length}");
-                  return CustomProjectListComponent(
-                    projectData: projectListData[index],
-                  );
-                },),
-              )
 
-            ],
+                    if(projectLoader){
+                      return projectSimmer();
+                    }
+
+                  return CustomProjectListComponent(
+                    projectData:  projectListData[index],
+                    loader: projectLoader,
+                  );
+                },)
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget projectSimmer(){
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5.sp),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.sp),
+        color: Colors.white
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding:  EdgeInsets.all(8.sp),
+            child: Row(
+              children: [
+                SkeletonView(
+                  isLoading: true,
+                  borderRadius: BorderRadius.circular(100),
+                  skeletonBody: SizedBox(
+                    height: 40.sp,
+                    width: 40.sp,
+                  ),
+                ),
+
+                SizedBox(width: 10.sp),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SkeletonView(
+                        isLoading: true,
+                        borderRadius: BorderRadius.circular(8.sp),
+                        skeletonBody: SizedBox(
+                          height: 14.sp,
+                          width: 150.sp,
+                        ),
+                      ),
+
+                      SizedBox(height: 5.sp),
+
+                      SkeletonView(
+                        isLoading: true,
+                        borderRadius: BorderRadius.circular(8.sp),
+                        skeletonBody: SizedBox(
+                          height: 14.sp,
+                          width: 100.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SkeletonView(
+                  isLoading: true,
+                  borderRadius: BorderRadius.circular(100),
+                  skeletonBody: SizedBox(
+                    height: 20.sp,
+                    width: 20.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding:  EdgeInsets.all(8.sp),
+            child: Row(
+              children: List.generate(3, (index) {
+                return Row(
+                  children: [
+                    SkeletonView(
+                      isLoading: true,
+                      borderRadius: BorderRadius.circular(8.sp),
+                      skeletonBody: Container(
+                        height: 40.sp,
+                        width: 80.sp,
+                      ),
+                    ),
+                    SizedBox(width: 10.sp)
+                  ],
+                );
+              }),
+            ),
+          ),
+
+          SizedBox(height: 5.sp),
+
+          Divider(height: 1.sp,endIndent: 10,indent: 10,color: Colors.black12),
+
+          SizedBox(height: 5.sp),
+
+          Padding(
+            padding:  EdgeInsets.all(8.sp),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SkeletonView(
+                        isLoading: true,
+                        borderRadius: BorderRadius.circular(4.sp),
+                        skeletonBody: SizedBox(
+                          height: 25.sp,
+                          width: 150.sp,
+                        ),
+                      ),
+                  
+                      SizedBox(height: 5.sp),
+                  
+                      SkeletonView(
+                        isLoading: true,
+                        borderRadius: BorderRadius.circular(4.sp),
+                        skeletonBody: SizedBox(
+                          height: 20.sp,
+                          width: 100.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SkeletonView(
+                  isLoading: true,
+                  borderRadius: BorderRadius.circular(4.sp),
+                  skeletonBody: SizedBox(
+                    height: 40.sp,
+                    width: 40.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

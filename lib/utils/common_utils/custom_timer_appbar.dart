@@ -27,10 +27,13 @@ class CustomTimerAppbar extends StatelessWidget implements PreferredSizeWidget{
                    height: 45.sp,
                    width: 45.sp
                ),
-                child: SizedBox(
-                  height: 45.sp,
-                  width: 45.sp,
-                  child: lending,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: SizedBox(
+                    height: 45.sp,
+                    width: 45.sp,
+                    child: lending,
+                  ),
                 ),
               ),
 

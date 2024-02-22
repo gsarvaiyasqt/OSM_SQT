@@ -1,19 +1,13 @@
-import 'dart:async';
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-import 'package:osm_flutter/app/home_tab/view_model/home_provider.dart';
-import 'package:osm_flutter/app/task_tab/components/custom_task_component.dart';
-import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
-import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
-import 'package:provider/provider.dart';
-
-import '../../../utils/common_utils/custom_appbar.dart';
-import '../../../utils/common_utils/custom_search_bar.dart';
 import '../../../utils/utils.dart';
-import '../../auth/domain/dummy/create_task_response.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../utils/common_utils/custom_search_bar.dart';
 import '../domain/request/get_recent_task_request_model.dart';
-import '../domain/request/get_status_count.dart';
+import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
+import 'package:osm_flutter/app/home_tab/view_model/home_provider.dart';
+import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:osm_flutter/app/task_tab/components/custom_task_component.dart';
+
 class TaskTabPage extends StatefulWidget {
   const TaskTabPage({Key? key}) : super(key: key);
 
@@ -50,63 +44,72 @@ class _TaskTabPageState extends State<TaskTabPage> {
     final listData = taskProvider.listData;
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.sp),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
+      body: RefreshIndicator(
 
-              SizedBox(height: 20.sp,),
+        onRefresh: ()async{
+          final taskProvider = context.read<TaskProvider>();
 
-              CustomSearchBar(),
-          
-              SizedBox(height: 15.sp,),
+          await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+          ));
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.sp),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
 
-          
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: Text("Tasks",
-                          style: CustomTextStyle.boldFont24Style)
-                  ),
-                  GestureDetector(
-                    onTap: () {
-          
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10.sp),
-                      decoration: BoxDecoration(
-                        color: kBlueColor,
-                        borderRadius: BorderRadius.circular(100.sp),
-                      ),
-                      child: Icon(Icons.add, color: kWhiteColor, size: 24.sp),
+                SizedBox(height: 20.sp,),
+
+                CustomSearchBar(),
+
+                SizedBox(height: 15.sp,),
+
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: Text("Tasks",
+                            style: CustomTextStyle.boldFont24Style)
                     ),
-                  ),
-                ],
-              ),
-          
-              SizedBox(height: 15.sp,),
-          
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader ? 10 : listData.length,
-                reverse: true,
-                itemBuilder: (context, index) {
+                    GestureDetector(
+                      onTap: () {
 
-                  if(taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader){
-                    return  taskCardSimmer(recentLoader: taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader);
-                  }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10.sp),
+                        decoration: BoxDecoration(
+                          color: kBlueColor,
+                          borderRadius: BorderRadius.circular(100.sp),
+                        ),
+                        child: Icon(Icons.add, color: kWhiteColor, size: 24.sp),
+                      ),
+                    ),
+                  ],
+                ),
 
-                  final taskData = listData[index];
+                SizedBox(height: 15.sp,),
 
-                  return CustomTaskComponent(
-                    taskData: taskData,
-                  );
-                },
-              )
-            ],
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader ? 10 : listData.length,
+                  reverse: true,
+                  itemBuilder: (context, index) {
+
+                    if(taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader){
+                      return  taskCardSimmer(recentLoader: taskLoader || getRunningLoader || startLoader || homeTaskLoader || stopLoader);
+                    }
+
+                    final taskData = listData[index];
+
+                    return CustomTaskComponent(
+                      taskData: taskData,
+                    );
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
