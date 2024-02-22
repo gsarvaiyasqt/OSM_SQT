@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/update_timer_request_model.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/base/base.dart';
 import 'package:osm_flutter/utils/utils.dart';
@@ -22,27 +23,14 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
+    final taskData = taskProvider.getTaskDetailsResponse.data?.data?.task;
     final timeList = taskProvider.timeList;
-
-    for (var element in timeList) {
-
-        element.userList?.forEach((fElement) {
-
-          fElement.textEditingController?.text = "1";
-
-          print("fElement.textEditingController?.text is ${fElement.textEditingController?.text}");
-
-        });
-
-    }
-
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       body: ListView.builder(
         itemCount: timeList.length,
         itemBuilder: (context, index) {
         final timeListData =  timeList[index];
-
         return Container(
           margin: EdgeInsets.all(5.sp),
           padding: EdgeInsets.all(15.sp),
@@ -68,7 +56,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                     child: Row(
                       children: [
                         Text("Total Time : ",style: CustomTextStyle.boldFont14Style),
-                        Text(timeListData.totalMns.toString() ?? "",style: CustomTextStyle.regularFont14Style),
+                        Text(timeListData.totalMns ?? "",style: CustomTextStyle.regularFont14Style),
                       ],
                     ),
                   ),
@@ -76,7 +64,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                     child: Row(
                       children: [
                         Text("Client Time : ",style: CustomTextStyle.boldFont14Style),
-                        Text(timeListData.totalMns.toString() ?? "",style: CustomTextStyle.regularFont14Style),
+                        Text(timeListData.clintMin ?? "",style: CustomTextStyle.regularFont14Style),
                       ],
                     ),
                   ),
@@ -88,6 +76,14 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, userDataIndex) {
                     final userData = timeListData.userList?[userDataIndex];
+                    userData?.textEditingController ??= TextEditingController();
+                    userData?.oldStartTime ??= DateTime.now();
+                    userData?.oldEndTime??= DateTime.now();
+                    userData?.oldTimerDate??= DateTime.now();
+                    if(userData?.totalTimeInMinutesForClient != null){
+                      userData?.textEditingController?.text = userData.totalTimeInMinutesForClient.toString();
+                    }
+
                     return Column(
                   children: [
                     Row(
@@ -106,7 +102,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                         SizedBox(width: 10.sp),
                         Expanded(child: Text(userData?.displayName ?? "",style: CustomTextStyle.boldFont14Style)),
                         SizedBox(width: 10.sp),
-                        Text("10:00",style: CustomTextStyle.boldFont14Style),
+                        Text(formattedTime(timeInSecond: userData?.totalTimeInMinites ?? 0),style: CustomTextStyle.boldFont14Style),
                       ],
                     ),
                     SizedBox(height: 10.sp),
@@ -126,8 +122,25 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                               Text("Start Date",style: CustomTextStyle.boldFont14Style),
                               SizedBox(height: 5.sp),
                               GestureDetector(
-                                  onTap: () {
+                                  onTap: () async{
+                                    if(userData?.startTime != null){
 
+                                      final startTime = await showDatePicker(context: context, firstDate: DateTime(1800), lastDate: DateTime.now(),initialDate: userData?.startTime);
+
+                                      setState(() {
+
+                                        if(startTime != null){
+
+                                          userData?.startTime = DateTime(startTime.year,startTime.month,startTime.day,userData.startTime?.hour ?? 0,userData.startTime?.minute ?? 0,userData.startTime?.second ?? 0,);
+
+                                        }
+
+                                      });
+
+                                      print("is DateTime is ${userData?.oldStartTime}");
+
+
+                                    }
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(5),
@@ -142,8 +155,21 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                               Text("End Date",style: CustomTextStyle.boldFont14Style),
                               SizedBox(height: 5.sp),
                               GestureDetector(
-                                  onTap: () {
-                                    print("End Date:::::::::::::::::::::::::::");
+                                  onTap: () async{
+                                    if(userData?.endTime != null){
+
+                                     final endTime = await showDatePicker(context: context, firstDate: DateTime(1800), lastDate: DateTime(3000),initialDate: userData?.endTime);
+
+                                     setState(() {
+
+                                       if(endTime != null){
+
+                                         userData?.endTime = DateTime(endTime.year,endTime.month,endTime.day,userData.endTime?.hour ?? 0,userData.endTime?.minute ?? 0,userData.endTime?.second ?? 0,);
+
+                                       }
+
+                                     });
+                                    }
                                   },
                                   child: Container(
                                       padding: const EdgeInsets.all(5),
@@ -161,33 +187,138 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                             children: [
                               Text("Time",style: CustomTextStyle.boldFont14Style),
                               SizedBox(height: 5.sp),
-                              Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                          color: kBlackColor.withOpacity(0.1)
-                                      )
-                                  ),
-                                  child: Text(userData?.startTime != null ? DateFormat.jms().format(userData!.startTime!) : "_",style: CustomTextStyle.regularFont12Style,)),
+                              GestureDetector(
+                                onTap: () async{
+
+                                  final startTime = userData?.startTime;
+
+                                  if(startTime != null){
+
+                                    final isStartTime = await showTimePicker(context: context, initialTime: TimeOfDay(hour: startTime.hour ?? 0, minute: startTime.minute ?? 0));
+
+                                    if(isStartTime != null){
+
+                                      userData?.startTime = DateTime(userData.startTime?.year ?? 0,userData.startTime?.month ?? 0,userData.startTime?.day ?? 0,isStartTime.hour,isStartTime.minute);
+
+                                    }
+
+                                  }
+                                  setState(() {});
+                                },
+                                child: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            color: kBlackColor.withOpacity(0.1)
+                                        )
+                                    ),
+                                    child: Text(userData?.startTime != null ? DateFormat.jms().format(userData!.startTime!) : "_",style: CustomTextStyle.regularFont12Style,)),
+                              ),
                               SizedBox(height: 5.sp),
                               Text("Time",style: CustomTextStyle.boldFont14Style),
                               SizedBox(height: 5.sp),
-                              Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                          color: kBlackColor.withOpacity(0.1)
-                                      )
-                                  ),
-                                  child: Text(userData?.endTime != null ? DateFormat.jms().format(userData!.endTime!) : "_",style: CustomTextStyle.regularFont12Style,)),
+                              GestureDetector(
+                                onTap: () async{
+                                  final endTime = userData?.endTime;
+
+                                  if(endTime != null){
+
+                                    final isEndTime = await showTimePicker(context: context, initialTime: TimeOfDay(hour: endTime.hour ?? 0, minute: endTime.minute ?? 0));
+
+
+                                    if(isEndTime != null){
+
+                                      setState(() {
+
+
+                                        userData?.endTime = DateTime(userData.endTime?.year ?? 0,userData.endTime?.month ?? 0,userData.endTime?.day ?? 0,isEndTime.hour,isEndTime.minute);
+
+
+                                      });
+
+
+                                    }
+
+
+
+                                  }
+                                },
+                                child: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            color: kBlackColor.withOpacity(0.1)
+                                        )
+                                    ),
+                                    child: Text(userData?.endTime != null ? DateFormat.jms().format(userData!.endTime!) : "_",style: CustomTextStyle.regularFont12Style,)),
+                              ),
                             ],
                           )),
-                          Container(
-                             padding: EdgeInsets.all(2.sp),
-                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.sp),color: kBlackColor),
-                             child: Icon(Icons.save,size: 25.sp,color: kWhiteColor,))
+                          GestureDetector(
+                            onTap: () async{
+
+
+                              try {
+
+
+
+
+
+                                if(userData != null){
+
+
+                                  final timerData = DateFormat("yyyy-MM-dd").format(userData.startTime!);
+                                  final oldTimerData = DateFormat("yyyy-MM-dd").format(userData.oldTimerDate!);
+
+                                   final dateFromTimeData = DateTime.parse(timerData);
+                                  // final dateFromTimeData2 = DateFormat("yyyy-MM-dd").parse(oldTimerData);
+
+
+                                  print("timerData is ${dateFromTimeData}");
+                                  print("oldTimerData is ${oldTimerData}");
+
+
+                                  var updateValue =  UpdateTimerRequestModel(
+                                      taskId: taskData?.taskId,
+                                      projectId: taskData?.projectId,
+                                      userTaskTimerID: userData.userTaskTimerId,
+                                      taskUserName: userData.displayName ?? "",
+                                      endTime: userData.endTime,
+                                      timerDate: timerData,
+                                      startTime:userData.startTime,
+                                      oldStartTime: userData.oldStartTime,
+                                      oldTimerDate: oldTimerData,
+                                      oldEndTime:userData.oldEndTime
+                                  );
+
+                                  try {
+
+                                    final  taskProvider = context.read<TaskProvider>();
+
+                                    await taskProvider.updateTimerData(updateTimerRequestModel: updateValue);
+
+                                    taskProvider.timeList = [];
+
+                                    await taskProvider.getTaskDateWiseTimeResponseModel(taskId: taskData?.taskId,projectId:taskData?.projectId );
+
+                                  } catch (e) {
+
+                                    Toaster.showMessage(context, msg: e.toString());
+
+                                  }
+
+                                }
+                              } catch (e) {
+                                Toaster.showMessage(context, msg: e.toString());
+                              };
+                            },
+                            child: Container(
+                               padding: EdgeInsets.all(2.sp),
+                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.sp),color: kBlackColor),
+                               child: Icon(Icons.save,size: 25.sp,color: kWhiteColor,)),
+                          )
                         ],
                       ),
                     ),

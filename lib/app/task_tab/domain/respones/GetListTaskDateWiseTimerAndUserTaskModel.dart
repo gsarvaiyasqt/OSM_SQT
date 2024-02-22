@@ -104,6 +104,9 @@ class UserTaskTimer {
   DateTime? timerDate;
   DateTime? startTime;
   DateTime? endTime;
+  DateTime? oldTimerDate;
+  DateTime? oldStartTime;
+  DateTime? oldEndTime;
   int? projectId;
   int? totalTimeInMinites;
   int? totalTimeInMinutesForClient;
@@ -133,6 +136,9 @@ class UserTaskTimer {
     this.clientTimeUpdateByDisplayName,
     this.userTimeUpdateByDisplayName,
     this.isAbleToUpdate,
+    this.oldTimerDate,
+    this.oldStartTime,
+    this.oldEndTime,
     this.textEditingController
   });
 
@@ -167,8 +173,8 @@ class TimeDetailsData{
   DateTime? date;
   String? startDate;
   DateTime? endDate;
-  int? clintMin;
-  int? totalMns;
+  String? clintMin;
+  String? totalMns;
   List<UserTaskTimer>? userList;
 
   TimeDetailsData({this.profilePic,this.endDate,this.startDate,this.date,this.clintMin,this.totalMns,this.userList});

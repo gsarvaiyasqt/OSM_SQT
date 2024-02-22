@@ -11,6 +11,7 @@ import '../domain/request/get_user_and_project_request_model.dart';
 import '../domain/request/save_user_in_deatils_req_model.dart';
 import '../domain/request/start_stop_task_req_model.dart';
 import '../domain/request/update_task_status_and_priority_request_model.dart';
+import '../domain/request/update_timer_request_model.dart';
 import '../domain/respones/GetListTaskDateWiseTimerAndUserTaskModel.dart';
 import '../domain/respones/base_res_model.dart';
 import '../domain/respones/get_count_status_response_model.dart';
@@ -45,6 +46,7 @@ abstract class ITaskRepository{
   Future<SaveCommentDataResponseModel?> saveCommentReqData({required CommentSaveReqData? commentSaveReqData});
   Future<BaseResModel?> deleteTaskCommentDetails({required int? id});
   Future<GetTaskDateWiseTimeResponseModel?> getTaskDateWiseTimeResponseModel({required int? projectId,required int? taskId});
+  Future<BaseResModel?>updateTimerData({required UpdateTimerRequestModel updateTimerRequestModel});
 }
 
 class TaskRepository extends ITaskRepository{
@@ -138,5 +140,10 @@ class TaskRepository extends ITaskRepository{
   @override
   Future<GetTaskDateWiseTimeResponseModel?> getTaskDateWiseTimeResponseModel({required int? projectId, required int? taskId}) async{
     return await taskUseCases?.getTaskDateWiseTimeResponseModel(projectId: projectId, taskId: taskId);
+  }
+
+  @override
+  Future<BaseResModel?> updateTimerData({required UpdateTimerRequestModel updateTimerRequestModel}) async{
+    return await taskUseCases?.updateTimerData(updateTimerRequestModel: updateTimerRequestModel);
   }
 }
