@@ -4,6 +4,7 @@ import 'package:osm_flutter/app/project_tab/domain/dummy/project_list_model.dart
 import 'package:osm_flutter/app/project_tab/view_model/project_provider.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/base/view/base_components/custom_image_view.dart';
+import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/utils.dart';
@@ -12,8 +13,9 @@ import '../../task_tab/domain/respones/get_user_and_project_response_model.dart'
 class CustomProjectListComponent extends StatefulWidget {
 
   final ProjectListModel? projectData;
+  bool? loader;
 
-  const CustomProjectListComponent({super.key,this.projectData});
+   CustomProjectListComponent({super.key,this.projectData,this.loader});
 
   @override
   State<CustomProjectListComponent> createState() => _CustomProjectListComponentState();
@@ -24,14 +26,19 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
 
   @override
   Widget build(BuildContext context) {
+
+
     List<String>? techList = widget.projectData?.technologies?.split(",");
-
-
 
     final processValue = widget.projectData?.closeTaskCount == 0 && widget.projectData?.allTaskCount == 0 ? 0 :
         (widget.projectData?.closeTaskCount ?? 0) / (widget.projectData?.allTaskCount ?? 0) * 100;
 
     final userList = widget.projectData?.projectUserList;
+
+    final projectLoader = widget.loader;
+
+
+    print("$projectLoader check this ========= pLoader ======");
 
     return Container(
       margin: EdgeInsets.only(bottom: 10.sp),
@@ -67,9 +74,11 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
                         style: CustomTextStyle
                             .semiBoldFont18Style
                     ),
+
+
+
                     Row(
                       children: [
-
                         SizedBox(
                           height: 10.sp,
                           width: 10.sp,
@@ -181,37 +190,9 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
                 height: 35.sp,
                 width: 120.sp,
                 child: Stack(
-                  children: buildImageStack(userList: userList),
+                  children: buildImageStack(userList: userList,loader: projectLoader),
                 ),
               )
-              // Stack(
-              //   children: List.generate(userList?.length ?? 0, (index) {
-              //     return Container(
-              //       height: 35.sp,
-              //       width: 35.sp,
-              //       margin:  EdgeInsets.only(left: 25.sp * index),
-              //       decoration: BoxDecoration(
-              //           shape: BoxShape.circle,
-              //           color: Colors.red.withOpacity(0.1 * index),
-              //           border:Border.all(color: Colors.white,width: 2.sp
-              //           )
-              //       ),
-              //       child: userList?.isNotEmpty == true ?
-              //       ClipRRect(
-              //         borderRadius: BorderRadius.circular(100),
-              //           child: CustomImageView(
-              //             uri: userList?[index].profilePic,
-              //             placeholder:  Container(
-              //                 alignment: Alignment.center,
-              //                 color: kBlackColor.withOpacity(0.3),
-              //                 child: ImageUtil.logo.appLogo
-              //             ),
-              //           )) :
-              //       const SizedBox.shrink(),
-              //     );
-              //   }),
-              // )
-
             ],
           ),
 
@@ -220,7 +201,7 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
     );
   }
 
-  List<Widget> buildImageStack({List<ProjectUser>? userList}) {
+  List<Widget> buildImageStack({List<ProjectUser>? userList ,bool? loader}) {
     List<Widget> stackChildren = [];
 
     // Display the first 4 images in a circular shape
@@ -278,7 +259,7 @@ class _CustomProjectListComponentState extends State<CustomProjectListComponent>
               ),
                         ),
             ),
-        ),
+                  ),
       )
       );
     }

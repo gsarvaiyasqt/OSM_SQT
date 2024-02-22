@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:osm_flutter/app/home_tab/view_model/home_provider.dart';
 import 'package:osm_flutter/app/tab/view_model/timer_provider.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
+import 'package:osm_flutter/base/view/base_components/custom_option_bottom_sheet.dart';
 import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
 
 import '../../../base/view/base_components/custom_image_view.dart';
@@ -53,11 +54,7 @@ class _TabScreenState extends State<TabScreen> {
 
     final duration = timeProvider.duration;
 
-    // print("${duration?.inSeconds.remainder(60)} -=====  duration?.inSeconds");
-
     final fTime = "${duration?.inHours.remainder(60).toString().padLeft(2, '0')}:${duration?.inMinutes.remainder(60).toString().padLeft(2, '0')}";
-
-    // print("${fTime} -=====  finalTime check");
 
     return SafeArea(
       child: Scaffold(
@@ -83,30 +80,41 @@ class _TabScreenState extends State<TabScreen> {
                   ),
                   child: InkWell(
                     onTap: () async{
-                      final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
-                      final timerProvider = context.read<TimerNotifier>();
-                      final taskProvider = context.read<TaskProvider>();
-                      final homeProvider = context.read<HomeProvider>();
 
-                      await taskProvider.stopTask(startStopTaskReqModel: StartStopTaskReqModel(
-                        projectId: getTaskDetailsData.projectId,
-                        taskId: getTaskDetailsData.taskId,
-                      ));
+                      CustomShowModalBottomSheetPopup(context,
+                        message: "Are you sure you want to ${getTaskDetailsData.taskId == null ? "Start Task" : "Stop Task"}?",
+                        primaryBtnTxt: "Yes",
+                        secondaryBtnTxt: "Cancel",
+                        btnColor: kPrimaryColor.withOpacity(0.25),
+                        title: 'Task',
+                        primaryAction: ()async{
+                          final startDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day - 7,DateTime.now().hour,DateTime.now().minute,DateTime.now().second);
+                          final timerProvider = context.read<TimerNotifier>();
+                          final taskProvider = context.read<TaskProvider>();
+                          final homeProvider = context.read<HomeProvider>();
 
-                      await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
+                          await taskProvider.stopTask(startStopTaskReqModel: StartStopTaskReqModel(
+                            projectId: getTaskDetailsData.projectId,
+                            taskId: getTaskDetailsData.taskId,
+                          ));
 
-                      await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
-                          endDate: DateTime.now(),
-                          startDate: startDate
-                      ));
+                          await taskProvider.getRecentTaskListData(recentTaskRequestModel: RecentTaskRequestModel());
 
-                      timeProvider.stopTimer();
+                          await homeProvider.getHomeTaskListData(recentTaskRequestModel: RecentTaskRequestModel(
+                              endDate: DateTime.now(),
+                              startDate: startDate
+                          ));
 
-                      await taskProvider.getRunningTask();
+                          timeProvider.stopTimer();
 
-                      final date = taskProvider.getRunningTaskResponse.data?.data?.first.startTime;
+                          await taskProvider.getRunningTask();
 
-                      timeProvider.differenceRunningTime(startDate: date);
+                          final date = taskProvider.getRunningTaskResponse.data?.data?.first.startTime;
+
+                          timeProvider.differenceRunningTime(startDate: date);
+                        },
+                        secondaryAction: (){}
+                      );
 
                     },
                     child: Container(

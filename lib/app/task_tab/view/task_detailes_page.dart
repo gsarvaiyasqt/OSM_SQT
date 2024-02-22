@@ -1,18 +1,16 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:osm_flutter/base/view/base_components/loading_view.dart';
-import 'package:provider/provider.dart';
-
-import '../../../base/view/base_components/custom_text_form_filed.dart';
-import '../../../utils/common_utils/custom_details_textfield.dart';
-import '../../../utils/common_utils/custom_drop_down_widget.dart';
-import '../../../utils/common_utils/custom_serch_view_page.dart';
 import '../../../utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../view_model/task_provider.dart';
 import '../domain/request/create_task_req_model.dart';
 import '../domain/request/save_user_in_deatils_req_model.dart';
-import '../view_model/task_provider.dart';
+import '../../../utils/common_utils/custom_serch_view_page.dart';
+import '../../../utils/common_utils/custom_drop_down_widget.dart';
+import '../../../utils/common_utils/custom_details_textfield.dart';
+import 'package:osm_flutter/base/view/base_components/loading_view.dart';
+import '../../../base/view/base_components/custom_text_form_filed.dart';
 class TaskDetailsPage extends StatefulWidget {
   const TaskDetailsPage({Key? key}) : super(key: key);
 

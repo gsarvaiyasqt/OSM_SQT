@@ -18,11 +18,8 @@ class ProjectProvider extends BaseNotifier implements IProjectProvider {
     _getProjectListResponse = AppResponse();
   }
 
-  late AppResponse<GetProjectAndAssignUserResponseModel>
-      _getProjectListResponse;
-
-  AppResponse<GetProjectAndAssignUserResponseModel>
-      get getProjectListResponse => _getProjectListResponse;
+  late AppResponse<GetProjectAndAssignUserResponseModel>_getProjectListResponse;
+  AppResponse<GetProjectAndAssignUserResponseModel> get getProjectListResponse => _getProjectListResponse;
 
   List<ProjectListModel> projectListData = [];
 
@@ -38,8 +35,7 @@ class ProjectProvider extends BaseNotifier implements IProjectProvider {
   }
 
   @override
-  Future getProjectList(
-      {ProjectGetListRequestModel? projectGetListRequestModel}) async {
+  Future getProjectList({ProjectGetListRequestModel? projectGetListRequestModel}) async {
     resIsLoading(_getProjectListResponse);
 
     try {
@@ -75,7 +71,6 @@ class ProjectProvider extends BaseNotifier implements IProjectProvider {
           ));
 
         });
-
 
 
         resIsSuccess(_getProjectListResponse, response);
