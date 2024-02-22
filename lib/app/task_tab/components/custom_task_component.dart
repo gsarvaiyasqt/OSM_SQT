@@ -82,10 +82,6 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                     return GestureDetector(
                       onTap: () {
                         TaskRoute.goToUpdateTaskPage(context,data?.taskId);
-                        // TaskRoute.goToCreteTaskPage(context,TaskUpdateModel(
-                        //     id: data?.taskId,
-                        //     isUpdate: true
-                        // ));
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +138,7 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
                               InkWell(
                               onTap: () async{
                                 CustomShowModalBottomSheetPopup(context,
-                                  message: "Are you sure you want to ${getRunningTaskData?[0].taskId == null ? "Start Task" : "Stop Task"}?",
+                                  message: "Are you sure you want to ${getRunningTaskData?[0].taskId != null && (getRunningTaskData?[0].taskId != data?.taskId) ? "Start Task" : "Stop Task"}?",
                                   // message: "",
                                   primaryBtnTxt: "Yes",
                                   secondaryBtnTxt: "Cancel",
@@ -382,7 +378,5 @@ class _CustomTaskComponentState extends State<CustomTaskComponent> {
     String second = sec.toString().length <= 1 ? "0$sec" : "$sec";
 
     return "$minute:$second hrs";
-
-
   }
 }
