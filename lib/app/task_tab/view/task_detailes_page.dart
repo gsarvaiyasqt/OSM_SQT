@@ -44,10 +44,14 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
 
       final task = taskProvider.getTaskDetailsResponse.data?.data;
 
-      taskProvider.createTaskReqModel = CreateTaskReqModel.fromTaskDetailsData(task);
+      setState(() {
 
-      titleController.text = task?.task?.title ?? "";
-      descriptionController.text = task?.task?.details ?? "";
+        taskProvider.createTaskReqModel = CreateTaskReqModel.fromTaskDetailsData(task);
+
+        titleController.text = task?.task?.title ?? "";
+        descriptionController.text = task?.task?.details ?? "";
+
+      });
     });
   }
 

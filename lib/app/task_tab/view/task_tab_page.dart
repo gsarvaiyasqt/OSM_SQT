@@ -8,6 +8,8 @@ import 'package:osm_flutter/app/home_tab/view_model/home_provider.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/app/task_tab/components/custom_task_component.dart';
 
+import '../route/task_route.dart';
+
 class TaskTabPage extends StatefulWidget {
   const TaskTabPage({Key? key}) : super(key: key);
 
@@ -74,7 +76,7 @@ class _TaskTabPageState extends State<TaskTabPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-
+                        TaskRoute.goToCreteTaskPage(context);
                       },
                       child: Container(
                         padding: EdgeInsets.all(10.sp),
