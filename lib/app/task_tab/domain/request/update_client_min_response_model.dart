@@ -4,7 +4,7 @@ class UpdateClientMinsResponseModel{
   int? oldTotalTimeInMinutes;
   int? totalMins;
   int? taskId;
-  DateTime? taskDate;
+  String? taskDate;
   String? taskUserName;
   int? projectId;
 
@@ -20,8 +20,7 @@ class UpdateClientMinsResponseModel{
       "TaskID":taskId,
       "TaskDate":taskDate,
       "TaskUserName":taskUserName,
-
-
+      "ProjectID":projectId
     };
 
   }

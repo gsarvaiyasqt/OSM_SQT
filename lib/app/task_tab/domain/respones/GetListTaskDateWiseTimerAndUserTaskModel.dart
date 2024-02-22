@@ -117,6 +117,7 @@ class UserTaskTimer {
   String? clientTimeUpdateByDisplayName;
   String? userTimeUpdateByDisplayName;
   int? isAbleToUpdate;
+  int? oldMints;
   TextEditingController? textEditingController;
 
   UserTaskTimer({
@@ -139,7 +140,8 @@ class UserTaskTimer {
     this.oldTimerDate,
     this.oldStartTime,
     this.oldEndTime,
-    this.textEditingController
+    this.textEditingController,
+    this.oldMints
   });
 
   factory UserTaskTimer.fromRawJson(String str) => UserTaskTimer.fromJson(json.decode(str));

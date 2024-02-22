@@ -43,4 +43,5 @@ class ServerConfig{
   static String get deleteCommentDetail => "$baseUrl/tasklogdetails/delete";
   static String get getListTaskDateWiseTimeAndUserTaskTimer => "$baseUrl/task/getlisttaskdatewisetimeandusertasktimer";
   static String get updateDateAndTime => "$baseUrl/task/updateusertasktimeruserdatetime";
+  static String get updateUserClientTime => "$baseUrl/task/updateusertasktimerclienttime";
 }

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:osm_flutter/app/task_tab/domain/request/update_client_min_response_model.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/update_timer_request_model.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/base/base.dart';
@@ -262,23 +263,11 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
 
                               try {
 
-
-
-
-
                                 if(userData != null){
 
 
-                                  final timerData = DateFormat("yyyy-MM-dd").format(userData.startTime!);
+                                  final timerData = DateFormat("yyyy-MM-dd").format(userData.timerDate!);
                                   final oldTimerData = DateFormat("yyyy-MM-dd").format(userData.oldTimerDate!);
-
-                                   final dateFromTimeData = DateTime.parse(timerData);
-                                  // final dateFromTimeData2 = DateFormat("yyyy-MM-dd").parse(oldTimerData);
-
-
-                                  print("timerData is ${dateFromTimeData}");
-                                  print("oldTimerData is ${oldTimerData}");
-
 
                                   var updateValue =  UpdateTimerRequestModel(
                                       taskId: taskData?.taskId,
@@ -301,7 +290,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
 
                                     taskProvider.timeList = [];
 
-                                    await taskProvider.getTaskDateWiseTimeResponseModel(taskId: taskData?.taskId,projectId:taskData?.projectId );
+                                    await taskProvider.getTaskDateWiseTimeResponseModel(taskId: taskData?.taskId,projectId:taskData?.projectId);
 
                                   } catch (e) {
 
@@ -346,7 +335,48 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                                       borderSide: BorderSide(
                                           color: kBlackColor.withOpacity(0.1),
                                           width: 1.sp)),
-                            suffixIcon: Icon(Icons.save,color: kBlackColor,size: 25.sp),
+                            suffixIcon: GestureDetector(
+                                onTap: () async{
+
+
+                                  if(userData != null){
+
+                                    final timerData = DateFormat("yyyy-MM-dd").format(userData.timerDate!);
+
+                                    try {
+
+                                      final taskProvider = context.read<TaskProvider>();
+
+                                      print("userData.textEditingController?.text is ${userData.textEditingController?.text.isNotEmpty}");
+
+                                      if(userData.textEditingController?.text.isNotEmpty == true){
+
+                                        await taskProvider.updateClientTimer(updateClientMinsResponseModel: UpdateClientMinsResponseModel(
+                                            projectId: userData.projectId,
+                                            taskUserName: userData.displayName,
+                                            userTaskTimerID: userData.userTaskTimerId,
+                                            taskId: userData.taskId,
+                                            taskDate: timerData,
+                                            totalMins: int.tryParse(userData.textEditingController?.text ?? "0"),
+                                            oldTotalTimeInMinutes: (userData.oldMints ?? 0)
+                                        ));
+
+                                        userData.textEditingController?.clear();
+
+                                        taskProvider.timeList = [];
+
+                                        await taskProvider.getTaskDateWiseTimeResponseModel(taskId: taskData?.taskId,projectId:taskData?.projectId);
+
+                                      }
+
+                                    } catch (e) {
+                                      Toaster.showMessage(context, msg: e.toString());
+                                    }
+
+                                  }
+
+                                },
+                                child: Icon(Icons.save,color: kBlackColor,size: 25.sp)),
                             contentPadding: EdgeInsets.only(top: 10.sp,bottom: 5.sp,left: 10.sp,right: 10.sp),
                             hintText: "Time For Client",
                             hintStyle: CustomTextStyle.regularFont14Style

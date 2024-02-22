@@ -7,6 +7,7 @@ import '../domain/request/save_user_in_deatils_req_model.dart';
 import '../domain/request/search_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import '../domain/request/create_task_req_model.dart';
+import '../domain/request/update_client_min_response_model.dart';
 import '../domain/request/update_task_status_and_priority_request_model.dart';
 import '../domain/request/update_timer_request_model.dart';
 import '../domain/respones/base_res_model.dart';
@@ -51,6 +52,7 @@ abstract class ITaskProvider {
   Future getListTaskDetailsLogData({required int? taskId,required bool? isLog});
   Future getTaskDateWiseTimeResponseModel({required int? projectId,required int? taskId});
   Future updateTimerData({required UpdateTimerRequestModel updateTimerRequestModel});
+  Future updateClientTimer({required UpdateClientMinsResponseModel updateClientMinsResponseModel});
 }
 
 class TaskProvider extends BaseNotifier implements ITaskProvider{
@@ -78,6 +80,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _getIdListLogTaskDetailsResponse = AppResponse();
     _getTaskDateWiseTimeResponse = AppResponse();
     _getUpdateTimerDataResponse = AppResponse();
+    _getUpdateClientTimerDataResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -146,6 +149,9 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<BaseResModel> _getUpdateTimerDataResponse;
   AppResponse<BaseResModel> get getUpdateTimerDataResponse => _getUpdateTimerDataResponse;
+
+  late AppResponse<BaseResModel> _getUpdateClientTimerDataResponse;
+  AppResponse<BaseResModel> get getUpdateClientTimerDataResponse => _getUpdateClientTimerDataResponse;
 
   UpdateTaskStatusPriorityUiState updateTaskStatusPriorityUiState = UpdateTaskStatusPriorityUiState();
 
@@ -879,7 +885,13 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
             uElement.oldTimerDate??= DateTime.now();
             uElement.oldEndTime??= DateTime.now();
             uElement.oldStartTime??= DateTime.now();
+            uElement.oldMints??= 0;
 
+            if(uElement.totalTimeInMinutesForClient != null){
+
+              uElement.oldMints = uElement.totalTimeInMinutesForClient;
+
+            }
 
             if(uElement.startTime != null){
 
@@ -950,6 +962,34 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
 
 
+  }
+
+  @override
+  Future updateClientTimer({required UpdateClientMinsResponseModel updateClientMinsResponseModel}) async{
+    resIsLoading(_getUpdateClientTimerDataResponse);
+
+    try {
+
+      final response = await taskRepository?.updateClientTimer(updateClientMinsResponseModel: updateClientMinsResponseModel,);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+
+      }else{
+
+
+        resIsSuccess(_getUpdateClientTimerDataResponse,response);
+
+      }
+
+    } catch (e) {
+
+      resIsFailed(_getUpdateClientTimerDataResponse, e);
+      rethrow;
+
+    }
   }
 
 }

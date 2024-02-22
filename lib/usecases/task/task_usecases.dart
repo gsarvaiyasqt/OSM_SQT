@@ -16,6 +16,7 @@ import '../../app/task_tab/domain/request/get_recent_task_request_model.dart';
 import '../../app/task_tab/domain/request/get_status_count.dart';
 import '../../app/task_tab/domain/request/get_user_and_project_request_model.dart';
 import '../../app/task_tab/domain/request/save_user_in_deatils_req_model.dart';
+import '../../app/task_tab/domain/request/update_client_min_response_model.dart';
 import '../../app/task_tab/domain/request/update_task_status_and_priority_request_model.dart';
 import '../../app/task_tab/domain/request/update_timer_request_model.dart';
 import '../../app/task_tab/domain/respones/GetListTaskDateWiseTimerAndUserTaskModel.dart';
@@ -53,6 +54,7 @@ abstract class ITaskUseCases{
    Future<BaseResModel?> deleteTaskCommentDetails({required int? id});
    Future<GetTaskDateWiseTimeResponseModel?> getTaskDateWiseTimeResponseModel({required int? projectId,required int? taskId});
    Future<BaseResModel?>updateTimerData({required UpdateTimerRequestModel updateTimerRequestModel});
+   Future<BaseResModel?>updateClientTimer({required UpdateClientMinsResponseModel updateClientMinsResponseModel});
 }
 
 class TaskUseCases extends ITaskUseCases{
@@ -303,6 +305,15 @@ class TaskUseCases extends ITaskUseCases{
     FormData formData = FormData.fromMap(updateTimerRequestModel.toMap());
 
     final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.updateDateAndTime,data: formData));
+    return BaseResModel.fromJson(response);
+  }
+
+  @override
+  Future<BaseResModel?> updateClientTimer({required UpdateClientMinsResponseModel updateClientMinsResponseModel}) async{
+
+    FormData formData = FormData.fromMap(updateClientMinsResponseModel.toMap());
+
+    final response = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.updateUserClientTime,data: formData));
     return BaseResModel.fromJson(response);
   }
 
