@@ -8,6 +8,7 @@ import '../domain/request/search_model.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import '../domain/request/create_task_req_model.dart';
 import '../domain/request/update_task_status_and_priority_request_model.dart';
+import '../domain/request/update_timer_request_model.dart';
 import '../domain/respones/base_res_model.dart';
 import '../domain/request/start_stop_task_req_model.dart';
 import '../domain/respones/get_create_task_response.dart';
@@ -49,6 +50,7 @@ abstract class ITaskProvider {
   Future deleteTaskCommentDetails({required int? id});
   Future getListTaskDetailsLogData({required int? taskId,required bool? isLog});
   Future getTaskDateWiseTimeResponseModel({required int? projectId,required int? taskId});
+  Future updateTimerData({required UpdateTimerRequestModel updateTimerRequestModel});
 }
 
 class TaskProvider extends BaseNotifier implements ITaskProvider{
@@ -75,6 +77,7 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
     _deleteTaskDetailsCommentResponse = AppResponse();
     _getIdListLogTaskDetailsResponse = AppResponse();
     _getTaskDateWiseTimeResponse = AppResponse();
+    _getUpdateTimerDataResponse = AppResponse();
   }
 
   bool isLoading = false;
@@ -139,6 +142,10 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
   late AppResponse<GetTaskDateWiseTimeResponseModel> _getTaskDateWiseTimeResponse;
   AppResponse<GetTaskDateWiseTimeResponseModel> get getTaskDateWiseTimeResponse => _getTaskDateWiseTimeResponse;
+
+
+  late AppResponse<BaseResModel> _getUpdateTimerDataResponse;
+  AppResponse<BaseResModel> get getUpdateTimerDataResponse => _getUpdateTimerDataResponse;
 
   UpdateTaskStatusPriorityUiState updateTaskStatusPriorityUiState = UpdateTaskStatusPriorityUiState();
 
@@ -853,30 +860,44 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
           mapData.forEach((key, value) {
 
-            timeList.add(TimeDetailsData(startDate: key,userList: value));
+            var clintMin = value.fold(0, (previousValue, element) => previousValue + (element.totalTimeInMinutesForClient ?? 0));
+
+            var totalMns = value.fold(0, (previousValue, element) => previousValue + (element.totalTimeInMinites ?? 0));
+
+
+
+            timeList.add(TimeDetailsData(startDate: key,userList: value,clintMin: formattedTime(timeInSecond:  clintMin),totalMns: formattedTime(timeInSecond:  totalMns)));
 
           });
 
-          notifyListeners();
-
         }
-
 
         for (var element in timeList) {
 
-          element.userList?.forEach((fElement) {
+          element.userList?.forEach((uElement) {
 
-            fElement.textEditingController?.text = "1";
+            uElement.oldTimerDate??= DateTime.now();
+            uElement.oldEndTime??= DateTime.now();
+            uElement.oldStartTime??= DateTime.now();
+
+
+            if(uElement.startTime != null){
+
+              uElement.oldStartTime = uElement.startTime;
+              uElement.oldTimerDate = uElement.startTime;
+
+            }
+            if(uElement.endTime != null){
+
+              uElement.oldEndTime = uElement.endTime;
+
+            }
 
           });
 
-          notifyListeners();
-
         }
 
-
         resIsSuccess(_getTaskDateWiseTimeResponse,response);
-
 
       }
 
@@ -886,6 +907,47 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
       rethrow;
 
     }
+
+
+  }
+
+  @override
+  Future updateTimerData({required UpdateTimerRequestModel updateTimerRequestModel}) async{
+
+
+    resIsLoading(_getUpdateTimerDataResponse);
+
+    try {
+
+      final response = await taskRepository?.updateTimerData(updateTimerRequestModel: updateTimerRequestModel);
+
+      if(response?.statusCode != 1){
+
+        throw response?.message ?? "";
+
+
+      }else{
+
+
+
+       resIsSuccess(_getUpdateTimerDataResponse,response);
+
+       // listData = [];
+       //
+       // await getTaskDateWiseTimeResponseModel(projectId: updateTimerRequestModel.projectId, taskId: updateTimerRequestModel.taskId);
+
+
+
+      }
+
+    } catch (e) {
+
+      resIsFailed(_getUpdateTimerDataResponse, e);
+      rethrow;
+
+    }
+
+
 
 
   }
