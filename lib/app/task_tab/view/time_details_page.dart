@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/task_tab/domain/request/update_timer_request_model.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/base/base.dart';
+import 'package:osm_flutter/utils/common_utils/skeleton_loading.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -23,13 +24,20 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
+    final timeDetailsLoader = taskProvider.getTaskDateWiseTimeResponse.state == Status.LOADING;
     final taskData = taskProvider.getTaskDetailsResponse.data?.data?.task;
     final timeList = taskProvider.timeList;
+
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       body: ListView.builder(
-        itemCount: timeList.length,
+        itemCount: timeDetailsLoader ?  10 :  timeList.length,
         itemBuilder: (context, index) {
+
+          if(timeDetailsLoader){
+            return timeDetailsSimmer();
+          }
+
         final timeListData =  timeList[index];
         return Container(
           margin: EdgeInsets.all(5.sp),
@@ -365,6 +373,134 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
           ),
         );
       },),
+    );
+  }
+
+  Widget timeDetailsSimmer(){
+    return Container(
+      decoration: BoxDecoration(
+        color: kWhiteColor,
+        borderRadius: BorderRadius.circular(8.sp),
+      ),
+      margin: EdgeInsets.only(bottom: 5.sp),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.sp),
+            child: Row(
+              children: [
+                SkeletonView(
+                  isLoading: true,
+                  borderRadius: BorderRadius.circular(100),
+                    skeletonBody: SizedBox(
+                      height: 40.sp,
+                      width: 40.sp,
+                    )
+                ),
+
+                SizedBox(width: 10.sp),
+            
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SkeletonView(
+                      isLoading: true,
+                      borderRadius: BorderRadius.circular(8.sp),
+                        skeletonBody: SizedBox(
+                          height: 20.sp,
+                          width: 180.sp,
+                        )
+                    ),
+
+                    SizedBox(height: 5.sp),
+
+                    SkeletonView(
+                      isLoading: true,
+                      borderRadius: BorderRadius.circular(8.sp),
+                        skeletonBody: SizedBox(
+                          height: 20.sp,
+                          width: 120.sp,
+                        )
+                    ),
+                  ],
+                ),
+
+              ],
+            ),
+          ),
+
+          Padding(
+            padding:  EdgeInsets.all(8.sp),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SkeletonView(
+                    isLoading: true,
+                    borderRadius: BorderRadius.circular(8.sp),
+                    skeletonBody: SizedBox(
+                      height: 40.sp,
+                      width: 180.sp,
+                    )
+                ),
+                SkeletonView(
+                    isLoading: true,
+                    borderRadius: BorderRadius.circular(8.sp),
+                    skeletonBody: SizedBox(
+                      height: 40.sp,
+                      width: 180.sp,
+                    )
+                ),
+              ],
+            ),
+          ),
+
+          Divider(height: 1,color: Colors.black12,endIndent: 10,indent: 10,),
+
+          Padding(
+            padding: EdgeInsets.all(8.sp),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+            
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SkeletonView(
+                        isLoading: true,
+                        borderRadius: BorderRadius.circular(8.sp),
+                        skeletonBody: SizedBox(
+                          height: 30.sp,
+                          width: 180.sp,
+                        )
+                    ),
+            
+                    SizedBox(height: 5.sp),
+            
+                    SkeletonView(
+                        isLoading: true,
+                        borderRadius: BorderRadius.circular(8.sp),
+                        skeletonBody: SizedBox(
+                          height: 20.sp,
+                          width: 120.sp,
+                        )
+                    ),
+                  ],
+                ),
+            
+                SkeletonView(
+                    isLoading: true,
+                    borderRadius: BorderRadius.circular(8),
+                    skeletonBody: SizedBox(
+                      height: 40.sp,
+                      width: 40.sp,
+                    )
+                ),
+            
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

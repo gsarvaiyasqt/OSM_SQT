@@ -198,13 +198,20 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
           recentTaskMapData.forEach((key, value) {
 
+            final dKey = DateFormat("yyyy-MM-dd").format(key ?? DateTime.now());
+
+            final today = DateFormat("yyyy-MM-dd").format(DateTime(DateTime.now().year, DateTime.now().month,DateTime.now().day));
+
+            final yesterday = DateFormat("yyyy-MM-dd").format(DateTime(DateTime.now().year, DateTime.now().month,DateTime.now().day-1));
+
             var isDate = "";
 
-            if(key?.day == DateTime.now().day){
+
+            if(dKey == today){
 
               isDate = "Today";
 
-            }else if(key?.day == (DateTime.now().day - 1)){
+            }else if(dKey == yesterday){
 
               isDate = "Yesterday";
 
