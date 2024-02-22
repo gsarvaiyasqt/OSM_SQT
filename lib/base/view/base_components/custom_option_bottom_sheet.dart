@@ -11,7 +11,7 @@ class CustomShowModalBottomSheetPopup {
   final bool primaryLoader;
   final Function? secondaryAction;
 
-  CustomShowModalBottomSheetPopup(BuildContext context,  {this.primaryLoader = false,required this.title,required this.message,required this.primaryBtnTxt, this.secondaryBtnTxt, this.primaryAction, this.secondaryAction}){
+  CustomShowModalBottomSheetPopup(BuildContext context,  {this.primaryLoader = false,required this.title,required this.message,required this.primaryBtnTxt, this.secondaryBtnTxt, this.primaryAction, this.secondaryAction, required Color btnColor}){
     final size = MediaQuery.of(context).size;
 
     showModalBottomSheet(context: context, backgroundColor: Colors.white,shape: const RoundedRectangleBorder(
