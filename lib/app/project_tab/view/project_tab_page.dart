@@ -67,6 +67,9 @@ class _ProjectTabPageState extends State<ProjectTabPage> {
       body: RefreshIndicator(
         onRefresh: ()async{
           final projectProvider = context.read<ProjectProvider>();
+
+          projectProvider.projectListData = [];
+
           await projectProvider.getProjectList(projectGetListRequestModel: ProjectGetListRequestModel());
         },
         child: Padding(
