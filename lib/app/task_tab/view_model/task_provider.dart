@@ -848,26 +848,31 @@ class TaskProvider extends BaseNotifier implements ITaskProvider{
 
         if(userTaskTimer != null){
 
-          final  mapData = groupBy(userTaskTimer, (item) => DateFormat("yyyy-MM-dd").format(item.startTime!));
+          final  mapData = groupBy(userTaskTimer, (item) => DateFormat("dd/MM/yyyy").format(item.startTime!));
 
 
           mapData.forEach((key, value) {
 
-
             timeList.add(TimeDetailsData(startDate: key,userList: value));
 
-
           });
-          
 
-          
-
-
+          notifyListeners();
 
         }
 
 
+        for (var element in timeList) {
 
+          element.userList?.forEach((fElement) {
+
+            fElement.textEditingController?.text = "1";
+
+          });
+
+          notifyListeners();
+
+        }
 
 
         resIsSuccess(_getTaskDateWiseTimeResponse,response);
