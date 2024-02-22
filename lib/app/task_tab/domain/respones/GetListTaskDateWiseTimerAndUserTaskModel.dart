@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+
 class GetTaskDateWiseTimeResponseModel {
   int? statusCode;
   String? message;
@@ -112,6 +114,7 @@ class UserTaskTimer {
   String? clientTimeUpdateByDisplayName;
   String? userTimeUpdateByDisplayName;
   int? isAbleToUpdate;
+  TextEditingController? textEditingController;
 
   UserTaskTimer({
     this.userTaskTimerId,
@@ -130,6 +133,7 @@ class UserTaskTimer {
     this.clientTimeUpdateByDisplayName,
     this.userTimeUpdateByDisplayName,
     this.isAbleToUpdate,
+    this.textEditingController
   });
 
   factory UserTaskTimer.fromRawJson(String str) => UserTaskTimer.fromJson(json.decode(str));
@@ -168,8 +172,5 @@ class TimeDetailsData{
   List<UserTaskTimer>? userList;
 
   TimeDetailsData({this.profilePic,this.endDate,this.startDate,this.date,this.clintMin,this.totalMns,this.userList});
-
-
-
 
 }

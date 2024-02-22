@@ -24,8 +24,20 @@ extension DateTimeFormatterExt on DateTime {
     return DateFormat("dd-MM-yyyy hh:mm").format(this);
   }
 
+
   String formatFor({required String format}) {
     return DateFormat(format).format(this);
+  }
+
+}
+
+extension StringDateFormatRxt on String{
+
+  String formatDate() {
+
+    var dateTime = DateFormat("dd/MM/yyyy").parse(this);
+
+    return dateTime.toString();
   }
 
 }

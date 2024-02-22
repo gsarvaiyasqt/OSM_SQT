@@ -1,10 +1,14 @@
+
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:osm_flutter/app/task_tab/view_model/task_provider.dart';
 import 'package:osm_flutter/base/base.dart';
 import 'package:osm_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../../base/view/base_components/custom_image_view.dart';
+import '../domain/respones/GetListTaskDateWiseTimerAndUserTaskModel.dart';
 class TimeDetailsPage extends StatefulWidget {
   const TimeDetailsPage({Key? key}) : super(key: key);
 
@@ -15,18 +19,30 @@ class TimeDetailsPage extends StatefulWidget {
 class _TimeDetailsPageState extends State<TimeDetailsPage> {
 
 
-
-
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
     final timeList = taskProvider.timeList;
+
+    for (var element in timeList) {
+
+        element.userList?.forEach((fElement) {
+
+          fElement.textEditingController?.text = "1";
+
+          print("fElement.textEditingController?.text is ${fElement.textEditingController?.text}");
+
+        });
+
+    }
+
     return Scaffold(
       backgroundColor: kSecondaryBackgroundColor,
       body: ListView.builder(
         itemCount: timeList.length,
         itemBuilder: (context, index) {
         final timeListData =  timeList[index];
+
         return Container(
           margin: EdgeInsets.all(5.sp),
           padding: EdgeInsets.all(15.sp),
@@ -70,9 +86,9 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
               ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    final userData = timeListData.userList?[index];
-                return Column(
+                  itemBuilder: (context, userDataIndex) {
+                    final userData = timeListData.userList?[userDataIndex];
+                    return Column(
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,7 +127,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                               SizedBox(height: 5.sp),
                               GestureDetector(
                                   onTap: () {
-                                    print("Start Date:::::::::::::::::::::::::::");
+
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(5),
@@ -121,7 +137,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                                               color: kBlackColor.withOpacity(0.1)
                                           )
                                       ),
-                                      child: Text("12/12/2024",style: CustomTextStyle.regularFont12Style))),
+                                      child: Text(userData?.startTime != null ? DateFormat("dd/MM/yyyy").format(userData!.startTime!) : "_",style: CustomTextStyle.regularFont12Style))),
                               SizedBox(height: 5.sp),
                               Text("End Date",style: CustomTextStyle.boldFont14Style),
                               SizedBox(height: 5.sp),
@@ -137,7 +153,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                                               color: kBlackColor.withOpacity(0.1)
                                           )
                                       ),
-                                      child: Text("12/12/2024",style: CustomTextStyle.regularFont12Style,)))
+                                      child: Text(userData?.endTime != null ? DateFormat("dd/MM/yyyy").format(userData!.endTime!) : "_",style: CustomTextStyle.regularFont12Style,)))
                             ],
                           )),
                           Expanded(child: Column(
@@ -153,7 +169,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                                           color: kBlackColor.withOpacity(0.1)
                                       )
                                   ),
-                                  child: Text("12:20:52 AM",style: CustomTextStyle.regularFont12Style,)),
+                                  child: Text(userData?.startTime != null ? DateFormat.jms().format(userData!.startTime!) : "_",style: CustomTextStyle.regularFont12Style,)),
                               SizedBox(height: 5.sp),
                               Text("Time",style: CustomTextStyle.boldFont14Style),
                               SizedBox(height: 5.sp),
@@ -165,7 +181,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                                           color: kBlackColor.withOpacity(0.1)
                                       )
                                   ),
-                                  child: Text("12:20:52 AM",style: CustomTextStyle.regularFont12Style,)),
+                                  child: Text(userData?.endTime != null ? DateFormat.jms().format(userData!.endTime!) : "_",style: CustomTextStyle.regularFont12Style,)),
                             ],
                           )),
                           Container(
@@ -180,6 +196,7 @@ class _TimeDetailsPageState extends State<TimeDetailsPage> {
                       height: 35.sp,
                       // padding: EdgeInsets.all(5),
                       child: TextFormField(
+                        controller: userData?.textEditingController,
                         // cursorHeight: 12.sp,
                         style: CustomTextStyle.regularFont14Style,
                         keyboardType: TextInputType.number,
